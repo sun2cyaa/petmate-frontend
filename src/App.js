@@ -3,8 +3,8 @@ import { useState, useEffect } from "react";
 
 
 import HomePage from './pages/common/Home/HomePage';
-import SigninPage from "./pages/auth/SigninPage";
-import SignupPage from "./pages/auth/SignupPage";
+import SigninPage from "./pages/Auth/SigninPage";
+import SignupPage from "./pages/Auth/SignupPage";
 import Header from './components/common/Header/Header';
 
 
