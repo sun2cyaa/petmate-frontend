@@ -22,6 +22,7 @@ function Header({ isLogined, setIsLogined }) {
             Logout
           </button>
         )}
+        <Link to="/payment">결제</Link>
       </nav>
     </header>
   );

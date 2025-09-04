@@ -9,6 +9,9 @@ import Header from './components/common/Header/Header';
 
 
 import "./styles/App.css";
+import PaymentPage from "./pages/payment/PaymentPage";
+import PaymentSuccess from './pages/payment/PaymentSuccessPage';
+import PaymentFailPage from "./pages/payment/PaymentFailPage";
 
 function App() {
   const [isLogined, setIsLogined] = useState(false);
@@ -28,6 +31,9 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/signin" element={<SigninPage setIsLogined={setIsLogined} />} />
         <Route path="/signup" element={<SignupPage />} />
+        <Route path="/payment" element={<PaymentPage />} />
+        <Route path="/payment/success" element={<PaymentSuccess />} />
+        <Route path="/payment/fail" element={<PaymentFailPage />} />
       </Routes>
     </BrowserRouter>
   );
