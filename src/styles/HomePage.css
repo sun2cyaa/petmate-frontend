@@ -1,0 +1,108 @@
+.home-container {
+    width: 100%;
+    min-height: 100vh;
+  }
+  
+  /* 배너 */
+  .home-banner-section {
+    position: relative;
+    width: 100%;
+    height: 300px;
+  }
+  .home-banner-img {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+  }
+  
+  /* 검색 */
+  .home-search-section {
+    padding: 40px 20px;
+  }
+  .home-search-box {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .home-service-buttons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .home-service-btn {
+    padding: 10px 20px;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    cursor: pointer;
+  }
+  .home-search-input {
+    flex: 1;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+  }
+  .home-search-btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 12px;
+    background: #eb9666;
+    color: white;
+    cursor: pointer;
+  }
+  
+  /* 추천 업체 */
+  .home-sitter-section {
+    padding: 40px 20px;
+  }
+  .home-sitter-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+  }
+  
+  /* 후기 */
+  .home-review-section {
+    padding: 40px 20px;
+  }
+  .home-review-card {
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 16px;
+    background: white;
+    text-align: center;
+    transition: 0.3s;
+  }
+  .home-review-card:hover {
+    box-shadow: 0 4px 20px rgba(235,150,102,0.3);
+  }
+  .home-review-img {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #eb9666;
+    margin-bottom: 10px;
+  }
+  .home-review-name {
+    font-weight: bold;
+    color: #eb9666;
+  }
+  .home-review-comment {
+    font-size: 14px;
+    color: #666;
+    font-style: italic;
+    margin: 10px 0;
+  }
+  .home-review-stars {
+    display: flex;
+    justify-content: center;
+    gap: 3px;
+  }
+  .home-star-active {
+    color: #eb9666;
+  }
+  .home-star-inactive {
+    color: #ccc;
+  }
+  
