@@ -1,10 +1,12 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useState, useEffect } from "react";
 
-import HomePage from "./pages/HomePage";
-import SigninPage from "./pages/Auth/SigninPage";
-import SignupPage from "./pages/Auth/SignupPage";
-import Header from "./components/Header";
+
+import HomePage from './pages/common/Home/HomePage';
+import SigninPage from "./pages/auth/SigninPage";
+import SignupPage from "./pages/auth/SignupPage";
+import Header from './components/common/Header/Header';
+
 
 import "./styles/App.css";
 

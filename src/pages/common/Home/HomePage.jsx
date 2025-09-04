@@ -1,10 +1,10 @@
-import SectionTitle from "../components/SectionTitle";
-import SitterCard from "../components/SitterCard";
+import SitterCard from "./../../../components/SitterCard";
+import SectionTitle from "./../../../components/SectionTitle";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
-import "../styles/HomePage.css";
+import "../../../styles/HomePage.css";
 
 const banners = [
   "https://images.unsplash.com/photo-1558788353-f76d92427f16?auto=format&fit=crop&w=1600&q=80",
@@ -42,14 +42,16 @@ const reviews = [
   {
     id: 1,
     name: "김민주",
-    comment: "처음 맡겼는데 아이가 너무 즐겁게 다녀왔어요! 다음에도 꼭 이용할게요.",
+    comment:
+      "처음 맡겼는데 아이가 너무 즐겁게 다녀왔어요! 다음에도 꼭 이용할게요.",
     rating: 5,
     img: "https://randomuser.me/api/portraits/women/44.jpg",
   },
   {
     id: 2,
     name: "박철수",
-    comment: "강아지가 산책을 정말 좋아했어요. 믿을 수 있는 서비스라 만족합니다.",
+    comment:
+      "강아지가 산책을 정말 좋아했어요. 믿을 수 있는 서비스라 만족합니다.",
     rating: 4,
     img: "https://randomuser.me/api/portraits/men/32.jpg",
   },
@@ -65,7 +67,6 @@ const reviews = [
 export default function HomePage() {
   return (
     <div className="home-container">
-   
       <section className="home-banner-section">
         <Swiper autoplay={{ delay: 3000 }} loop={true}>
           {banners.map((b, i) => (

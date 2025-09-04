@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { signout } from "../services/authService";
+import { signout } from "../../../services/authService";
 
 function Header({ isLogined, setIsLogined }) {
   const handleLogout = async () => {
@@ -7,10 +7,7 @@ function Header({ isLogined, setIsLogined }) {
       await signout();
       setIsLogined(false);
       alert("로그아웃 되었습니다.");
-
-    } catch (err) {
-
-    }
+    } catch (err) {}
   };
 
   return (
