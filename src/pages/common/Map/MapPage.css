@@ -1,0 +1,8 @@
+.map_wrap {
+    margin: 0 auto;
+    padding: 0;
+    margin-top: 20px;
+    display: flex;
+    justify-content: center; /* 가로 가운데 */
+    align-items: center;     /* 세로 가운데 */
+}

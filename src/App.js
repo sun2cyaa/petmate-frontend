@@ -12,6 +12,7 @@ import "./styles/App.css";
 import PaymentPage from "./pages/payment/PaymentPage";
 import PaymentSuccess from './pages/payment/PaymentSuccessPage';
 import PaymentFailPage from "./pages/payment/PaymentFailPage";
+import MapPage from "./pages/common/Map/MapPage";
 
 function App() {
   const [isLogined, setIsLogined] = useState(false);
@@ -31,6 +32,7 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/signin" element={<SigninPage setIsLogined={setIsLogined} />} />
         <Route path="/signup" element={<SignupPage />} />
+        <Route path="/map" element={<MapPage />} />
         <Route path="/payment" element={<PaymentPage />} />
         <Route path="/payment/success" element={<PaymentSuccess />} />
         <Route path="/payment/fail" element={<PaymentFailPage />} />
