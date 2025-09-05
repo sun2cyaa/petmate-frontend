@@ -1,63 +1,30 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { signin } from "../../services/authService";
+// src/pages/Auth/SigninPage.jsx
 import "../../styles/SigninPage.css";
 
-const SigninPage = ({ setIsLogined }) => {
+const API_BASE =
+  (typeof import.meta !== "undefined" && import.meta.env?.VITE_API_BASE) ||
+  process.env.REACT_APP_API_BASE ||
+  "http://localhost:8090";
 
-  const [id, setId] = useState("");
-  const [pw, setPw] = useState("");
-
-  const navigate = useNavigate();
-
-  // handler
-  const handleSignin = async () => {
-
-    try {
-      const res = await signin(id, pw);
-
-      localStorage.setItem("accessToken", res.data.accessToken);
-
-      alert("로그인 성공!");
-      setIsLogined(true);
-      
-      navigate("/");
-
-    } catch (e) {
-
-            alert("로그인 실패!");
-            setIsLogined(false);
-            setId("");
-            setPw("");
-        }
-
-    };
+export default function SigninPage({ setIsLogined }) {
+  const startOAuth = (provider) => {
+    window.location.href = `${API_BASE}/oauth2/authorization/${provider}`;
+  };
 
   return (
     <article>
-        <div className="signin-wrap">
-            <h1 className="signin-title">로그인</h1>
-            <input
-                type="text"
-                placeholder="아이디"
-                value={id}
-                onChange={(e) => {
-                    setId(e.target.value);
-                }} /> <br />
-        
-            <input
-                type="password"
-                placeholder="비밀번호"
-                value={pw}
-                onChange={(e) => {
-                    setPw(e.target.value);
-                }} /> <br />
-            <button 
-            onClick={handleSignin}>로그인</button>
-
-        </div>
+      <div className="signin-wrap">
+        <h1 className="signin-title">로그인</h1>
+        <button onClick={() => startOAuth("naver")} style={{ marginLeft: 8 }}>
+          네이버로 로그인/회원가입
+        </button>
+        <button onClick={() => startOAuth("kakao")} style={{ marginLeft: 8 }}>
+          카카오로 로그인/회원가입
+        </button>
+        <button onClick={() => startOAuth("google")} style={{ marginLeft: 8 }}>
+          구글로 로그인/회원가입
+        </button>
+      </div>
     </article>
   );
-};
-
-export default SigninPage;
+}

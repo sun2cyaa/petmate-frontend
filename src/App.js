@@ -1,41 +1,49 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useState, useEffect } from "react";
+import api from "./services/api";
 
-
-import HomePage from './pages/common/Home/HomePage';
+import HomePage from "./pages/HomePage";
 import SigninPage from "./pages/Auth/SigninPage";
-import SignupPage from "./pages/Auth/SignupPage";
-import Header from './components/common/Header/Header';
-
+import OAuth2Redirect from "./pages/Auth/OAuth2Redirect";
+import Header from "./components/Header";
 
 import "./styles/App.css";
-import PaymentPage from "./pages/payment/PaymentPage";
-import PaymentSuccess from './pages/payment/PaymentSuccessPage';
-import PaymentFailPage from "./pages/payment/PaymentFailPage";
-import MapPage from "./pages/common/Map/MapPage";
 
 function App() {
   const [isLogined, setIsLogined] = useState(false);
+  const [user, setUser] = useState(null); // 이메일/닉네임 등
 
   useEffect(() => {
-    
     const token = localStorage.getItem("accessToken");
-    if (token) {
-      setIsLogined(true);
+    if (!token) {
+      setIsLogined(false);
+      setUser(null);
+      return;
     }
+    // /auth/me로 프로필 조회
+    api
+      .get("/auth/me", {
+        headers: { Authorization: `Bearer ${token}` },
+        withCredentials: true,
+      })
+      .then((res) => {
+        setIsLogined(true);
+        setUser(res.data); // { userId, email, nickname, picture, provider, roles }
+      })
+      .catch(() => {
+        setIsLogined(false);
+        setUser(null);
+        localStorage.removeItem("accessToken");
+      });
   }, []);
 
   return (
     <BrowserRouter>
-      <Header isLogined={isLogined} setIsLogined={setIsLogined} />
+      <Header isLogined={isLogined} setIsLogined={setIsLogined} user={user} />
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/signin" element={<SigninPage setIsLogined={setIsLogined} />} />
-        <Route path="/signup" element={<SignupPage />} />
-        <Route path="/map" element={<MapPage />} />
-        <Route path="/payment" element={<PaymentPage />} />
-        <Route path="/payment/success" element={<PaymentSuccess />} />
-        <Route path="/payment/fail" element={<PaymentFailPage />} />
+        <Route path="/oauth2/redirect" element={<OAuth2Redirect setIsLogined={setIsLogined} />} />
       </Routes>
     </BrowserRouter>
   );
