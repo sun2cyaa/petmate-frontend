@@ -13,6 +13,7 @@ function Header({ isLogined, setIsLogined }) {
   return (
     <header className="header">
       <h2 className="logo">Petmate</h2>
+      <Link to="/map">지도</Link>
       <nav className="nav">
         <Link to="/">Home</Link>
         {!isLogined && <Link to="/signin">Signin</Link>}
