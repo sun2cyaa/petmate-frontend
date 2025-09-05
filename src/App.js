@@ -1,7 +1,7 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 
-
+import IntroPage from "./pages/common/Intro/IntroPage";
 import HomePage from './pages/common/Home/HomePage';
 import SigninPage from "./pages/Auth/SigninPage";
 import SignupPage from "./pages/Auth/SignupPage";
@@ -16,6 +16,7 @@ import MapPage from "./pages/common/Map/MapPage";
 
 function App() {
   const [isLogined, setIsLogined] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
     
@@ -25,19 +26,27 @@ function App() {
     }
   }, []);
 
-  return (
-    <BrowserRouter>
-      <Header isLogined={isLogined} setIsLogined={setIsLogined} />
+ return (
+    <>
+      {/* intro 페이지가 아닐 때만 기본 헤더 렌더링 */}
+      {location.pathname !== "/intro" && (
+        <Header isLogined={isLogined} setIsLogined={setIsLogined} />
+      )}
+
       <Routes>
+        <Route path="/intro" element={<IntroPage />} />
         <Route path="/" element={<HomePage />} />
-        <Route path="/signin" element={<SigninPage setIsLogined={setIsLogined} />} />
+        <Route
+          path="/signin"
+          element={<SigninPage setIsLogined={setIsLogined} />}
+        />
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/map" element={<MapPage />} />
         <Route path="/payment" element={<PaymentPage />} />
         <Route path="/payment/success" element={<PaymentSuccess />} />
         <Route path="/payment/fail" element={<PaymentFailPage />} />
       </Routes>
-    </BrowserRouter>
+    </>
   );
 }
 
