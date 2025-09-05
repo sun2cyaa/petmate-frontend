@@ -4,6 +4,9 @@ function CompanyDetailModal() {
     return(
         <div>
 
+
+
+
         </div>
     );
 }
