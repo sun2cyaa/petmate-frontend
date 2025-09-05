@@ -1221,11 +1221,6 @@
   resolved "https://registry.yarnpkg.com/@csstools/selector-specificity/-/selector-specificity-2.2.0.tgz#2cbcf822bf3764c9658c4d2e568bd0c0cb748016"
   integrity sha512-+OJ9konv95ClSTOJCmMZqpd5+YGsB2S+x6w3E1oaM8UuR5j8nTNHYSz8c9BEPGDOCMQYIEEGlVPj/VY64iTbGw==
 
-"@danalpay/javascript-sdk@^1.0.4":
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/@danalpay/javascript-sdk/-/javascript-sdk-1.0.4.tgz#8b077d62e35eaa8c0071330a85c27f48089f4825"
-  integrity sha512-SiT8Q2mwUU0x4CaPLW4SWX23boxdp3vcTzdJlCVxPND2enrJgOaA9zhBM1BDM86oyANEqw+hQ4eyaDiHUOB04w==
-
 "@eslint-community/eslint-utils@^4.2.0":
   version "4.8.0"
   resolved "https://registry.yarnpkg.com/@eslint-community/eslint-utils/-/eslint-utils-4.8.0.tgz#0e3b5e45566d1bce1ec47d8aae2fc2ad77ad0894"
