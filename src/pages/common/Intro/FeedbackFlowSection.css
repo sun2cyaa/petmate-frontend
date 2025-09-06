@@ -1,0 +1,192 @@
+.feedback-flow-section {
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(135deg, #fef7f0 0%, #fff5f0 100%);
+    width: 100%;
+    max-width: 1920px;
+    height: 100vh;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 40px 80px;
+    margin: 0 auto;
+    box-sizing: border-box;
+  }
+  
+  /* Header Section */
+  .feedback-header {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    margin-bottom: 30px;
+    margin-top: 70px;
+    width: 100%;
+  }
+  
+  .feedback-header::before {
+    content: '';
+    position: absolute;
+    top: 165px;
+    left: 30%;
+    transform: translateX(-200px);
+    width: 1000px;
+    height: 2px;
+    background: #ff6b35;
+  }
+  
+  .feedback-title {
+    font-size: 48px;
+    color: #2c3e50;
+    margin: 0 0 20px 0;
+    font-weight: 700;
+  }
+  
+  .feedback-subtitle {
+    font-size: 24px;
+    color: #777777;
+    font-weight: 400;
+    margin: 0;
+  }
+  
+  /* Reviews Section */
+  .reviews {
+    margin-top: -40px;
+    width: 100%;
+    max-width: 1300px;
+    text-align: center;
+  }
+  
+  .reviews-highlight {
+    color: #ff6b35;
+    font-size: 22px;
+    margin-bottom: 12px;
+    font-weight: 500;
+  }
+  
+  .reviews-sub {
+    color: #5a6c7d;
+    font-size: 18px;
+    margin-bottom: 40px;
+  }
+  
+  .review-card {
+    flex: 0 0 300px;  
+    height: 160px;
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 15px;
+    margin: 0 10px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+    border: 2px solid #EB9666;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+  
+  .review-header {
+    display: flex;
+    align-items: center;
+  }
+  
+  .profile-image {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-right: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 18px;
+    color: #f7f7f7;
+    background: linear-gradient(45deg, #ff6b35, #f7931e);
+  }
+  
+  .profile-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .profile-info h3 {
+    color: #2c3e50;
+    font-size: 16px;
+    margin: 0 0 5px 0;
+  }
+  
+  .profile-info p {
+    color: #95a5a6;
+    font-size: 14px;
+    margin: 0;
+  }
+  
+  .heart-icon {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .review-text {
+    color: #5a6c7d;
+    font-size: 14px;
+    line-height: 1.6;
+    white-space: normal;
+    word-break: keep-all;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 5;
+    -webkit-box-orient: vertical;
+  }
+  
+  /* Swiper Pagination */
+  .feedback-flow-section .swiper-pagination {
+    position: relative;
+    margin-top: 15px;
+    text-align: center;
+  }
+  
+  .feedback-flow-section .swiper-pagination-bullet {
+    width: 10px;
+    height: 10px;
+    background: #d1d5db;
+    opacity: 1;
+    transition: all 0.3s ease;
+  }
+  
+  .feedback-flow-section .swiper-pagination-bullet-active {
+    background: #ff6b35;
+    transform: scale(1.2);
+  }
+  
+  /* Flow Section */
+  .flow {
+    text-align: center;
+    width: 100%;
+    max-width: 1200px;
+  }
+  
+  .flow-title {
+    color: #ff6b35;
+    font-size: 22px;
+    margin-bottom: 10px;
+    font-weight: 500;
+  }
+  
+  .flow-image img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+  }
+  
