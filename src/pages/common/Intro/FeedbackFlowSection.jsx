@@ -1,12 +1,119 @@
 import React, { useState } from 'react';
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination, Autoplay } from "swiper/modules";
+import { ChevronDown, Calendar, Clock, PawPrint, Package, CreditCard } from 'lucide-react';
 import "swiper/css";
 import "swiper/css/pagination";
 
 import "./FeedbackFlowSection.css";
-import flowStepsImg from "../../../assets/images/flow/flow-steps.png";
 
+/* ---------------- 예약 절차 컴포넌트 ---------------- */
+const BookingFlowSteps = () => {
+  const steps = [
+    { id: 1, title: '메이트 찾기' },
+    { id: 2, title: '날짜와 시간 선택' },
+    { id: 3, title: '안심 결제 & 확인' },
+    { id: 4, title: '예약 완료!' }
+  ];
+
+  const renderStepContent = (stepId) => {
+    switch (stepId) {
+      case 1:
+        return (
+          <div className="step-content">
+            <div className="dropdown-box">
+              <span>산책</span>
+              <ChevronDown size={16} color="#ccc" />
+            </div>
+            <div className="btn-row">
+              <div className="next-btn">다음</div>
+            </div>
+          </div>
+        );
+
+      case 2:
+        return (
+          <div className="step-content">
+            {/* 날짜 입력 */}
+            <div className="date-input-box">
+              <span>연도-월-일</span>
+              <Calendar size={16} color="#ed9666" />
+            </div>
+            {/* 시간 입력 */}
+            <div className="time-input-box">
+              <span>-- : --</span>
+              <Clock size={16} color="#eb9666" />
+            </div>
+            <div className="btn-row">
+              <div className="prev-btn">이전</div>
+              <div className="next-btn">다음</div>
+            </div>
+          </div>
+        );
+
+      case 3:
+          return (
+            <div className="step-content">
+              <div className="info-box">
+                <PawPrint size={16} color="#eb9666" />
+                <span>반려인 정보</span>
+              </div>
+              <div className="info-box">
+                <Package size={16} color="#eb9666" />
+                <span>서비스 상품 정보</span>
+              </div>
+              <div className="info-box">
+                <CreditCard size={16} color="#eb9666" />
+                <span>결제정보</span>
+              </div>
+              <div className="btn-row">
+                <div className="prev-btn">이전</div>
+                <div className="payment-btn">결제하기</div>
+              </div>
+            </div>
+          );
+        
+
+      case 4:
+        return (
+          <div className="step-content">
+            <div className="complete-msg-box">
+              <br /><br />
+              예약이 정상적으로<br />
+              완료 되었습니다.
+            </div>
+            <div className="btn-row">
+              <div className="prev-btn">이전</div>
+              <div className="next-btn">완료</div>
+            </div>
+          </div>
+        );
+
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <div className="flow-steps-container">
+      <div className="steps-wrapper">
+        {steps.map((step, index) => (
+          <React.Fragment key={step.id}>
+            <div className="step-card">
+              <div className="step-header">
+                <div className="step-label">Step {step.id}. {step.title}</div>
+              </div>
+              {renderStepContent(step.id)}
+            </div>
+            {index < steps.length - 1 && <div className="arrow">→</div>}
+          </React.Fragment>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+/* ---------------- 메인 섹션 ---------------- */
 function FeedbackFlowSection() {
   const [activeHearts, setActiveHearts] = useState({});
 
@@ -37,11 +144,9 @@ function FeedbackFlowSection() {
         <p className="feedback-subtitle">이용 후기 및 예약 절차</p>
       </div>
 
-      {/* 후기 섹션 */}
       <div className="reviews">
         <h3 className="reviews-highlight">"우리 아이도 여기서 행복했어요"</h3>
         <p className="reviews-sub">"함께한 보호자들의 진솔한 이야기"</p>
-        
         <Swiper
           modules={[Pagination, Autoplay]}
           spaceBetween={20}
@@ -55,7 +160,7 @@ function FeedbackFlowSection() {
           {reviews.map((review) => (
             <SwiperSlide key={review.id}>
               <div className="review-card">
-                <div 
+                <div
                   className={`heart-icon ${activeHearts[review.id] ? 'active' : ''}`}
                   onClick={() => toggleHeart(review.id)}
                 >
@@ -97,12 +202,9 @@ function FeedbackFlowSection() {
         </Swiper>
       </div>
 
-      {/* 예약 절차 */}
       <div className="flow">
         <h3 className="flow-title">"쉽고 빠른 예약 절차"</h3>
-        <div className="flow-image">
-          <img src={flowStepsImg} alt="예약 절차" />
-        </div>
+        <BookingFlowSteps />
       </div>
     </section>
   );
