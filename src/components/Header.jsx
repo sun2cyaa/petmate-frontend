@@ -14,7 +14,7 @@ function Header({ isLogined, setIsLogined, user }) {
     <header className="header">
       <h2 className="logo">Petmate</h2>
       <nav className="nav">
-        <Link to="/">Home</Link>
+        <Link to="/home">Home</Link>
 
         {!isLogined && <Link to="/signin">로그인/회원가입</Link>}
 
