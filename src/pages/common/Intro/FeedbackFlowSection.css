@@ -1,192 +1,347 @@
 .feedback-flow-section {
-    font-family: 'Arial', sans-serif;
-    background: linear-gradient(135deg, #fef7f0 0%, #fff5f0 100%);
-    width: 100%;
-    max-width: 1920px;
-    height: 100vh;
-    overflow: hidden;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    padding: 40px 80px;
-    margin: 0 auto;
-    box-sizing: border-box;
-  }
-  
-  /* Header Section */
-  .feedback-header {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    margin-bottom: 30px;
-    margin-top: 70px;
-    width: 100%;
-  }
-  
-  .feedback-header::before {
-    content: '';
-    position: absolute;
-    top: 165px;
-    left: 30%;
-    transform: translateX(-200px);
-    width: 1000px;
-    height: 2px;
-    background: #ff6b35;
-  }
-  
-  .feedback-title {
-    font-size: 48px;
-    color: #2c3e50;
-    margin: 0 0 20px 0;
-    font-weight: 700;
-  }
-  
-  .feedback-subtitle {
-    font-size: 24px;
-    color: #777777;
-    font-weight: 400;
-    margin: 0;
-  }
-  
-  /* Reviews Section */
-  .reviews {
-    margin-top: -40px;
-    width: 100%;
-    max-width: 1300px;
-    text-align: center;
-  }
-  
-  .reviews-highlight {
-    color: #ff6b35;
-    font-size: 22px;
-    margin-bottom: 12px;
-    font-weight: 500;
-  }
-  
-  .reviews-sub {
-    color: #5a6c7d;
-    font-size: 18px;
-    margin-bottom: 40px;
-  }
-  
-  .review-card {
-    flex: 0 0 300px;  
-    height: 160px;
-    background: #ffffff;
-    border-radius: 20px;
-    padding: 15px;
-    margin: 0 10px;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.08);
-    border: 2px solid #EB9666;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-  }
-  
-  .review-header {
-    display: flex;
-    align-items: center;
-  }
-  
-  .profile-image {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    overflow: hidden;
-    margin-right: 15px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-    font-size: 18px;
-    color: #f7f7f7;
-    background: linear-gradient(45deg, #ff6b35, #f7931e);
-  }
-  
-  .profile-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-  
-  .profile-info h3 {
-    color: #2c3e50;
-    font-size: 16px;
-    margin: 0 0 5px 0;
-  }
-  
-  .profile-info p {
-    color: #95a5a6;
-    font-size: 14px;
-    margin: 0;
-  }
-  
-  .heart-icon {
-    position: absolute;
-    top: 15px;
-    right: 20px;
-    width: 24px;
-    height: 24px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  .review-text {
-    color: #5a6c7d;
-    font-size: 14px;
-    line-height: 1.6;
-    white-space: normal;
-    word-break: keep-all;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-line-clamp: 5;
-    -webkit-box-orient: vertical;
-  }
-  
-  /* Swiper Pagination */
-  .feedback-flow-section .swiper-pagination {
-    position: relative;
-    margin-top: 15px;
-    text-align: center;
-  }
-  
-  .feedback-flow-section .swiper-pagination-bullet {
-    width: 10px;
-    height: 10px;
-    background: #d1d5db;
-    opacity: 1;
-    transition: all 0.3s ease;
-  }
-  
-  .feedback-flow-section .swiper-pagination-bullet-active {
-    background: #ff6b35;
-    transform: scale(1.2);
-  }
-  
-  /* Flow Section */
-  .flow {
-    text-align: center;
-    width: 100%;
-    max-width: 1200px;
-  }
-  
-  .flow-title {
-    color: #ff6b35;
-    font-size: 22px;
-    margin-bottom: 10px;
-    font-weight: 500;
-  }
-  
-  .flow-image img {
-    max-width: 100%;
-    height: auto;
-    display: block;
-    margin: 0 auto;
-  }
-  
+  font-family: 'Arial', sans-serif;
+  background: linear-gradient(135deg, #fef7f0 0%, #fff5f0 100%);
+  width: 100%;
+  max-width: 1920px;
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 40px 80px;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+/* ---------------- 헤더 ---------------- */
+.feedback-header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  margin-bottom: 30px;
+  margin-top: 70px;
+  width: 100%;
+}
+
+.feedback-header::before {
+  content: '';
+  position: absolute;
+  top: 165px;
+  left: 30%;
+  transform: translateX(-200px);
+  width: 1000px;
+  height: 2px;
+  background: #ff6b35;
+}
+
+.feedback-title {
+  font-size: 48px;
+  color: #2c3e50;
+  margin: 0 0 20px 0;
+  font-weight: 700;
+}
+
+.feedback-subtitle {
+  font-size: 24px;
+  color: #777777;
+  font-weight: 400;
+  margin: 0;
+}
+
+/* ---------------- 후기 ---------------- */
+.reviews {
+  margin-top: -40px;
+  width: 100%;
+  max-width: 1300px;
+  text-align: center;
+}
+
+.reviews-highlight {
+  color: #ff6b35;
+  font-size: 22px;
+  margin-bottom: 12px;
+  font-weight: 500;
+}
+
+.reviews-sub {
+  color: #5a6c7d;
+  font-size: 18px;
+  margin-bottom: 40px;
+}
+
+.review-card {
+  flex: 0 0 300px;
+  height: 160px;
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 15px;
+  margin: 0 10px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+  border: 2px solid #EB9666;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.review-header {
+  display: flex;
+  align-items: center;
+}
+
+.profile-image {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-right: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 18px;
+  color: #f7f7f7;
+  background: linear-gradient(45deg, #ff6b35, #f7931e);
+}
+
+.profile-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.profile-info h3 {
+  color: #2c3e50;
+  font-size: 16px;
+  margin: 0 0 5px 0;
+}
+
+.profile-info p {
+  color: #95a5a6;
+  font-size: 14px;
+  margin: 0;
+}
+
+.heart-icon {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.review-text {
+  color: #5a6c7d;
+  font-size: 14px;
+  line-height: 1.6;
+  white-space: normal;
+  word-break: keep-all;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 5;
+  -webkit-box-orient: vertical;
+}
+
+.feedback-flow-section .swiper-pagination {
+  position: relative;
+  margin-top: 15px;
+  text-align: center;
+}
+
+.feedback-flow-section .swiper-pagination-bullet {
+  width: 10px;
+  height: 10px;
+  background: #d1d5db;
+  opacity: 1;
+  transition: all 0.3s ease;
+}
+
+.feedback-flow-section .swiper-pagination-bullet-active {
+  background: #ff6b35;
+  transform: scale(1.2);
+}
+
+/* ---------------- 예약 절차 ---------------- */
+.flow-title {
+ text-align: center;
+ color: #ff6b35;
+ font-size: 22px;
+ margin-bottom: 12px;
+ font-weight: 500;
+}
+
+
+
+.flow-steps-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0;
+}
+
+.steps-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 0;
+}
+
+.step-card {
+  width: 240px;
+  height: 200px;
+  border: 2px solid #e8c4a0;
+  border-radius: 15px;
+  background: #fef8f4;
+  padding: 20px 16px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.step-header {
+  margin-bottom: 16px;
+  flex-shrink: 0;
+}
+
+.step-label {
+  font-size: 14px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 4px;
+}
+
+.step-subtitle {
+  font-size: 11px;
+  color: #999;
+  line-height: 1.3;
+}
+
+.step-content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+  justify-content: space-between;
+}
+
+.arrow {
+  font-size: 24px;
+  color: #ff9966;
+  font-weight: bold;
+  flex-shrink: 0;
+  margin: 0 5px;
+  align-self: center;
+}
+
+/* ---------------- 입력 박스 ---------------- */
+.dropdown-box,
+.date-input-box,
+.time-input-box,
+.info-box,
+.complete-msg-box {
+  border: 1px solid #ed9666;
+  border-radius: 8px;
+  background: #fff;
+  padding: 8px 12px;
+  font-size: 13px;
+  color: #333;
+}
+
+.dropdown-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.date-input-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.date-input-box span {
+  flex: 1;
+}
+
+.time-input-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #999;
+}
+
+.info-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  margin-bottom: 2px;
+}
+
+.info-icon {
+  font-size: 14px;
+  width: 16px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.complete-msg-box {
+  text-align: center;
+  font-size: 12px;
+  color: #666;
+  line-height: 1.3;
+  flex: 1;
+}
+
+/* ---------------- 버튼 ---------------- */
+.btn-row {
+  display: flex;
+  gap: 6px;
+  margin-top: auto;
+}
+
+.prev-btn,
+.next-btn,
+.payment-btn,
+.single-btn {
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 12px;
+  font-weight: 500;
+  text-align: center;
+  cursor: pointer;
+  border: 1px solid #ddd;
+  flex: 1;
+}
+
+.prev-btn,
+.single-btn {
+  background: #fff;
+  color: #ff9966;
+  border: 1px solid #ff9966;
+}
+
+.prev-btn:hover,
+.single-btn:hover {
+  background: #fff5f0;
+}
+
+.next-btn,
+.payment-btn {
+  background: #ff9966;
+  color: #fff;
+  border: 1px solid #ff9966;
+}
+
+.next-btn:hover,
+.payment-btn:hover {
+  background: #ff8844;
+}
