@@ -1,26 +1,25 @@
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation, Navigate } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { AnimatePresence } from "framer-motion"; // 페이지 전환 애니메이션
 import api from "./services/api";
 
-<<<<<<< HEAD
 import IntroPage from "./pages/common/Intro/IntroPage";
-import HomePage from './pages/common/Home/HomePage';
-=======
-import HomePage from "./pages/HomePage";
->>>>>>> 61ec50d3a956e3a8af60233e71572423ff711e8d
+import HomePage from "./pages/common/Home/HomePage"; 
 import SigninPage from "./pages/Auth/SigninPage";
+import SignupPage from "./pages/Auth/SignupPage";
 import OAuth2Redirect from "./pages/Auth/OAuth2Redirect";
+import MapPage from "./pages/common/Map/MapPage";
+import PaymentPage from "./pages/payment/PaymentPage";
+import PaymentSuccessPage from "./pages/payment/PaymentSuccessPage";
+import PaymentFailPage from "./pages/payment/PaymentFailPage";
 import Header from "./components/Header";
 
 import "./styles/App.css";
 
 function App() {
   const [isLogined, setIsLogined] = useState(false);
-<<<<<<< HEAD
-  const location = useLocation();
-=======
   const [user, setUser] = useState(null); // 이메일/닉네임 등
->>>>>>> 61ec50d3a956e3a8af60233e71572423ff711e8d
+  const location = useLocation();
 
   useEffect(() => {
     const token = localStorage.getItem("accessToken");
@@ -46,37 +45,34 @@ function App() {
       });
   }, []);
 
-<<<<<<< HEAD
- return (
+  return (
     <>
-      {/* intro 페이지가 아닐 때만 기본 헤더 렌더링 */}
-      {location.pathname !== "/intro" && (
-        <Header isLogined={isLogined} setIsLogined={setIsLogined} />
+      {/* intro 페이지가 아닐 때만 Header 표시 */}
+      {!location.pathname.startsWith("/intro") && (
+        <Header
+          isLogined={isLogined}
+          setIsLogined={setIsLogined}
+          user={user}
+        />
       )}
 
-=======
-  return (
-    <BrowserRouter>
-      <Header isLogined={isLogined} setIsLogined={setIsLogined} user={user} />
->>>>>>> 61ec50d3a956e3a8af60233e71572423ff711e8d
-      <Routes>
-        <Route path="/intro" element={<IntroPage />} />
-        <Route path="/" element={<HomePage />} />
-<<<<<<< HEAD
-        <Route
-          path="/signin"
-          element={<SigninPage setIsLogined={setIsLogined} />}
-        />
-        <Route path="/signup" element={<SignupPage />} />
-        <Route path="/map" element={<MapPage />} />
-        <Route path="/payment" element={<PaymentPage />} />
-        <Route path="/payment/success" element={<PaymentSuccess />} />
-        <Route path="/payment/fail" element={<PaymentFailPage />} />
-=======
-        <Route path="/signin" element={<SigninPage setIsLogined={setIsLogined} />} />
-        <Route path="/oauth2/redirect" element={<OAuth2Redirect setIsLogined={setIsLogined} />} />
->>>>>>> 61ec50d3a956e3a8af60233e71572423ff711e8d
-      </Routes>
+      {/* 페이지 전환 애니메이션 적용 */}
+      <AnimatePresence mode="wait">
+        <Routes location={location} key={location.pathname}>
+          {/* / 들어가면 /intro로 이동 */}
+          <Route path="/" element={<Navigate to="/intro" replace />} />
+
+          <Route path="/intro" element={<IntroPage />} />
+          <Route path="/home" element={<HomePage />} />
+          <Route path="/signin" element={<SigninPage setIsLogined={setIsLogined} />} />
+          <Route path="/signup" element={<SignupPage />} />
+          <Route path="/oauth2/redirect" element={<OAuth2Redirect setIsLogined={setIsLogined} />} />
+          <Route path="/map" element={<MapPage />} />
+          <Route path="/payment" element={<PaymentPage />} />
+          <Route path="/payment/success" element={<PaymentSuccessPage />} />
+          <Route path="/payment/fail" element={<PaymentFailPage />} />
+        </Routes>
+      </AnimatePresence>
     </>
   );
 }
