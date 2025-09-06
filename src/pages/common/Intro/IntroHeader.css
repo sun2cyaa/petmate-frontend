@@ -1,0 +1,26 @@
+.intro-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 1px 60px;
+    z-index: 100;
+    transition: all 0.6s ease;
+    background: transparent;
+  }
+  
+  .intro-logo {
+    font-size: 26px;
+    font-weight: 700;
+    color: #eb9666;
+    letter-spacing: 1px;
+    transition: color 0.6s ease;
+  }
+  
+  /* 스크롤 시 스타일 */
+  .intro-header.scrolled {
+    background: rgba(240, 217, 204, 0.5); 
+    backdrop-filter: blur(6px);   
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15); 
+  }
+  

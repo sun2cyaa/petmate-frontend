@@ -24,8 +24,8 @@
   width: 100%;
   height: 100%;
   background: linear-gradient(
-    rgba(0, 0, 0, 0.35),   /* 위쪽은 살짝 어둡게 */
-    rgba(235, 150, 102, 0.1) /* 아래쪽 은은한 주황빛 */
+    rgba(0, 0, 0, 0.35),
+    rgba(235, 150, 102, 0.1) 
   ); 
   z-index: 1;
 }
@@ -41,7 +41,7 @@
   color: white;
 }
 
-/* ----------------------------- */
+/* --------------------------------------------------------- */
 /* 애니메이션 키프레임 */
 @keyframes fadeInUp {
   from {
@@ -53,7 +53,7 @@
     transform: translateY(0);
   }
 }
-/* ----------------------------- */
+/* ---------------------------------------------------------- */
 
 /* 타이틀 */
 .intro-title {
@@ -103,7 +103,7 @@
 /* CTA 버튼 */
 .intro-btn {
   padding: 12px 28px;
-  margin-left: 80px;
+  margin-left: 200px;
   font-size: 16px;
   font-weight: 600;
   border: none;

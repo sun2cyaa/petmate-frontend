@@ -1,62 +1,97 @@
-import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion"; // 애니메이션
+import { useEffect } from "react";
+import { motion } from "framer-motion";
+import fullpage from "fullpage.js";
+import "fullpage.js/dist/fullpage.css"; 
+
 import heroVideo from "../../../assets/videos/pet-hero.mp4";
 import "./IntroPage.css";
+import IntroHeader from "./IntroHeader";
+import FeedbackFlowSection from "./FeedbackFlowSection";
 
 function IntroPage() {
-  const navigate = useNavigate();
+  useEffect(() => {
+    new fullpage("#fullpage", {
+      autoScrolling: true,
+      navigation: true,
+      anchors: ["intro", "section1", "section2", "section3", "section4"],
+      scrollingSpeed: 700,
+      afterLoad: (origin, destination) => {
+        const header = document.querySelector(".intro-header");
+        if (!header) return;
+        if (destination.anchor === "intro") {
+          header.classList.remove("scrolled"); 
+        } else {
+          header.classList.add("scrolled");
+        }
+      }
+    });
+
+    return () => fullpage.destroy("all");
+  }, []);
 
   return (
-    <motion.section
-      className="intro-section"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}          
-      transition={{ duration: 0.8 }} 
-    >
-      {/* Hero 영상 */}
-      <video
-        className="intro-video"
-        src={heroVideo}
-        autoPlay
-        loop
-        muted
-        playsInline
-      />
+    <>
+      {/* 인트로 전용으로 만들어둠 */}
+      <IntroHeader />
 
-      {/* 인트로 영상 어둡게 오버레이 작업 */}
-      <div className="intro-overlay" />
+      <div id="fullpage">
+        {/* Intro (Hero) */}
+        <div className="section" data-anchor="intro">
+          <motion.section
+            className="intro-section"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.8 }}
+          >
+            <video
+              className="intro-video"
+              src={heroVideo}
+              autoPlay
+              loop
+              muted
+              playsInline
+            />
+            <div className="intro-overlay" />
 
-      {/* 문구 */}
-      <div className="intro-content">
-        <h1 className="intro-title">
-          사랑하는 반려동물을 위한 <br />
-          <span className="light">
-            믿을 수 있는<span className="highlight"> 메이트</span>
-          </span>
-        </h1>
+            <div className="intro-content">
+              <h1 className="intro-title">
+                사랑하는 반려동물을 위한 <br />
+                <span className="light">
+                  믿을 수 있는<span className="highlight"> 메이트</span>
+                </span>
+              </h1>
 
-        <p className="intro-subtitle">
-          호텔 · 돌봄 · 산책 · 미용 · 병원까지 한곳에서 <br />
-          &nbsp;&nbsp;전국 최고의 펫시터와 함께하세요.
-        </p>
+              <p className="intro-subtitle">
+                호텔 · 돌봄 · 산책 · 미용 · 병원까지 한곳에서 <br />
+                &nbsp;&nbsp;전국 최고의 펫시터와 함께하세요.
+              </p>
 
-        {/* CTA 버튼 */}
-        <motion.button
-          whileHover={{ scale: 1.1 }} 
-          whileTap={{ scale: 0.9 }}  
-          onClick={() => navigate("/home")}
-          className="intro-btn"
-        >
-          펫메이트 찾기
-        </motion.button>
+              <div className="btn-group">
+                <motion.button
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                  onClick={() => (window.location.href = "/home")}
+                  className="intro-btn"
+                >
+                  펫메이트 찾기
+                </motion.button>
+              </div>
+            </div>
+          </motion.section>
+        </div>
 
-        {/* <button
-            onClick={handleScroll}
-            className="intro-btn"> 서비스 둘러보기
-        </button> */}
+        {/* Section 1 - Feedback */}
+        <div className="section" data-anchor="section1">
+          <FeedbackFlowSection />
+        </div>
+
+        {/* Section 2~4 */}
+        <div className="section" data-anchor="section2">3번 섹션</div>
+        <div className="section" data-anchor="section3">4번 섹션</div>
+        <div className="section" data-anchor="section4">5번 섹션</div>
       </div>
-    </motion.section>
+    </>
   );
 }
 
