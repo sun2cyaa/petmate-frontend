@@ -1,4 +1,5 @@
 import React from "react";
+import iconFail from "../../assets/images/payment/icon_fail.png";
 
 const PaymentFailPage = () => {
   const styles = {
@@ -89,7 +90,7 @@ const PaymentFailPage = () => {
       <div style={styles.failContainer}>
         <div style={styles.failIcon}>
           <div style={{ position: "relative" }}>
-            <img src="./img/sandbox-sample-icon.png" alt="Fail" />
+            <img src={iconFail} alt="Fail" />
             <svg
               width="80"
               height="80"

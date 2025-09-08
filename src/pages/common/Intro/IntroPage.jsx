@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import fullpage from "fullpage.js";
 import "fullpage.js/dist/fullpage.css"; 
 
@@ -7,10 +8,13 @@ import heroVideo from "../../../assets/videos/pet-hero.mp4";
 import "./IntroPage.css";
 import IntroHeader from "./IntroHeader";
 import FeedbackFlowSection from "./FeedbackFlowSection";
+import PetCareSection from "./PetCareSection";
 
 function IntroPage() {
+  const navigate = useNavigate();  // 리액트 라우터
+
   useEffect(() => {
-    new fullpage("#fullpage", {
+    const fp = new fullpage("#fullpage", {
       autoScrolling: true,
       navigation: true,
       anchors: ["intro", "section1", "section2", "section3", "section4"],
@@ -26,7 +30,7 @@ function IntroPage() {
       }
     });
 
-    return () => fullpage.destroy("all");
+    return () => fp.destroy("all");
   }, []);
 
   return (
@@ -41,7 +45,7 @@ function IntroPage() {
             className="intro-section"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+            exit={{ opacity: 0, transition: { duration: 0.8 } }}
             transition={{ duration: 0.8 }}
           >
             <video
@@ -67,11 +71,11 @@ function IntroPage() {
                 &nbsp;&nbsp;전국 최고의 펫시터와 함께하세요.
               </p>
 
-              <div className="btn-group">
-                <motion.button
+              <div className="btn-group">  
+                <motion.button                            // 사라지는 효과
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
-                  onClick={() => (window.location.href = "/home")}
+                  onClick={() => navigate("/home")}
                   className="intro-btn"
                 >
                   펫메이트 찾기
@@ -87,7 +91,9 @@ function IntroPage() {
         </div>
 
         {/* Section 2~4 */}
-        <div className="section" data-anchor="section2">3번 섹션</div>
+        <div className="section" data-anchor="section2">
+          <PetCareSection />
+          </div>
         <div className="section" data-anchor="section3">4번 섹션</div>
         <div className="section" data-anchor="section4">5번 섹션</div>
       </div>

@@ -1,0 +1,143 @@
+/* 3번째 전체 섹션 */
+.petcare-section {
+  font-family: 'Arial', sans-serif;
+  background: #fffaf5;
+  padding: 100px 80px 60px;
+  text-align: center;
+  width: 100%;            
+  height: 100vh;           
+  box-sizing: border-box;
+}
+
+/* ---------------- 헤더 ---------------- */
+.petcare-header {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 50px;
+  margin-top: 10px;
+  width: 100%;
+}
+
+.petcare-header::before {
+  content: '';
+  position: absolute;
+  top: 30%;             
+  left: 0;
+  width: 90%;
+  height: 2px;
+  background: #eb9666;  
+  z-index: 0;
+}
+
+.petcare-header h2 {
+  position: relative;
+  font-size: 40px;
+  font-weight: 700;
+  color: #2c3e50;
+  margin: 0 0 10px 0;
+  z-index: 1;
+  background: #fffaf5;  
+  padding: 0 15px;
+}
+
+.petcare-header p {
+  position: relative;
+  font-size: 20px;
+  color: #777;
+  margin: 0;
+  z-index: 1;
+  background: #fffaf5;
+  padding: 0 10px;
+}
+
+/* ---------------- 서비스 카드 ---------------- */
+.petcare-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  max-width: 1100px;
+  margin: 0 auto 0;
+}
+
+.petcare-card {
+  background: #fff;
+  border-radius: 15px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+  border: 2px solid #eb9666;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.petcare-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 25px rgba(235, 150, 102, 0.4);
+}
+
+.petcare-card img {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  border-bottom: 2px solid #eb9666;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+  margin-bottom: 19px;
+}
+
+.petcare-card h3 {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 15px 0 5px;
+  color: #2c3e50;
+}
+
+.petcare-card p {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 15px;
+}
+
+/* ---------------- 우리 플랫폼 특징 4개 ---------------- */
+.petcare-features {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  gap: 30px;
+
+  background: rgba(235, 150, 102, 0.5);
+  padding: 40px 0px;
+  height: 140px;
+
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+
+  margin-top: 16px;
+}
+
+.feature-item {
+  flex: 1;
+  max-width: 250px;
+  text-align: center;
+  color: #E05353;
+}
+
+.feature-icon {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+}
+
+.feature-item h4 {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.feature-item p {
+  font-size: 14px;
+  line-height: 1.5;
+}
+
