@@ -24,9 +24,12 @@ function Header({ isLogined, setIsLogined, user }) {
               {user?.nickname || user?.email || "사용자"}
               {user?.provider ? ` (${user.provider})` : ""}
             </span>
-            <button onClick={handleLogout} className="logout-btn">Logout</button>
+            <button onClick={handleLogout} className="logout-btn">
+              Logout
+            </button>
           </>
         )}
+        <Link to="/payment">결제</Link>
       </nav>
     </header>
   );
