@@ -6,6 +6,7 @@ import './MapPage.css';
 
 function MapPage() {
   const [isKakaoLoaded, setIsKakaoLoaded] = useState(false);
+  const services = ["돌봄", "산책", "미용", "병원", "기타"];
 
   useEffect(() => {
     const loadKakaoMap = () => {
@@ -119,7 +120,17 @@ function MapPage() {
     <div className="map_wrap">
       {/* 상단 옵션 영역 - 헤더 바로 아래 */}
       <div>
-        옵션 넣는 부분 (필터, 설정 등)
+        <section className="home-search-section">
+        <div className="home-search-box">
+          <div className="home-service-buttons">
+            {services.map((s) => (
+              <button key={s} className="home-service-btn">
+                {s}
+              </button>
+            ))}
+          </div>
+        </div>
+      </section>
       </div>
       
       {/* 메인 컨텐츠: 사이드바 + 지도 */}
