@@ -2,7 +2,6 @@
   font-family: 'Arial', sans-serif;
   background: linear-gradient(135deg, #fef7f0 0%, #fff5f0 100%);
   width: 100%;
-  max-width: 1920px;
   height: 100vh;
   overflow: hidden;
   position: relative;
@@ -11,7 +10,6 @@
   align-items: center;
   justify-content: flex-start;
   padding: 40px 80px;
-  margin: 0 auto;
   box-sizing: border-box;
 }
 
@@ -28,12 +26,13 @@
 .feedback-header::before {
   content: '';
   position: absolute;
-  top: 165px;
-  left: 30%;
-  transform: translateX(-200px);
-  width: 1000px;
+  top: 13%;             
+  left: 1;
+  width: 50%;
+  margin-right: 420px;
   height: 2px;
-  background: #ff6b35;
+  background: #eb9666;  
+  z-index: 0;
 }
 
 .feedback-title {
