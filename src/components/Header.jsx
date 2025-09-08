@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { signout } from "../services/authService";
+import "../components/common/Header/Header.css";
 
 function Header({ isLogined, setIsLogined, user }) {
   const handleLogout = async () => {
@@ -13,8 +14,22 @@ function Header({ isLogined, setIsLogined, user }) {
   return (
     <header className="header">
       <h2 className="logo">Petmate</h2>
+      <Link to="/map">지도</Link>
+      <Link to="/payment">결제</Link>
+      <div className="header_dropdown">
+        <span className="header_mypage">마이페이지</span>
+        <div className="header_mypage_menu">
+          <Link to="/pets" className="header_mypage_item">내 펫 관리</Link>
+          <Link to="/profile" className="header_mypage_item">프로필 관리</Link>
+          <Link to="/address" className="header_mypage_item">주소 관리</Link>
+        </div>
+      </div>
+      
+
       <nav className="nav">
         <Link to="/home">Home</Link>
+        
+        
 
         {!isLogined && <Link to="/signin">로그인/회원가입</Link>}
 

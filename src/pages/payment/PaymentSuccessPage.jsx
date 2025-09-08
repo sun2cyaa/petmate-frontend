@@ -1,4 +1,5 @@
 import React from "react";
+import iconFail from "../../assets/images/payment/icon_fail.png";
 
 const PaymentSuccess = () => {
   const styles = {
@@ -74,7 +75,7 @@ const PaymentSuccess = () => {
       <div style={styles.successContainer}>
         <div style={styles.successIcon}>
           <div style={{ position: "relative" }}>
-            <img src="./img/sandbox-sample-icon.png" alt="Success" />
+            <img src={iconFail} alt="Success" />
             <svg
               width="55"
               height="54"

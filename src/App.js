@@ -13,8 +13,12 @@ import PaymentPage from "./pages/payment/PaymentPage";
 import PaymentSuccessPage from "./pages/payment/PaymentSuccessPage";
 import PaymentFailPage from "./pages/payment/PaymentFailPage";
 import Header from "./components/Header";
+import AddressManagePage from "./pages/user/owner/MyPage/Address/AddressManagePage";
+import PetManagePage from "./pages/user/owner/MyPage/PetManagePage";
+import ProfilePage from "./pages/user/owner/MyPage/ProfilePage";
 
 import "./styles/App.css";
+
 
 function App() {
   const [isLogined, setIsLogined] = useState(false);
@@ -68,6 +72,9 @@ function App() {
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/oauth2/redirect" element={<OAuth2Redirect setIsLogined={setIsLogined} />} />
           <Route path="/map" element={<MapPage />} />
+          <Route path="/pets" element={<PetManagePage />} />
+          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/address" element={<AddressManagePage user={user} />} />
           <Route path="/payment" element={<PaymentPage />} />
           <Route path="/payment/success" element={<PaymentSuccessPage />} />
           <Route path="/payment/fail" element={<PaymentFailPage />} />
