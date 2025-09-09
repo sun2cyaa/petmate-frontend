@@ -16,8 +16,7 @@ import {
   Navigation,
   Loader2,
 } from "lucide-react"
-import AddressAddModal from './components/AddressAddModal'
-import AddressEditModal from './components/AddressEditModal'
+import AddressFormModal from './components/AddressFormModal'
 import AddressDeleteModal from './components/AddressDeleteModal'
 import MapModal from './components/MapModal'
 
@@ -94,7 +93,6 @@ export default function AddressManagePage({ user, onBack }) {
   const [showAddressModal, setShowAddressModal] = useState(false)
   const [showMapModal, setShowMapModal] = useState(false)
   const [showDeleteModal, setShowDeleteModal] = useState(false)
-  const [showEditModal, setShowEditModal] = useState(false)
   const [selectedAddressForAction, setSelectedAddressForAction] = useState(null)
   const [searchQuery, setSearchQuery] = useState("")
   const [searchResults, setSearchResults] = useState([])
@@ -177,7 +175,7 @@ export default function AddressManagePage({ user, onBack }) {
 
   const handleEditClick = (address) => {
     setSelectedAddressForAction(address)
-    setShowEditModal(true)
+    setShowAddressModal(true)
   }
 
   const handleConfirmDelete = async () => {
@@ -192,58 +190,61 @@ export default function AddressManagePage({ user, onBack }) {
     }
   }
 
-  const handleSaveEdit = async (editFormData) => {
-    try {
-      const updatedAddress = await addressService.updateAddress(selectedAddressForAction.id, editFormData)
-      
-      setSavedAddresses((prev) =>
-        prev.map((addr) =>
-          addr.id === selectedAddressForAction.id
-            ? {
-                ...addr,
-                type: updatedAddress.type,
-                typeName: updatedAddress.type === "home" ? "집" : updatedAddress.type === "office" ? "회사" : "기타",
-                icon: updatedAddress.type === "home" ? Home : updatedAddress.type === "office" ? Building2 : MapPinned,
-                address: updatedAddress.address,
-                detail: updatedAddress.detail,
-                alias: updatedAddress.alias,
-                isDefault: updatedAddress.isDefault,
-              }
-            : addr,
-        ),
-      )
-      setSelectedAddressForAction(null)
-      alert("주소가 수정되었습니다.")
-    } catch (error) {
-      console.error('주소 수정 오류:', error)
-      alert(error.response?.data?.message || "주소 수정 중 오류가 발생했습니다.")
+  const handleSaveAddress = async (addressData) => {
+    if (selectedAddressForAction) {
+      // 수정 모드
+      try {
+        const updatedAddress = await addressService.updateAddress(selectedAddressForAction.id, addressData)
+        
+        setSavedAddresses((prev) =>
+          prev.map((addr) =>
+            addr.id === selectedAddressForAction.id
+              ? {
+                  ...addr,
+                  type: updatedAddress.type,
+                  typeName: updatedAddress.type === "home" ? "집" : updatedAddress.type === "office" ? "회사" : "기타",
+                  icon: updatedAddress.type === "home" ? Home : updatedAddress.type === "office" ? Building2 : MapPinned,
+                  address: updatedAddress.address,
+                  detail: updatedAddress.detail,
+                  alias: updatedAddress.alias,
+                  isDefault: updatedAddress.isDefault,
+                }
+              : addr,
+          ),
+        )
+        setSelectedAddressForAction(null)
+        alert("주소가 수정되었습니다.")
+      } catch (error) {
+        console.error('주소 수정 오류:', error)
+        alert(error.response?.data?.message || "주소 수정 중 오류가 발생했습니다.")
+      }
+    } else {
+      // 추가 모드
+      try {
+        const savedAddress = await addressService.createAddress(addressData)
+        
+        const newAddress = {
+          id: savedAddress.id,
+          type: savedAddress.type,
+          typeName: savedAddress.type === "home" ? "집" : savedAddress.type === "office" ? "회사" : "기타",
+          icon: savedAddress.type === "home" ? Home : savedAddress.type === "office" ? Building2 : MapPinned,
+          address: savedAddress.address,
+          detail: savedAddress.detail,
+          alias: savedAddress.alias,
+          isDefault: savedAddress.isDefault,
+          distance: "거리 계산 중...",
+          color: "",
+        }
+        
+        setSavedAddresses(prev => [...prev, newAddress])
+        alert("주소가 추가되었습니다!")
+      } catch (error) {
+        console.error('주소 저장 오류:', error)
+        alert(error.response?.data?.message || "주소 저장 중 오류가 발생했습니다.")
+      }
     }
   }
 
-  const handleAddAddress = async (newAddressData) => {
-    try {
-      const savedAddress = await addressService.createAddress(newAddressData)
-      
-      const newAddress = {
-        id: savedAddress.id,
-        type: savedAddress.type,
-        typeName: savedAddress.type === "home" ? "집" : savedAddress.type === "office" ? "회사" : "기타",
-        icon: savedAddress.type === "home" ? Home : savedAddress.type === "office" ? Building2 : MapPinned,
-        address: savedAddress.address,
-        detail: savedAddress.detail,
-        alias: savedAddress.alias,
-        isDefault: savedAddress.isDefault,
-        distance: "거리 계산 중...",
-        color: "",
-      }
-      
-      setSavedAddresses(prev => [...prev, newAddress])
-      alert("주소가 추가되었습니다!")
-    } catch (error) {
-      console.error('주소 저장 오류:', error)
-      alert(error.response?.data?.message || "주소 저장 중 오류가 발생했습니다.")
-    }
-  }
 
   return (
     <div className="address-page">
@@ -254,7 +255,10 @@ export default function AddressManagePage({ user, onBack }) {
               <h2 className="section-title">주소 관리</h2>
               <p className="section-subtitle">회원님의 주소를 관리하세요</p>
             </div>
-            <button className="add-button" onClick={() => setShowAddressModal(true)}>
+            <button className="add-button" onClick={() => {
+              setSelectedAddressForAction(null)
+              setShowAddressModal(true)
+            }}>
               <Plus size={16} />
               주소 추가
             </button>
@@ -361,22 +365,19 @@ export default function AddressManagePage({ user, onBack }) {
           </div>
         </div>
 
-        <AddressAddModal
+        <AddressFormModal
           show={showAddressModal}
-          onClose={() => setShowAddressModal(false)}
+          onClose={() => {
+            setShowAddressModal(false)
+            setSelectedAddressForAction(null)
+          }}
+          address={selectedAddressForAction}
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
           selectedAddress={selectedAddress}
           isSearching={isSearching}
           onAddressSearch={handleAddressSearch}
-          onSave={handleAddAddress}
-        />
-
-        <AddressEditModal
-          show={showEditModal}
-          onClose={() => setShowEditModal(false)}
-          address={selectedAddressForAction}
-          onSave={handleSaveEdit}
+          onSave={handleSaveAddress}
         />
 
         <AddressDeleteModal
