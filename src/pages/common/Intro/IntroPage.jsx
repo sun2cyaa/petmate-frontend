@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import fullpage from "fullpage.js";
@@ -12,12 +12,15 @@ import PetCareSection from "./PetCareSection";
 import ServiceCategory from "./ServiceCategory";
 import FindPetmate from "./FindPetmate";
 import IntroFooter from "./IntroFooter";
+import BackToTop from "./BackToTop";
 
 function IntroPage() {
-  const navigate = useNavigate();  // 리액트 라우터
+  const navigate = useNavigate();
+  const [showBackToTop, setShowBackToTop] = useState(false);
 
   useEffect(() => {
     const fp = new fullpage("#fullpage", {
+      licenseKey: "gplv3-license",
       autoScrolling: true,
       navigation: true,
       anchors: ["intro", "section1", "section2", "section3", "section4"],
@@ -27,8 +30,11 @@ function IntroPage() {
         if (!header) return;
 
         if (destination.anchor === "intro") {
+          setShowBackToTop(false);              // Intro → 버튼 숨김
+          header.classList.remove("scrolled");  // 헤더 숨김
         } else {
-          header.classList.add("scrolled");
+          setShowBackToTop(true);               // 다른 섹션에선 버튼 표시
+          header.classList.add("scrolled");     // 헤더 표시
         }
       }
     });
@@ -38,7 +44,6 @@ function IntroPage() {
 
   return (
     <>
-      {/* 인트로 전용으로 만들어둠 */}
       <IntroHeader />
 
       <div id="fullpage">
@@ -75,7 +80,7 @@ function IntroPage() {
               </p>
 
               <div className="btn-group">  
-                <motion.button                            // 사라지는 효과
+                <motion.button
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
                   onClick={() => navigate("/home")}
@@ -88,25 +93,30 @@ function IntroPage() {
           </motion.section>
         </div>
 
-        {/* Section 1 - Feedback */}
+        {/* Section 1 */}
         <div className="section" data-anchor="section1">
           <FeedbackFlowSection />
         </div>
 
-        {/* Section 2~4 */}
+        {/* Section 2 */}
         <div className="section" data-anchor="section2">
           <PetCareSection />
-          </div>
+        </div>
 
+        {/* Section 3 */}
         <div className="section" data-anchor="section3">
           <ServiceCategory />
         </div>
           
+        {/* Section 4 */}
         <div className="section" data-anchor="section4">
           <FindPetmate />
           <IntroFooter />
-          </div>
+        </div>
       </div>
+
+      {/* props로 보임 여부 */}
+      <BackToTop visible={showBackToTop} />
     </>
   );
 }
