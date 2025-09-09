@@ -9,6 +9,9 @@ import "./IntroPage.css";
 import IntroHeader from "./IntroHeader";
 import FeedbackFlowSection from "./FeedbackFlowSection";
 import PetCareSection from "./PetCareSection";
+import ServiceCategory from "./ServiceCategory";
+import FindPetmate from "./FindPetmate";
+import IntroFooter from "./IntroFooter";
 
 function IntroPage() {
   const navigate = useNavigate();  // 리액트 라우터
@@ -22,8 +25,8 @@ function IntroPage() {
       afterLoad: (origin, destination) => {
         const header = document.querySelector(".intro-header");
         if (!header) return;
+
         if (destination.anchor === "intro") {
-          header.classList.remove("scrolled"); 
         } else {
           header.classList.add("scrolled");
         }
@@ -94,8 +97,15 @@ function IntroPage() {
         <div className="section" data-anchor="section2">
           <PetCareSection />
           </div>
-        <div className="section" data-anchor="section3">4번 섹션</div>
-        <div className="section" data-anchor="section4">5번 섹션</div>
+
+        <div className="section" data-anchor="section3">
+          <ServiceCategory />
+        </div>
+          
+        <div className="section" data-anchor="section4">
+          <FindPetmate />
+          <IntroFooter />
+          </div>
       </div>
     </>
   );
