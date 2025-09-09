@@ -1,27 +1,47 @@
 import { Link } from "react-router-dom";
+import "./Header.css";
 import { signout } from "../../../services/authService";
 
-function Header({ isLogined, setIsLogined }) {
+function Header({ isLogined, setIsLogined, user }) {
   const handleLogout = async () => {
     try {
       await signout();
       setIsLogined(false);
       alert("로그아웃 되었습니다.");
-    } catch (err) {}
+    } catch (_) {}
   };
 
   return (
     <header className="header">
       <h2 className="logo">Petmate</h2>
       <Link to="/map">지도</Link>
+      <Link to="/payment">결제</Link>
+      <Link to="/become-petmate">펫메이트 되기</Link> {/* 새로 추가 */}
+
+      {isLogined && (
+        <div className="header_dropdown">
+          <span className="header_mypage">마이페이지</span>
+          <div className="header_mypage_menu">
+            <Link to="/pets" className="header_mypage_item">내 펫 관리</Link>
+            <Link to="/profile" className="header_mypage_item">프로필 관리</Link>
+            <Link to="/address" className="header_mypage_item">주소 관리</Link>
+          </div>
+        </div>
+      )}
+
       <nav className="nav">
-        <Link to="/">Home</Link>
-        {!isLogined && <Link to="/signin">Signin</Link>}
-        {!isLogined && <Link to="/signup">Signup</Link>}
+        {!isLogined && <Link to="/signin">로그인/회원가입</Link>}
+
         {isLogined && (
-          <button onClick={handleLogout} className="logout-btn">
-            Logout
-          </button>
+          <>
+            <span style={{ marginRight: 12 }}>
+              {user?.nickname || user?.email || "사용자"}
+              {user?.provider ? ` (${user.provider})` : ""}
+            </span>
+            <button onClick={handleLogout} className="logout-btn">
+              Logout
+            </button>
+          </>
         )}
         <Link to="/payment">결제</Link>
       </nav>
