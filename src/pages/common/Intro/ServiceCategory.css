@@ -29,8 +29,8 @@
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  margin-bottom: 100px;
-  margin-left: 300px;
+  margin-bottom: 5px;
+  margin-left: 250px;
   transform: translateY(-70px);
   width: 100%;
 }

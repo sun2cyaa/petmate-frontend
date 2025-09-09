@@ -1,7 +1,5 @@
 import "./FindPetmate.css";
-
 import mapImage from "../../../assets/images/intro/map-section/map-section.png";
-import IntroFooter from "./IntroFooter";
 
 function FindPetmate() {
   return (
@@ -16,8 +14,6 @@ function FindPetmate() {
       <div className="findpetmate-body">
         <img src={mapImage} alt="Petmate Map Section" />
       </div>
-
-      {/* <IntroFooter /> */}
     </section>
   );
 }

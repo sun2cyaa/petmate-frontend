@@ -3,16 +3,17 @@
     color: #ffffff;
     padding: 25px 30px 15px;
     font-size: 13px;
+    margin-top: -189px;
 }
 
 .footer-top {
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
-    max-width: 1400px;
+    max-width: 1700px;
     margin: 0 auto;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    padding-bottom: 15px;
+    margin-bottom: -80px;
 }
 
 .footer-brand h3 {
