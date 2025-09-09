@@ -1,4 +1,4 @@
-/* AddressAddModal.css */
+/* AddressFormModal.css - 통합된 주소 폼 모달 스타일 */
 
 .address_modal_overlay {
   position: fixed;
@@ -145,7 +145,6 @@
   opacity: 0.6;
   cursor: not-allowed;
 }
-
 
 .address_coordinates_info {
   font-size: 0.75rem;
