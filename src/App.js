@@ -1,10 +1,11 @@
-import { BrowserRouter, Routes, Route, useLocation, Navigate } from "react-router-dom";
+// src/App.jsx
+import { Routes, Route, useLocation, Navigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { AnimatePresence } from "framer-motion"; // 페이지 전환 애니메이션
+import { AnimatePresence } from "framer-motion";
 import api from "./services/api";
 
 import IntroPage from "./pages/common/Intro/IntroPage";
-import HomePage from "./pages/common/Home/HomePage"; 
+import HomePage from "./pages/common/Home/HomePage";
 import SigninPage from "./pages/Auth/SigninPage";
 import SignupPage from "./pages/Auth/SignupPage";
 import OAuth2Redirect from "./pages/Auth/OAuth2Redirect";
@@ -12,58 +13,46 @@ import MapPage from "./pages/common/Map/MapPage";
 import PaymentPage from "./pages/payment/PaymentPage";
 import PaymentSuccessPage from "./pages/payment/PaymentSuccessPage";
 import PaymentFailPage from "./pages/payment/PaymentFailPage";
-import Header from "./components/Header";
 import AddressManagePage from "./pages/user/owner/MyPage/Address/AddressManagePage";
 import PetManagePage from "./pages/user/owner/MyPage/PetManagePage";
 import ProfilePage from "./pages/user/owner/MyPage/ProfilePage";
 
 import "./styles/App.css";
-
+import Header from "./components/common/Header/Header";
+import BecomePetmatePage from "./pages/user/petmate/BecomePetmatePage";
 
 function App() {
   const [isLogined, setIsLogined] = useState(false);
-  const [user, setUser] = useState(null); // 이메일/닉네임 등
+  const [user, setUser] = useState(null);
   const location = useLocation();
 
   useEffect(() => {
-    const token = localStorage.getItem("accessToken");
-    if (!token) {
-      setIsLogined(false);
-      setUser(null);
-      return;
-    }
-    // /auth/me로 프로필 조회
+    let mounted = true;
     api
-      .get("/auth/me", {
-        headers: { Authorization: `Bearer ${token}` },
-        withCredentials: true,
-      })
+      .get("/auth/me", { withCredentials: true })
       .then((res) => {
+        if (!mounted) return;
         setIsLogined(true);
-        setUser(res.data); // { userId, email, nickname, picture, provider, roles }
+        setUser(res.data);
       })
       .catch(() => {
+        if (!mounted) return;
         setIsLogined(false);
         setUser(null);
-        localStorage.removeItem("accessToken");
       });
+    return () => {
+      mounted = false;
+    };
   }, []);
 
   return (
     <>
-      {/* intro 페이지가 아닐 때만 Header 표시 */}
       {!location.pathname.startsWith("/intro") && (
-        <Header
-          isLogined={isLogined}
-          setIsLogined={setIsLogined}
-          user={user}
-        />
+        <Header isLogined={isLogined} setIsLogined={setIsLogined} user={user} />
       )}
 
-      {/* 페이지 전환 애니메이션 적용 */}
       <AnimatePresence mode="wait">
         <Routes location={location} key={location.pathname}>
-          {/* / 들어가면 /intro로 이동 */}
           <Route path="/" element={<Navigate to="/intro" replace />} />
 
           <Route path="/intro" element={<IntroPage />} />
@@ -78,6 +67,7 @@ function App() {
           <Route path="/payment" element={<PaymentPage />} />
           <Route path="/payment/success" element={<PaymentSuccessPage />} />
           <Route path="/payment/fail" element={<PaymentFailPage />} />
+          <Route path="/become-petmate" element={<BecomePetmatePage />} /> {/* 추가 */}
         </Routes>
       </AnimatePresence>
     </>
