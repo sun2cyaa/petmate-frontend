@@ -16,25 +16,38 @@ function Header({ isLogined, setIsLogined, user }) {
   return (
     <header className="header">
       <Link to="/home" className="logo">
-      <h2>Petmate</h2>
+        <h2>Petmate</h2>
       </Link>
       <Link to="/map">지도</Link>
       <Link to="/payment">결제</Link>
       <div className="header_dropdown">
-            <span className="header_company_manage">업체 관리</span>
-            <div className="header_company_manage_menu">
-              <Link to="/companymanage" className="header_company_manage_item">
-                업체 목록
-              </Link>
-              <Link to="/companyregister" className="header_company_manage_item">
-                업체 등록
-              </Link>
-            </div>
+        <span className="header_company_manage">업체 관리</span>
+        <div className="header_company_manage_menu">
+          <Link to="/companymanage" className="header_company_manage_item">
+            업체 목록
+          </Link>
+          <Link to="/companyregister" className="header_company_manage_item">
+            업체 등록
+          </Link>
         </div>
+      </div>
+
+      <div className="header_dropdown">
+        <span className="header_petmate">펫메이트</span>
+        <div className="header_petmate_menu">
+          <Link to="/booking" className="header_petmate_item">
+            예약관리
+          </Link>
+          <Link to="/product" className="header_petmate_item">
+            상품관리
+          </Link>
+        </div>
+      </div>
 
       {isLogined && (
         <>
-          <Link to="/become-petmate">펫메이트 되기</Link> {/* 로그인시에만 보임 */}
+          <Link to="/become-petmate">펫메이트 되기</Link>{" "}
+          {/* 로그인시에만 보임 */}
           <div className="header_dropdown">
             <span className="header_mypage">마이페이지</span>
             <div className="header_mypage_menu">
@@ -58,7 +71,11 @@ function Header({ isLogined, setIsLogined, user }) {
         {isLogined && (
           <>
             <span style={{ marginRight: 12 }}>
-              {user?.name || user?.nickname || user?.email || user?.userId || "사용자"}
+              {user?.name ||
+                user?.nickname ||
+                user?.email ||
+                user?.userId ||
+                "사용자"}
               {user?.provider ? ` (${user.provider})` : ""}
             </span>
             <button onClick={handleLogout} className="logout-btn">
