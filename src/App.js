@@ -17,10 +17,12 @@ import AddressManagePage from "./pages/user/owner/MyPage/Address/AddressManagePa
 import PetManagePage from "./pages/user/owner/MyPage/PetManagePage";
 import ProfilePage from "./pages/user/owner/MyPage/ProfilePage";
 
+import PetMateSignupPage from "./pages/user/petmate/PetMateSignupPage";
+import BookingManagePage from "./pages/user/petmate/BookingManagePage";
+
 import "./styles/App.css";
 import Header from "./components/common/Header/Header";
 import Test from "./components/test/Test";
-import PetMateSignupPage from "./pages/user/petmate/PetMateSignupPage";
 
 function App() {
   const [isLogined, setIsLogined] = useState(false);
@@ -70,6 +72,7 @@ function App() {
           <Route path="/payment/success" element={<PaymentSuccessPage />} />
           <Route path="/payment/fail" element={<PaymentFailPage />} />
           <Route path="/become-petmate" element={<PetMateSignupPage />} />
+          <Route path="/bookingmanage" element={<BookingManagePage />} />
           <Route path="/test" element={<Test />} />
           <Route path="*" element={<Navigate to="/intro" replace />} />
         </Routes>
