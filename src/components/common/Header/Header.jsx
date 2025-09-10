@@ -53,7 +53,6 @@ function Header({ isLogined, setIsLogined, user }) {
             </button>
           </>
         )}
-        <Link to="/payment">결제</Link>
       </nav>
     </header>
   );
