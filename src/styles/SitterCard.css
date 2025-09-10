@@ -1,48 +1,148 @@
-.sittercard-card {
-    border: 1px solid #ddd;
-    border-radius: 16px;
-    padding: 16px;
-    background: white;
-    transition: 0.3s;
-    text-align: center;
-  }
-  
-  .sittercard-card:hover {
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  }
-  
-  .sittercard-img {
-    width: 100%;
-    height: 160px;
-    object-fit: cover;
-    border-radius: 12px;
-    margin-bottom: 12px;
-  }
-  
-  .sittercard-name {
-    font-size: 1.2rem;
-    font-weight: bold;
-    color: #eb9666;
-    margin-bottom: 6px;
-  }
-  
-  .sittercard-desc {
-    font-size: 0.9rem;
-    color: #555;
-    margin-bottom: 10px;
-  }
-  
-  .sittercard-stars {
-    display: flex;
-    justify-content: center;
-    gap: 3px;
-  }
-  
-  .sittercard-star-active {
-    color: #eb9666;
-  }
-  
-  .sittercard-star-inactive {
-    color: #ccc;
-  }
-  
+.sitter-card {
+  background: white;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  transition: all 0.3s ease;
+  border: 1px solid #f0f0f0;
+}
+
+.sitter-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 15px 40px rgba(0,0,0,0.12);
+}
+
+.sitter-image-container {
+  position: relative;
+  height: 220px;
+  overflow: hidden;
+}
+
+.sitter-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.sitter-card:hover .sitter-image {
+  transform: scale(1.05);
+}
+
+.verified-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: #4CAF50;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.distance-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: rgba(0,0,0,0.7);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.sitter-content {
+  padding: 24px;
+}
+
+.sitter-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.sitter-name {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.sitter-rating {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 14px;
+}
+
+.rating-star {
+  color: #FFD700;
+}
+
+.rating-score {
+  font-weight: 600;
+  color: #333;
+}
+
+.rating-count {
+  color: #888;
+}
+
+.sitter-desc {
+  color: #666;
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+
+.sitter-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.sitter-tag {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.sitter-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sitter-price {
+  font-weight: 700;
+  font-size: 16px;
+  color: #333;
+}
+
+.response-time {
+  font-size: 12px;
+  color: #888;
+}
+
+.reserve-btn {
+  background-color: #eb9666;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 30px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.reserve-btn:hover {
+  background-color: #d97a45;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(102,126,234,0.3);
+}
