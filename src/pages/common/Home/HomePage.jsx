@@ -47,11 +47,11 @@ const HomePage = () => {
 
   // 서비스
   const services = [
+    { id: "Hotel", name: "호텔", icon: "", desc: "소중한 가족 안심 호텔링" },
     { id: "care", name: "돌봄", icon: "", desc: "집에서 안전하게" },
     { id: "walk", name: "산책", icon: "", desc: "건강한 운동" },
     { id: "beauty", name: "미용", icon: "", desc: "깔끔한 스타일링" },
     { id: "hospital", name: "병원", icon: "", desc: "건강 체크업" },
-    { id: "etc", name: "기타", icon: "", desc: "특별한 케어" },
   ];
 
   // 추천 펫메이트
