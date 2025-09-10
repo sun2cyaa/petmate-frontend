@@ -4747,7 +4747,7 @@ fraction.js@^4.3.7:
 
 framer-motion@^12.23.12:
   version "12.23.12"
-  resolved "https://registry.npmjs.org/framer-motion/-/framer-motion-12.23.12.tgz"
+  resolved "https://registry.yarnpkg.com/framer-motion/-/framer-motion-12.23.12.tgz#80cf6fd7c111073a0c558e336c85ca36cca80d3d"
   integrity sha512-6e78rdVtnBvlEVgu6eFEAgG9v3wLnYEboM8I5O5EXvfKC8gxGQB8wXJdhkMy10iVcn05jl6CNw7/HTsTCfwcWg==
   dependencies:
     motion-dom "^12.23.12"
@@ -7879,6 +7879,11 @@ react-is@^18.0.0:
   version "18.3.1"
   resolved "https://registry.npmjs.org/react-is/-/react-is-18.3.1.tgz"
   integrity sha512-/LLMVyas0ljjAtoYiPqYiL8VWXzUUdThrmU5+n20DZv+a+ClRoevUzw5JxU+Ieh5/c87ytoTBV9G1FiKfNJdmg==
+
+react-parallax-tilt@^1.7.308:
+  version "1.7.308"
+  resolved "https://registry.yarnpkg.com/react-parallax-tilt/-/react-parallax-tilt-1.7.308.tgz#fc12f17bb386cfb2c132875c3017e2d2040c13f2"
+  integrity sha512-ToLrz99lFPzMv8TYg6nLFOjIqkc63bvz/ABxSduQ+sxhBuoXlQp9Sd46Jdpfvk8ikRISR6MrOW/SPoownfVicA==
 
 react-refresh@^0.11.0:
   version "0.11.0"
