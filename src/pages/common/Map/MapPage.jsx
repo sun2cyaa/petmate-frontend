@@ -120,7 +120,6 @@ function MapPage() {
     <div className="map_wrap">
       {/* 상단 옵션 영역 - 헤더 바로 아래 */}
       <div>
-        <section className="home-search-section">
         <div className="home-search-box">
           <div className="home-service-buttons">
             {services.map((s) => (
@@ -130,7 +129,6 @@ function MapPage() {
             ))}
           </div>
         </div>
-      </section>
       </div>
       
       {/* 메인 컨텐츠: 사이드바 + 지도 */}

@@ -1,10 +1,28 @@
+/* 로고 스타일 */
+.logo {
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+.logo:hover {
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.logo h2 {
+  margin: 0;
+  color: inherit;
+}
+
 .header_dropdown {
   position: relative;
   display: inline-block;
 }
 
 .header_mypage,
-.header_petmate {
+.header_petmate,
+.header_company_manage {
   cursor: pointer;
   padding: 8px 12px;
   color: #333;
@@ -12,7 +30,8 @@
 }
 
 .header_mypage_menu,
-.header_petmate_menu {
+.header_petmate_menu,
+.header_company_manage_menu {
   display: none;
   position: absolute;
   top: 120%;
@@ -25,12 +44,14 @@
 }
 
 .header_dropdown:hover .header_mypage_menu,
-.header_dropdown:hover .header_petmate_menu {
+.header_dropdown:hover .header_petmate_menu,
+.header_dropdown:hover .header_company_manage_menu {
   display: block;
 }
 
 .header_mypage_item,
-.header_petmate_item {
+.header_petmate_item,
+.header_company_manage_item {
   display: block;
   padding: 12px 16px;
   text-decoration: none;
@@ -39,11 +60,13 @@
 }
 
 .header_mypage_item:hover,
-.header_petmate_item:hover {
+.header_petmate_item:hover,
+.header_company_manage_item:hover {
   background-color: #f5f5f5;
 }
 
 .header_mypage_item-child,
-.header_petmate_item-child {
+.header_petmate_item-child,
+.header_company_manage_item-child {
   border-bottom: none;
 }

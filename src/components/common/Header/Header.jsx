@@ -15,9 +15,22 @@ function Header({ isLogined, setIsLogined, user }) {
 
   return (
     <header className="header">
-      <h2 className="logo">Petmate</h2>
+      <Link to="/home" className="logo">
+      <h2>Petmate</h2>
+      </Link>
       <Link to="/map">지도</Link>
       <Link to="/payment">결제</Link>
+      <div className="header_dropdown">
+            <span className="header_company_manage">업체 관리</span>
+            <div className="header_company_manage_menu">
+              <Link to="/companymanage" className="header_company_manage_item">
+                업체 목록
+              </Link>
+              <Link to="/companyregister" className="header_company_manage_item">
+                업체 등록
+              </Link>
+            </div>
+        </div>
 
       {isLogined && (
         <>

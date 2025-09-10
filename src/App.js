@@ -23,6 +23,8 @@ import BookingManagePage from "./pages/user/petmate/BookingManagePage";
 import "./styles/App.css";
 import Header from "./components/common/Header/Header";
 import Test from "./components/test/Test";
+import CompanyManagePage from "./pages/company/CompanyManagePage";
+import CompanyRegisterPage from "./pages/company/CompanyRegisterPage";
 
 function App() {
   const [isLogined, setIsLogined] = useState(false);
@@ -72,6 +74,8 @@ function App() {
           <Route path="/payment/success" element={<PaymentSuccessPage />} />
           <Route path="/payment/fail" element={<PaymentFailPage />} />
           <Route path="/become-petmate" element={<PetMateSignupPage />} />
+          <Route path="/companymanage" element={<CompanyManagePage />} />
+          <Route path="/companyregister" element={<CompanyRegisterPage />} />
           <Route path="/bookingmanage" element={<BookingManagePage />} />
           <Route path="/test" element={<Test />} />
           <Route path="*" element={<Navigate to="/intro" replace />} />
