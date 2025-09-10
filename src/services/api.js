@@ -1,62 +1,75 @@
 // src/services/api.js
 import axios from "axios";
 
+// 단순한 axios 인스턴스 - 인터셉터 없음
 const api = axios.create({
-  baseURL: "http://localhost:8090", // context-path 있으면 반영
-  withCredentials: true,
+    baseURL: "http://localhost:8090",
+    withCredentials: true,
 });
 
-// 요청 인터셉터
-api.interceptors.request.use((config) => {
-  // 토큰
-  const token = localStorage.getItem("accessToken");
-  if (token) {
-    config.headers = config.headers || {};
-    config.headers.Authorization = `Bearer ${token}`;
-  }
+// JWT 토큰을 헤더에 추가하는 헬퍼 함수
+export const getAuthHeaders = () => {
+    const token = localStorage.getItem("accessToken");
+    return token ? { Authorization: `Bearer ${token}` } : {};
+};
 
-  // FormData면 브라우저가 boundary 포함해서 보내게 둠
-  if (config.data instanceof FormData) {
-    config.headers = config.headers || {};
-    delete config.headers["Content-Type"];
-    delete config.headers["content-type"];
-    config.transformRequest = [(d) => d];
-  }
-
-  return config;
-});
-
-// 응답 인터셉터
-api.interceptors.response.use(
-  (res) => res,
-  async (error) => {
-    const originalRequest = error.config;
-
-    if (error?.response?.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true;
-      try {
-        const res = await api.post("/auth/refresh"); // 쿠키 기반이면 withCredentials로 동작
-        const newAccessToken = res.data.accessToken;
-        localStorage.setItem("accessToken", newAccessToken);
-
-        originalRequest.headers = originalRequest.headers || {};
-        originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
-
-        // FormData 재시도 시에도 Content-Type 강제 금지
-        if (originalRequest.data instanceof FormData) {
-          delete originalRequest.headers["Content-Type"];
-          delete originalRequest.headers["content-type"];
-          originalRequest.transformRequest = [(d) => d];
-        }
-
-        return api(originalRequest);
-      } catch {
+// 401 에러 처리 헬퍼 함수
+export const handleAuthError = (error) => {
+    if (error?.response?.status === 401) {
+        console.log('JWT 토큰 만료 - 로그아웃 처리');
         localStorage.removeItem("accessToken");
-        window.location.href = "/signin";
-      }
+        if (!window.location.pathname.includes('/signin')) {
+            window.location.href = "/signin";
+        }
     }
-    return Promise.reject(error);
-  }
-);
+    throw error;
+};
+
+// API 요청 래퍼 함수들
+export const apiRequest = {
+    get: async (url, config = {}) => {
+        try {
+            return await api.get(url, {
+                ...config,
+                headers: { ...getAuthHeaders(), ...config.headers }
+            });
+        } catch (error) {
+            handleAuthError(error);
+        }
+    },
+    
+    post: async (url, data, config = {}) => {
+        try {
+            return await api.post(url, data, {
+                ...config,
+                headers: { ...getAuthHeaders(), ...config.headers }
+            });
+        } catch (error) {
+            handleAuthError(error);
+        }
+    },
+    
+    put: async (url, data, config = {}) => {
+        try {
+            return await api.put(url, data, {
+                ...config,
+                headers: { ...getAuthHeaders(), ...config.headers }
+            });
+        } catch (error) {
+            handleAuthError(error);
+        }
+    },
+    
+    delete: async (url, config = {}) => {
+        try {
+            return await api.delete(url, {
+                ...config,
+                headers: { ...getAuthHeaders(), ...config.headers }
+            });
+        } catch (error) {
+            handleAuthError(error);
+        }
+    }
+};
 
 export default api;
