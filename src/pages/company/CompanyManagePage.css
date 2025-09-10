@@ -1,0 +1,21 @@
+/* 전체 페이지 레이아웃 */
+.company_manage_page {
+  min-height: 100vh;
+  background-color: #f8f9fa;
+  padding: 0;
+  margin: 0;
+}
+
+.company_manage_main {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px; /* 내부 콘텐츠 패딩 */
+}
+
+.company_manage_main > h3 {
+  font-size: 0.95em;
+}
+
+.company_manage_content > .section-header {
+  margin-bottom: 40px;
+}

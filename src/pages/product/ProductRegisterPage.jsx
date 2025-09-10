@@ -171,7 +171,7 @@ const ProductRegisterPage = () => {
 
   return (
     <div className="product-manage_wrap">
-      <div className="header">
+      <div className="product-header">
         <div className="header-title">
           <div className="header-icon"></div>
           <h2>상품 등록</h2>
