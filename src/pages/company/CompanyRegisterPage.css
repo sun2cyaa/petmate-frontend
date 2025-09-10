@@ -1,0 +1,446 @@
+/* 전체 페이지 레이아웃 */
+.company_register_page {
+  min-height: 100vh;
+  background-color: #f8f9fa;
+  padding: 0;
+  margin: 0;
+}
+
+.company_register_main {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px; /* 내부 콘텐츠 패딩 */
+}
+
+
+/* 메인 폼 섹션 */
+.company_register_section {
+  padding: 32px;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  background-color: white;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+}
+
+.company_register_section h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0 0 20px 0;
+}
+
+/* 라디오 버튼 그룹 */
+.radio_group {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 32px;
+  padding: 16px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+}
+
+.radio_item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.radio_item input[type="radio"] {
+  accent-color: #eb9666;
+}
+
+
+/* 폼 그리드 레이아웃 */
+.company_form_grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+.company_form_group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.company_form_group > span {
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+}
+
+/* 입력 필드 */
+.form_input,
+.tel_form_input,
+.form_select {
+  padding: 12px 16px;
+  border: 1px solid #e1e5e9;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.form_input:focus,
+.tel_form_input:focus,
+.form_select:focus {
+  outline: none;
+  border-color: #eb9666;
+  box-shadow: 0 0 0 3px rgba(235, 150, 102, 0.1);
+}
+
+.form_input::placeholder,
+.tel_form_input::placeholder {
+  color: #9ca3af;
+}
+
+/* 입력-버튼 조합 */
+.input_button_group {
+  display: flex;
+  gap: 8px;
+}
+
+.input_button_group .form_input {
+  flex: 1;
+}
+
+.search_btn {
+  background: #eb9666;
+  color: white;
+  border: none;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.2s ease;
+}
+
+.search_btn:hover {
+  background: #D6824A;
+}
+
+/* 주민등록번호 입력 */
+.company_form_group:has(input[type="password"]) {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.company_form_group:has(input[type="password"]) > span {
+  margin-bottom: 0;
+}
+
+.ssn_input_group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ssn_input_group input[type="text"],
+.ssn_input_group input[type="password"] {
+  flex: 1;
+  text-align: center;
+}
+
+/* 연락처 입력 (세로 배치) */
+.company_form_group:has(input[type="tel"]) {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.company_form_group:has(input[type="tel"]) > span {
+  margin-bottom: 0;
+}
+
+.tel_input_group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tel_input_group input[type="tel"] {
+  width: 80px;
+  text-align: center;
+}
+
+/* 폼 섹션 */
+.company_form_section {
+  margin-bottom: 32px;
+}
+
+.company_form_section > span {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 12px;
+}
+
+/* 체크박스 그룹 */
+.company_checkbox_group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 16px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+  font-size: 14px;
+  align-items: center;
+}
+
+.company_checkbox_group label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+.company_checkbox_group input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: #eb9666;
+  margin: 0;
+}
+
+/* 운영시간 섹션 */
+.company_form_section:has(input[type="time"]) {
+  background: #f8f9fa;
+  padding: 20px;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+  font-size: 14px;
+}
+
+.company_form_section:has(input[type="time"]) > label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  cursor: pointer;
+}
+
+.company_form_section:has(input[type="time"]) > label > input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: #eb9666;
+  margin: 0;
+}
+
+.company_form_section:has(input[type="time"]) > div {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.company_form_section:has(input[type="time"]) > div > label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+.company_form_section:has(input[type="time"]) > div > label > input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: #eb9666;
+  margin: 0;
+}
+
+.company_form_section input[type="time"] {
+  padding: 6px 8px;
+  border: 1px solid #e1e5e9;
+  border-radius: 4px;
+  font-size: 14px;
+  width: 120px;
+}
+
+.company_form_section input[type="time"]:disabled {
+  background: #f5f5f5;
+  color: #999;
+}
+
+/* 파일 업로드 */
+.file_upload_area {
+  border: 2px dashed #d1d5db;
+  border-radius: 8px;
+  padding: 40px 20px;
+  text-align: center;
+  background: #fafafa;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  position: relative;
+}
+
+.file_upload_area:hover {
+  border-color: #eb9666;
+  background: #fff9f4;
+}
+
+.upload_content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.upload_icon {
+  font-size: 32px;
+  opacity: 0.5;
+}
+
+.upload_content p {
+  margin: 0;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.upload_content input[type="file"] {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+/* 업체 소개 */
+.company_form_textarea {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid #e1e5e9;
+  border-radius: 8px;
+  font-size: 14px;
+  resize: vertical;
+  font-family: inherit;
+  transition: all 0.2s ease;
+  margin-top: 8px;
+  box-sizing: border-box; /* padding과 border를 width에 포함 */
+}
+
+.company_form_textarea:focus {
+  outline: none;
+  border-color: #eb9666;
+  box-shadow: 0 0 0 3px rgba(235, 150, 102, 0.1);
+}
+
+.company_form_textarea::placeholder {
+  color: #9ca3af;
+}
+
+/* 버튼 영역 */
+.company_form_btn {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 40px;
+  padding-top: 24px;
+  border-top: 1px solid #e1e5e9;
+}
+
+.cancel_btn {
+  background: #f8f9fa;
+  color: #6c757d;
+  border: 1px solid #dee2e6;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cancel_btn:hover {
+  background: #e9ecef;
+}
+
+.submit_btn {
+  background: #eb9666;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.submit_btn:hover {
+  background: #D6824A;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .company_register_page {
+    padding: 12px;
+  }
+  
+  .section-header {
+    flex-direction: column;
+    gap: 16px;
+    align-items: flex-start;
+  }
+  
+  .company_register_section {
+    padding: 20px;
+  }
+  
+  .company_form_grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .radio_group {
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .company_checkbox_group {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .company_form_section:has(input[type="time"]) > div {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .company_form_btn {
+    flex-direction: column;
+  }
+  
+  .company_form_group:has(input[type="tel"]) {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .company_form_group:has(input[type="tel"]) > span {
+    margin-bottom: 8px;
+    margin-right: 0;
+  }
+}
+
+/* 법인사업자 선택 시 그리드 조정 */
+.company_form_grid:has(.company_form_group:only-child) {
+  grid-template-columns: 1fr;
+}
+
+/* 입력 비활성화 상태 */
+.form_input:disabled,
+.form_select:disabled {
+  background-color: #f5f5f5;
+  color: #6c757d;
+  cursor: not-allowed;
+}
