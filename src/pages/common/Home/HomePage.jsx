@@ -128,7 +128,7 @@ const HomePage = () => {
       <section className="home-banner-section">
         <Swiper
           modules={[Autoplay, Pagination]}
-          autoplay={{ delay: 4000, disableOnInteraction: false }}
+          autoplay={{ delay: 3000, disableOnInteraction: false }}
           loop
           pagination={{ clickable: true }}
           className="banner-swiper"
