@@ -11,22 +11,32 @@ function Header({ isLogined, setIsLogined, user }) {
     } catch (_) {}
   };
 
+  console.log("OAuth 유저 정보:", user);
+
   return (
     <header className="header">
       <h2 className="logo">Petmate</h2>
       <Link to="/map">지도</Link>
       <Link to="/payment">결제</Link>
-      <Link to="/become-petmate">펫메이트 되기</Link> {/* 새로 추가 */}
 
       {isLogined && (
-        <div className="header_dropdown">
-          <span className="header_mypage">마이페이지</span>
-          <div className="header_mypage_menu">
-            <Link to="/pets" className="header_mypage_item">내 펫 관리</Link>
-            <Link to="/profile" className="header_mypage_item">프로필 관리</Link>
-            <Link to="/address" className="header_mypage_item">주소 관리</Link>
+        <>
+          <Link to="/become-petmate">펫메이트 되기</Link> {/* 로그인시에만 보임 */}
+          <div className="header_dropdown">
+            <span className="header_mypage">마이페이지</span>
+            <div className="header_mypage_menu">
+              <Link to="/pets" className="header_mypage_item">
+                내 펫 관리
+              </Link>
+              <Link to="/profile" className="header_mypage_item">
+                프로필 관리
+              </Link>
+              <Link to="/address" className="header_mypage_item">
+                주소 관리
+              </Link>
+            </div>
           </div>
-        </div>
+        </>
       )}
 
       <nav className="nav">
@@ -35,7 +45,7 @@ function Header({ isLogined, setIsLogined, user }) {
         {isLogined && (
           <>
             <span style={{ marginRight: 12 }}>
-              {user?.nickname || user?.email || "사용자"}
+              {user?.name || user?.nickname || user?.email || user?.userId || "사용자"}
               {user?.provider ? ` (${user.provider})` : ""}
             </span>
             <button onClick={handleLogout} className="logout-btn">
