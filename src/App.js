@@ -19,6 +19,7 @@ import ProfilePage from "./pages/user/owner/MyPage/ProfilePage";
 
 import "./styles/App.css";
 import Test from "./components/test/Test";
+import BookingManagePage from './pages/user/petmate/BookingManagePage';
 
 
 function App() {
@@ -79,7 +80,7 @@ function App() {
           <Route path="/payment" element={<PaymentPage />} />
           <Route path="/payment/success" element={<PaymentSuccessPage />} />
           <Route path="/payment/fail" element={<PaymentFailPage />} />
-
+          <Route path="/bookingmanage" element={<BookingManagePage />} />
           <Route path="/test" element={<Test />} />
         </Routes>
       </AnimatePresence>
