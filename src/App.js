@@ -19,7 +19,8 @@ import ProfilePage from "./pages/user/owner/MyPage/ProfilePage";
 
 import "./styles/App.css";
 import Header from "./components/common/Header/Header";
-import BecomePetmatePage from "./pages/user/petmate/BecomePetmatePage";
+import Test from "./components/test/Test";
+import PetMateSignupPage from "./pages/user/petmate/PetMateSignupPage";
 
 function App() {
   const [isLogined, setIsLogined] = useState(false);
@@ -45,16 +46,17 @@ function App() {
     };
   }, []);
 
+  const hideHeader = location.pathname.startsWith("/intro");
+
   return (
     <>
-      {!location.pathname.startsWith("/intro") && (
+      {!hideHeader && (
         <Header isLogined={isLogined} setIsLogined={setIsLogined} user={user} />
       )}
 
       <AnimatePresence mode="wait">
         <Routes location={location} key={location.pathname}>
           <Route path="/" element={<Navigate to="/intro" replace />} />
-
           <Route path="/intro" element={<IntroPage />} />
           <Route path="/home" element={<HomePage />} />
           <Route path="/signin" element={<SigninPage setIsLogined={setIsLogined} />} />
@@ -67,7 +69,9 @@ function App() {
           <Route path="/payment" element={<PaymentPage />} />
           <Route path="/payment/success" element={<PaymentSuccessPage />} />
           <Route path="/payment/fail" element={<PaymentFailPage />} />
-          <Route path="/become-petmate" element={<BecomePetmatePage />} /> {/* 추가 */}
+          <Route path="/become-petmate" element={<PetMateSignupPage />} />
+          <Route path="/test" element={<Test />} />
+          <Route path="*" element={<Navigate to="/intro" replace />} />
         </Routes>
       </AnimatePresence>
     </>
