@@ -34,8 +34,11 @@ function Header({ isLogined, setIsLogined, user }) {
       <div className="header_dropdown">
         <span className="header_petmate">펫메이트</span>
         <div className="header_petmate_menu">
-          <Link to="/bookingmanage" className="header_petmate_item">
+          <Link to="/booking" className="header_petmate_item">
             예약관리
+          </Link>
+          <Link to="/product" className="header_petmate_item">
+            상품관리
           </Link>
         </div>
       </div>

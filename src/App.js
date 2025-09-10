@@ -25,6 +25,9 @@ import Header from "./components/common/Header/Header";
 import Test from "./components/test/Test";
 import CompanyManagePage from "./pages/company/CompanyManagePage";
 import CompanyRegisterPage from "./pages/company/CompanyRegisterPage";
+import ProductManagePage from "./pages/product/ProductManagePage";
+import ProductRegisterPage from './pages/product/ProductRegisterPage';
+import ProductEditPage from './pages/product/ProductEditPage';
 
 function App() {
   const [isLogined, setIsLogined] = useState(false);
@@ -76,7 +79,10 @@ function App() {
           <Route path="/become-petmate" element={<PetMateSignupPage />} />
           <Route path="/companymanage" element={<CompanyManagePage />} />
           <Route path="/companyregister" element={<CompanyRegisterPage />} />
-          <Route path="/bookingmanage" element={<BookingManagePage />} />
+          <Route path="/booking" element={<BookingManagePage />} />
+          <Route path="/product" element={<ProductManagePage />} />
+          <Route path="/product/register" element={<ProductRegisterPage />} />
+          <Route path="/product/edit/:productId" element={<ProductEditPage />} />
           <Route path="/test" element={<Test />} />
           <Route path="*" element={<Navigate to="/intro" replace />} />
         </Routes>
