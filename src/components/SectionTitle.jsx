@@ -1,7 +1,13 @@
+import React from "react";
 import "../styles/SectionTitle.css";
 
-export default function SectionTitle({ title }) {
+const SectionTitle = ({ title, subtitle, center }) => {
   return (
-    <h2 className="sectiontitle-title">{title}</h2>
+    <div className={`section-title ${center ? 'center' : ''}`}>
+      <h2 className="section-title-main">{title}</h2>
+      {subtitle && <p className="section-title-sub">{subtitle}</p>}
+    </div>
   );
-}
+};
+
+export default SectionTitle;
