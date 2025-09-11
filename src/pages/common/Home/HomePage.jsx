@@ -108,10 +108,10 @@ const HomePage = () => {
 
   // 통계
   const stats = [
-    { number: "50,000+", label: "누적 서비스" },
+    { number: "50,000 +", label: "누적 서비스" },
     { number: "98%", label: "만족도" },
-    { number: "1,200+", label: "펫메이트" },
-    { number: "24/7", label: "고객지원" },
+    { number: "1,200 +", label: "펫메이트" },
+    { number: "24시간 고객센터", label: "고객지원" },
   ];
 
   const handleServiceClick = (serviceId) => {
