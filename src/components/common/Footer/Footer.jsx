@@ -14,9 +14,9 @@ function Footer() {
                     <h3>Petmate</h3>
                     <p>반려동물을 위한 올인원 케어 플랫폼</p>
                     <p>경기 광명시 양지로 17</p>
-                    <p>대표: 홍길동 | 사업자등록번호: 123-45-67890</p>
-                    <p>통신판매업 신고번호: 2025-서울강남-1234</p>
-                    <p>이메일: contact@petmate.com</p>
+                    <p>대표: 독고건 | 사업자등록번호: 374-12-45781</p>
+                    <p>통신판매업 신고번호: 2025 - 경기도 광명 - 1457</p>
+                    <p>이메일: 4424904@petmate.com</p>
 
                     <div className="footer-social">
                         <a href="#none"><img src={facebookIcon} alt="Facebook" /></a>
@@ -25,7 +25,7 @@ function Footer() {
                         <a href="#none"><img src={blogIcon} alt="Blog" /></a>
                     </div>
 
-                    <p className="footer-tel">고객센터 1577-1013 (평일 09:00 ~ 18:00)</p>
+                    <p className="footer-tel">고객센터 1577-1013 (24시간 연중무휴)</p>
                 </div>
 
                 {/* 링크 섹션 */}
