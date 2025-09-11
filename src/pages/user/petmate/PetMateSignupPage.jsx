@@ -2,34 +2,47 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./PetMateSignupPage.css";
-import api from "../../../services/api";
-
-const SVC_OPTIONS = ["돌봄", "산책", "미용", "병원", "기타"];
-const PET_OPTIONS = ["강아지", "고양이", "기타"];
-const OTHER_PET_OPTIONS = ["햄스터","토끼","새","파충류","물고기","페럿","고슴도치","친칠라"];
+import { apiRequest } from "../../../services/api";
 
 export default function PetMateSignupPage() {
   const nav = useNavigate();
   const [form, setForm] = useState({
-    name: "", gender: "", age: "", hasCar: false, services: [], pets: [], agree: false,
+    email: "",
+    provider: "",
+    name: "",
+    nickName: "",
+    phone: "",
+    gender: "",
+    age: "",
+    hasCar: false,
+    services: [],
+    pets: [],
+    agree: false,
   });
   const [profileFile, setProfileFile] = useState(null);
   const [profilePreview, setProfilePreview] = useState(null);
-  const [certFiles, setCertFiles] = useState([]);
-  const [certPreviews, setCertPreviews] = useState([]);
+  const [certFiles, setCertFiles] = useState([]);       // File[]
+  const [certPreviews, setCertPreviews] = useState([]); // { name, url }[]
   const [submitting, setSubmitting] = useState(false);
   const [doneOpen, setDoneOpen] = useState(false);
   const [profileDragOver, setProfileDragOver] = useState(false);
   const [certDragOver, setCertDragOver] = useState(false);
-  const [showOtherPets, setShowOtherPets] = useState(false);
-  const [customPet, setCustomPet] = useState("");
 
   useEffect(() => {
-    api.get("/auth/me", { withCredentials: true }).then((res) => {
-      const u = res.data || {};
-      setForm((f) => ({ ...f, name: u.name || u.email || "" }));
-      if (u.picture) setProfilePreview(u.picture);
-    }).catch(() => {});
+    apiRequest.get("/auth/me", { withCredentials: true })
+      .then((res) => {
+        const u = res?.data || {};
+        setForm((f) => ({
+          ...f,
+          email: u.email || "",
+          provider: (u.provider || "OAUTH2").toUpperCase(),
+          name: u.name || u.email || "",
+          nickName: u.nickName || u.nickname || "",
+          phone: u.phone || "",
+        }));
+        if (u.picture) setProfilePreview(u.picture);
+      })
+      .catch(() => {});
   }, []);
 
   const onChange = (e) => {
@@ -37,27 +50,7 @@ export default function PetMateSignupPage() {
     setForm((f) => ({ ...f, [name]: type === "checkbox" ? checked : value }));
   };
 
-  const toggleMulti = (key, value) => {
-    setForm((f) => {
-      const set = new Set(f[key]);
-      if (value === "기타" && key === "pets") {
-        if (set.has("기타")) { set.delete("기타"); setShowOtherPets(false); }
-        else { set.add("기타"); setShowOtherPets(true); }
-      } else { set.has(value) ? set.delete(value) : set.add(value); }
-      return { ...f, [key]: Array.from(set) };
-    });
-  };
-
-  const addCustomPet = () => {
-    if (customPet.trim()) {
-      setForm((f) => ({ ...f, pets: [...new Set([...f.pets, customPet.trim()])] }));
-      setCustomPet("");
-    }
-  };
-  const removeCustomPet = (petToRemove) => {
-    setForm((f) => ({ ...f, pets: f.pets.filter((pet) => pet !== petToRemove) }));
-  };
-
+  // ===== 프로필 업로드 =====
   const handleProfileDragOver = (e) => { e.preventDefault(); setProfileDragOver(true); };
   const handleProfileDragLeave = (e) => { e.preventDefault(); setProfileDragOver(false); };
   const handleProfileDrop = (e) => {
@@ -72,33 +65,53 @@ export default function PetMateSignupPage() {
     if (file) { setProfileFile(file); setProfilePreview(URL.createObjectURL(file)); }
   };
 
+  // ===== 자격증 업로드: 추가(append) 방식 =====
+  const appendCerts = (incoming) => {
+    const images = incoming.filter((f) => f && f.type?.startsWith("image/"));
+    if (images.length === 0) return;
+
+    // 중복 방지: name+size 기준
+    setCertFiles((prev) => {
+      const prevKey = new Set(prev.map((f) => `${f.name}:${f.size}`));
+      const dedup = images.filter((f) => !prevKey.has(`${f.name}:${f.size}`));
+      return [...prev, ...dedup];
+    });
+
+    setCertPreviews((prev) => {
+      const prevKey = new Set(prev.map((p) => p.name));
+      const toAdd = images.map((f) => ({ name: `${f.name}:${f.size}`, url: URL.createObjectURL(f) }));
+      // 프리뷰 키도 name:size로 맞춤
+      const filtered = toAdd.filter((p) => !prevKey.has(p.name));
+      return [...prev, ...filtered];
+    });
+  };
+
   const handleCertDragOver = (e) => { e.preventDefault(); setCertDragOver(true); };
   const handleCertDragLeave = (e) => { e.preventDefault(); setCertDragOver(false); };
   const handleCertDrop = (e) => {
     e.preventDefault(); setCertDragOver(false);
-    const files = Array.from(e.dataTransfer.files).filter((file) => file.type.startsWith("image/"));
-    if (files.length > 0) {
-      setCertFiles(files);
-      setCertPreviews(files.map((f) => ({ name: f.name, url: URL.createObjectURL(f) })));
-    }
+    const files = Array.from(e.dataTransfer.files || []);
+    appendCerts(files);
   };
   const onCertFiles = (e) => {
     const files = Array.from(e.target.files || []);
-    setCertFiles(files);
-    setCertPreviews(files.map((f) => ({ name: f.name, url: URL.createObjectURL(f) })));
+    appendCerts(files);
+    e.target.value = ""; // 같은 파일 재선택 시도 가능하도록 리셋
   };
+
   const removeCertFile = (index) => {
     setCertFiles((files) => files.filter((_, i) => i !== index));
     setCertPreviews((prev) => prev.filter((_, i) => i !== index));
   };
 
+  // ===== 검증 및 제출 =====
   const validate = () => {
     if (!form.name.trim()) return "이름을 입력하세요.";
     if (!form.gender) return "성별을 선택하세요.";
     if (!form.age || Number(form.age) < 18) return "나이는 18세 이상 입력하세요.";
-    if (form.services.length === 0) return "제공 서비스 1개 이상 선택하세요.";
-    if (form.pets.length === 0) return "케어 가능 펫 1개 이상 선택하세요.";
     if (!form.agree) return "약관에 동의해야 합니다.";
+    if (!form.email) return "이메일 정보를 불러오지 못했습니다. 다시 로그인하세요.";
+    if (!form.provider) return "Provider가 비어 있습니다.";
     return null;
   };
 
@@ -108,19 +121,19 @@ export default function PetMateSignupPage() {
     if (err) return alert(err);
 
     const fd = new FormData();
+    fd.append("email", form.email);
+    fd.append("provider", form.provider);   // 히든 전송
     fd.append("name", form.name.trim());
+    fd.append("nickName", form.nickName || "");
+    fd.append("phone", form.phone || "");
     fd.append("gender", form.gender);
     fd.append("age", String(form.age));
-    fd.append("hasCar", String(form.hasCar));
-    fd.append("services", JSON.stringify(form.services));
-    fd.append("pets", JSON.stringify(form.pets));
     if (profileFile) fd.append("profile", profileFile);
-    certFiles.forEach((f) => fd.append("certificates", f));
+    certFiles.forEach((f) => fd.append("certificates", f)); // 누적된 파일 전송
 
     try {
       setSubmitting(true);
-      // 헤더 지정 금지: Axios가 boundary 포함 자동 설정
-      await api.post("/petmate/apply", fd, { withCredentials: true });
+      await apiRequest.post("/user/petmate/apply", fd, { withCredentials: true });
       setDoneOpen(true);
     } catch (e2) {
       console.error("apply error:", e2?.response?.status, e2?.response?.data, e2);
@@ -135,17 +148,34 @@ export default function PetMateSignupPage() {
       <div className="petmate-header">
         <h1 className="petmate-title">펫메이트 되기</h1>
         <p className="petmate-subtitle">반려동물과 함께하는 특별한 여정을 시작하세요</p>
-        <div className="petmate-note">💡 소셜 로그인 정보는 자동으로 활용됩니다. 필요 시 수정하세요.</div>
+        <div className="petmate-note">소셜 로그인 정보는 자동으로 활용됩니다. 필요 시 수정하세요.</div>
       </div>
 
       <form onSubmit={onSubmit} className="petmate-form">
+        {/* 히든: provider 전송 */}
+        <input type="hidden" name="provider" value={form.provider} />
+
         <section className="form-section">
           <h3 className="section-title">개인 정보</h3>
-          <div className="petmate-row">
+
+          {/* 1열: 이름, 닉네임, 휴대폰 */}
+          <div className="petmate-row" style={{ marginBottom: 16 }}>
             <div className="form-group">
               <label className="form-label">이름</label>
-              <input name="name" value={form.name} onChange={onChange} placeholder="이름을 입력하세요" className="form-input"/>
+              <input name="name" value={form.name} onChange={onChange} placeholder="이름을 입력하세요" className="form-input" />
             </div>
+            <div className="form-group">
+              <label className="form-label">닉네임</label>
+              <input name="nickName" value={form.nickName} onChange={onChange} placeholder="닉네임을 입력하세요" className="form-input" />
+            </div>
+            <div className="form-group">
+              <label className="form-label">휴대폰</label>
+              <input name="phone" value={form.phone} onChange={onChange} placeholder="예: 010-1234-5678" className="form-input" />
+            </div>
+          </div>
+
+          {/* 2열: 성별, 나이 */}
+          <div className="petmate-row">
             <div className="form-group">
               <label className="form-label">성별</label>
               <select name="gender" value={form.gender} onChange={onChange} className="form-select">
@@ -157,8 +187,9 @@ export default function PetMateSignupPage() {
             </div>
             <div className="form-group">
               <label className="form-label">나이</label>
-              <input type="number" name="age" min={18} value={form.age} onChange={onChange} placeholder="예: 28" className="form-input"/>
+              <input type="number" name="age" min={18} value={form.age} onChange={onChange} placeholder="예: 28" className="form-input" />
             </div>
+            <div className="form-group">{/* 자리맞춤 */}</div>
           </div>
 
           <div className="form-group">
@@ -172,7 +203,13 @@ export default function PetMateSignupPage() {
             >
               {profilePreview ? (
                 <div className="image-preview">
-                  <img src={profilePreview} alt="프로필" />
+                  <img
+                    src={profilePreview}
+                    alt="프로필"
+                    referrerPolicy="no-referrer"
+                    crossOrigin="anonymous"
+                    onError={() => setProfilePreview(null)}
+                  />
                   <div className="image-overlay"><span>클릭하거나 드래그하여 변경</span></div>
                 </div>
               ) : (
@@ -184,75 +221,6 @@ export default function PetMateSignupPage() {
               )}
               <input id="petmate-profile-input" type="file" accept="image/*" onChange={onProfileFile} hidden />
             </div>
-          </div>
-        </section>
-
-        <section className="form-section">
-          <h3 className="section-title">서비스 정보</h3>
-          <div className="form-group">
-            <label className="form-label">제공 가능한 서비스</label>
-            <div className="chip-container">
-              {SVC_OPTIONS.map((service) => (
-                <button key={service} type="button"
-                  onClick={() => toggleMulti("services", service)}
-                  className={`chip ${form.services.includes(service) ? "active" : ""}`}>
-                  {service}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="form-group">
-            <label className="form-label">케어 가능한 반려동물</label>
-            <div className="chip-container">
-              {PET_OPTIONS.map((pet) => (
-                <button key={pet} type="button"
-                  onClick={() => toggleMulti("pets", pet)}
-                  className={`chip ${form.pets.includes(pet) ? "active" : ""}`}>
-                  {pet}
-                </button>
-              ))}
-            </div>
-
-            {showOtherPets && (
-              <div className="other-pets-section">
-                <div className="other-pets-grid">
-                  {OTHER_PET_OPTIONS.map((pet) => (
-                    <button key={pet} type="button"
-                      onClick={() => toggleMulti("pets", pet)}
-                      className={`chip small ${form.pets.includes(pet) ? "active" : ""}`}>
-                      {pet}
-                    </button>
-                  ))}
-                </div>
-
-                <div className="custom-pet-input">
-                  <input type="text" value={customPet} onChange={(e) => setCustomPet(e.target.value)}
-                         placeholder="직접 입력하기" className="form-input"
-                         onKeyPress={(e) => e.key === "Enter" && (e.preventDefault(), addCustomPet())}/>
-                  <button type="button" onClick={addCustomPet} className="btn-add">추가</button>
-                </div>
-
-                {form.pets.filter((p) => !PET_OPTIONS.includes(p) && !OTHER_PET_OPTIONS.includes(p)).length > 0 && (
-                  <div className="selected-custom-pets">
-                    {form.pets.filter((p) => !PET_OPTIONS.includes(p) && !OTHER_PET_OPTIONS.includes(p)).map((p) => (
-                      <span key={p} className="custom-pet-tag">
-                        {p}
-                        <button type="button" onClick={() => removeCustomPet(p)} className="remove-btn">×</button>
-                      </span>
-                    ))}
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-
-          <div className="form-group">
-            <label className="form-check">
-              <input type="checkbox" name="hasCar" checked={form.hasCar} onChange={onChange} />
-              <span className="checkmark"></span>
-              자차 보유 (이동 서비스 가능)
-            </label>
           </div>
         </section>
 
@@ -270,7 +238,7 @@ export default function PetMateSignupPage() {
               <div className="drop-zone-content">
                 <div className="drop-icon">📄</div>
                 <p>자격증을 드래그하거나 클릭하여 업로드</p>
-                <span className="drop-hint">여러 파일 동시 업로드 가능</span>
+                <span className="drop-hint">여러 파일 동시 또는 여러 번 업로드 가능</span>
               </div>
               <input id="petmate-cert-input" type="file" accept="image/*" multiple onChange={onCertFiles} hidden />
             </div>
@@ -281,7 +249,7 @@ export default function PetMateSignupPage() {
                   <div key={index} className="cert-preview">
                     <img src={cert.url} alt={cert.name} />
                     <div className="cert-info">
-                      <span className="cert-name">{cert.name}</span>
+                      <span className="cert-name">{cert.name.split(":")[0]}</span>
                       <button type="button" onClick={() => removeCertFile(index)} className="remove-cert-btn">삭제</button>
                     </div>
                   </div>

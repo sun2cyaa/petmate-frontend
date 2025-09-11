@@ -2,7 +2,7 @@
 import { Routes, Route, useLocation, Navigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { AnimatePresence } from "framer-motion";
-import api from "./services/api";
+import { apiRequest } from "./services/api";
 
 import IntroPage from "./pages/common/Intro/IntroPage";
 import HomePage from "./pages/common/Home/HomePage";
@@ -36,21 +36,19 @@ function App() {
 
   useEffect(() => {
     let mounted = true;
-    api
-      .get("/auth/me", { withCredentials: true })
+    apiRequest
+      .get("/auth/me")
       .then((res) => {
         if (!mounted) return;
         setIsLogined(true);
-        setUser(res.data);
+        setUser(res?.data);
       })
       .catch(() => {
         if (!mounted) return;
         setIsLogined(false);
         setUser(null);
       });
-    return () => {
-      mounted = false;
-    };
+    return () => { mounted = false; };
   }, []);
 
   const hideHeader = location.pathname.startsWith("/intro");
