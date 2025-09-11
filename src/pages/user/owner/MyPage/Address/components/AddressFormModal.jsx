@@ -12,7 +12,7 @@ import {
 const addressTypes = [
   { type: "home", name: "집", icon: Home, color: "" },
   { type: "office", name: "회사", icon: Building2, color: "" },
-  { type: "other", name: "기타", icon: MapPinned, color: "" },
+  { type: "etc", name: "기타", icon: MapPinned, color: "" },
 ]
 
 export default function AddressFormModal({ 
@@ -33,7 +33,8 @@ export default function AddressFormModal({
     address: "",
     detail: "",
     alias: "",
-    isDefault: false
+    isDefault: false,
+    postcode: ""
   })
 
   useEffect(() => {
@@ -43,7 +44,8 @@ export default function AddressFormModal({
         address: address.address,
         detail: address.detail,
         alias: address.alias,
-        isDefault: address.isDefault
+        isDefault: address.isDefault,
+        postcode: address.postcode || ""
       })
     } else if (!isEditMode && show) {
       // 추가 모드일 때 초기값 설정
@@ -52,7 +54,8 @@ export default function AddressFormModal({
         address: searchQuery || "",
         detail: "",
         alias: "",
-        isDefault: false
+        isDefault: false,
+        postcode: ""
       })
     }
   }, [address, show, isEditMode, searchQuery])
@@ -77,9 +80,14 @@ export default function AddressFormModal({
     new window.daum.Postcode({
       oncomplete: function(data) {
         const addr = data.address; // 최종 주소
+        const postcode = data.zonecode; // 우편번호
         setSearchQuery(addr);
-        setFormData(prev => ({ ...prev, address: addr }))
-        console.log('검색된 주소:', addr);
+        setFormData(prev => ({ 
+          ...prev, 
+          address: addr,
+          postcode: postcode
+        }))
+        console.log('검색된 주소:', addr, '우편번호:', postcode);
       }
     }).open();
   };
@@ -108,7 +116,8 @@ export default function AddressFormModal({
         address: "",
         detail: "",
         alias: "",
-        isDefault: false
+        isDefault: false,
+        postcode: ""
       })
       setSearchQuery("")
     }
