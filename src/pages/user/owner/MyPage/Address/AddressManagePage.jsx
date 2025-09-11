@@ -74,6 +74,7 @@ export default function AddressManagePage({ user, onBack }) {
           detail: addr.detail,
           alias: addr.alias,
           isDefault: addr.isDefault,
+          postcode: addr.postcode,
           distance: "거리 계산 중...",
           color: "",
         }))
@@ -154,13 +155,14 @@ export default function AddressManagePage({ user, onBack }) {
     if (existingAddress) { alert("이미 저장된 주소입니다."); return }
     const newAddress = {
       id: Date.now(),
-      type: "other",
+      type: "etc",
       typeName: "기타",
       icon: MapPinned,
       address: pastAddress.address,
       detail: pastAddress.detail,
       alias: `${pastAddress.petMateName} 방문지`,
       isDefault: false,
+      postcode: "",
       distance: "거리 계산 중...",
       color: "",
     }
@@ -190,7 +192,27 @@ export default function AddressManagePage({ user, onBack }) {
     }
   }
 
+  const handleSetDefaultAddress = async (addressId) => {
+    try {
+      await addressService.setDefaultAddress(addressId)
+      
+      // 로컬 상태 업데이트 - 모든 주소를 기본이 아니게 만들고, 선택된 주소만 기본으로 설정
+      setSavedAddresses(prev => 
+        prev.map(addr => ({
+          ...addr,
+          isDefault: addr.id === addressId
+        }))
+      )
+      
+      alert("기본 주소가 설정되었습니다.")
+    } catch (error) {
+      console.error('기본 주소 설정 오류:', error)
+      alert(error.response?.data?.message || "기본 주소 설정 중 오류가 발생했습니다.")
+    }
+  }
+
   const handleSaveAddress = async (addressData) => {
+    console.log("selectedAddressForAction:", selectedAddressForAction);
     if (selectedAddressForAction) {
       // 수정 모드
       try {
@@ -208,6 +230,7 @@ export default function AddressManagePage({ user, onBack }) {
                   detail: updatedAddress.detail,
                   alias: updatedAddress.alias,
                   isDefault: updatedAddress.isDefault,
+                  postcode: updatedAddress.postcode,
                 }
               : addr,
           ),
@@ -232,6 +255,7 @@ export default function AddressManagePage({ user, onBack }) {
           detail: savedAddress.detail,
           alias: savedAddress.alias,
           isDefault: savedAddress.isDefault,
+          postcode: savedAddress.postcode,
           distance: "거리 계산 중...",
           color: "",
         }
@@ -331,6 +355,15 @@ export default function AddressManagePage({ user, onBack }) {
                         </div>
                       </div>
                       <div className="address-actions">
+                        {!address.isDefault && (
+                          <button 
+                            className="icon-button" 
+                            onClick={() => handleSetDefaultAddress(address.id)}
+                            title="기본 주소로 설정"
+                          >
+                            <Star size={16} />
+                          </button>
+                        )}
                         <button className="icon-button" onClick={() => handleEditClick(address)}>
                           <Edit size={16} />
                         </button>
