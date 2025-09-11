@@ -5,53 +5,45 @@
   cursor: pointer;
 }
 
-.logo:hover {
-  text-decoration: none;
-  cursor: pointer;
-}
-
 .logo h2 {
   margin: 0;
   color: inherit;
 }
 
+/* 공통 드롭다운 */
 .header_dropdown {
   position: relative;
   display: inline-block;
 }
 
-.header_mypage,
-.header_petmate,
-.header_company_manage {
+.header_company_manage,
+.header_petmate {
   cursor: pointer;
   padding: 8px 12px;
   color: #333;
   text-decoration: none;
 }
 
-.header_mypage_menu,
-.header_petmate_menu,
-.header_company_manage_menu {
+.header_company_manage_menu,
+.header_petmate_menu {
   display: none;
   position: absolute;
   top: 120%;
   left: 0;
-  background-color: #fff;
+  background: #fff;
   min-width: 160px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  border-radius: 4px;
+  border-radius: 6px;
   z-index: 1000;
 }
 
-.header_dropdown:hover .header_mypage_menu,
-.header_dropdown:hover .header_petmate_menu,
-.header_dropdown:hover .header_company_manage_menu {
+.header_dropdown:hover .header_company_manage_menu,
+.header_dropdown:hover .header_petmate_menu {
   display: block;
 }
 
-.header_mypage_item,
-.header_petmate_item,
-.header_company_manage_item {
+.header_company_manage_item,
+.header_petmate_item {
   display: block;
   padding: 12px 16px;
   text-decoration: none;
@@ -59,14 +51,119 @@
   border-bottom: 1px solid #eee;
 }
 
-.header_mypage_item:hover,
-.header_petmate_item:hover,
-.header_company_manage_item:hover {
+.header_company_manage_item:hover,
+.header_petmate_item:hover {
   background-color: #f5f5f5;
 }
 
-.header_mypage_item-child,
-.header_petmate_item-child,
-.header_company_manage_item-child {
-  border-bottom: none;
+/* 유저 영역 */
+.user-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: transparent;
+  border: 0;
+  padding: 4px 6px;
+  cursor: pointer;
+}
+
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #f0f2f5;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: 1px solid rgba(0,0,0,0.06);
+}
+
+.avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.avatar-fallback {
+  width: 100%;
+  height: 100%;
+  font-weight: 600;
+  color: #4b5563;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+}
+
+.user-name {
+  white-space: nowrap;
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 드롭다운: 사용자 이름/아바타에 hover 시 표시 */
+.user-dropdown { position: relative; display: inline-block; }
+
+.user-menu {
+  display: none;
+  position: absolute;
+  top: 120%;
+  right: 0;
+  background: #fff;
+  min-width: 180px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.1);
+  border-radius: 8px;
+  z-index: 1100;
+  padding: 6px 0;
+}
+
+.user-dropdown:hover .user-menu { display: block; }
+
+.user-menu_item {
+  width: 100%;
+  text-align: left;
+  padding: 10px 14px;
+  display: block;
+  color: #333;
+  text-decoration: none;
+  background: #fff;
+  border: 0;
+  cursor: pointer;
+}
+
+.user-menu_item:hover { background: #f5f5f5; }
+
+.user-menu_logout { color: #ef4444; }
+
+/* 프로필 드롭다운 안정화 */
+.user-dropdown { position: relative; }
+.user-badge { display: flex; align-items: center; gap: 8px; background: transparent; border: 0; padding: 0; cursor: pointer; }
+
+.user-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  min-width: 180px;
+  display: none;
+  z-index: 1000;
+  /* 필요시 배경/그림자 */
+  background: #fff; /* 다크모드 쓰면 기존 변수로 맞추세요 */
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 6px 0;
+}
+
+.user-dropdown.open .user-menu { display: block; }
+
+/* 메뉴가 트리거와 겹치도록 여백 제거해 끊김 방지 */
+.user-dropdown .user-menu,
+.user-dropdown .user-badge { pointer-events: auto; }
+
+/* 아바타 영역이 hover 간격 없이 이어지도록 */
+.user-dropdown { /* 필요시 여백 제거 */
+  /* padding-bottom: 0; */
 }
