@@ -104,6 +104,16 @@ const HomePage = () => {
       img: "https://randomuser.me/api/portraits/men/32.jpg",
       rating: 4,
     },
+    {
+      id: 3,
+      name: "박철수",
+      comment: "강아지가 산책을 정말 좋아했어요.",
+      service: "산책",
+      date: "2025.09.10",
+      petType: "골든리트리버",
+      img: "https://randomuser.me/api/portraits/men/32.jpg",
+      rating: 4,
+    },
   ];
 
   // 통계
@@ -232,7 +242,7 @@ const HomePage = () => {
 
       {/* 장점 */}
       <section className="home-benefits-section">
-        <SectionTitle title="Petmate을 선택하는 이유" center />
+        <SectionTitle title="Petmate를 선택하는 이유" center />
         <div className="benefits-grid">
           <div className="benefit-card"><h3>안심보장</h3><p>모든 펫메이트는 신원 확인과 전문성 검증을 거쳤습니다</p></div>
           <div className="benefit-card"><h3>실시간 소통</h3><p>서비스 중 실시간 사진과 상황을 공유받을 수 있어요</p></div>
@@ -261,7 +271,7 @@ const HomePage = () => {
           autoplay={{ delay: 3000, disableOnInteraction: false }}
           loop
           pagination={{ clickable: true }}
-          spaceBetween={24}
+          spaceBetween={1}
           slidesPerView={1}
           breakpoints={{
             768: { slidesPerView: 2, spaceBetween: 24 },
