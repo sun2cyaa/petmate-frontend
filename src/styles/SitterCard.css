@@ -1,10 +1,10 @@
 .sitter-card {
-  background: white;
+  background: #fde3d0;
   border-radius: 20px;
   overflow: hidden;
   box-shadow: 0 4px 20px rgba(0,0,0,0.08);
   transition: all 0.3s ease;
-  border: 1px solid #f0f0f0;
+  border: 1px solid #eb9666;
 }
 
 .sitter-card:hover {
@@ -46,7 +46,7 @@
   top: 12px;
   right: 12px;
   background: rgba(0,0,0,0.7);
-  color: white;
+  color: #fde3d0;
   padding: 6px 12px;
   border-radius: 20px;
   font-size: 12px;
@@ -67,7 +67,7 @@
 .sitter-name {
   font-size: 1.3rem;
   font-weight: 700;
-  color: #1a1a1a;
+  color: #eb9666;
 }
 
 .sitter-rating {
