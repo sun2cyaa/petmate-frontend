@@ -421,47 +421,49 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* 후기 */}
-<section className="home-reviews-section">
-  <SectionTitle title="이용자 후기" subtitle="실제 이용자들의 생생한 경험담" center />
-  <Swiper
-    modules={[Autoplay, Pagination]}
-    autoplay={{ delay: 3000, disableOnInteraction: false }}
-    loop
-    pagination={{ clickable: true }}
-    spaceBetween={15}  
-    slidesPerView={1}
-    slidesPerGroup={1}
-    breakpoints={{
-      // 768: { slidesPerView: 2, spaceBetween: 15 },
-      1080: { slidesPerView: 4, spaceBetween: 15 },
-    }}
-    className="reviews-swiper"
-  >
-    {reviews.map((review) => (
-      <SwiperSlide key={review.id}>
-        <div className="review-card">
-          <div className="review-header">
-            <img src={review.img} alt={review.name} className="reviewer-img" />
-            <div>
-              <h4>{review.name}</h4>
-              <span className="review-meta">{review.petType} · {review.date}</span>
-            </div>
-          </div>
-          <div className="review-rating">
-            {[...Array(5)].map((_, i) => (
-              <FaHeart key={i} color={i < review.rating ? "#eb4b4b" : "#ddd"} style={{ marginRight: "4px" }} />
-            ))}
-          </div>
-          <p>"{review.comment}"</p>
-          <span className="review-badge">{review.service}</span>
-        </div>
-      </SwiperSlide>
-    ))}
-  </Swiper>
-
-  <div className="custom-pagination"></div>
-</section>
+      <section className="home-reviews-section">
+        <SectionTitle title="이용자 후기" subtitle="실제 이용자들의 생생한 경험담" center />
+        <Swiper
+          modules={[Autoplay, Pagination]}
+          autoplay={{ delay: 3000, disableOnInteraction: false }}
+          loop
+          pagination={{ clickable: true }}
+          spaceBetween={15}
+          slidesPerView={1}
+          slidesPerGroup={1}
+          breakpoints={{
+            1080: { slidesPerView: 4, spaceBetween: 15 },
+          }}
+          className="reviews-swiper"
+        >
+          {reviews.map((review) => (
+            <SwiperSlide key={review.id}>
+              <div className="review-card">
+                <div className="review-header">
+                  <img src={review.img} alt={review.name} className="reviewer-img" />
+                  <div>
+                    <h4>{review.name}</h4>
+                    <span className="review-meta">
+                      {review.petType} · {review.date}
+                    </span>
+                  </div>
+                </div>
+                <div className="review-rating">
+                  {[...Array(5)].map((_, i) => (
+                    <FaHeart
+                      key={i}
+                      color={i < review.rating ? "#eb4b4b" : "#ddd"}
+                      style={{ marginRight: "4px" }}
+                    />
+                  ))}
+                </div>
+                <p>"{review.comment}"</p>
+                <span className="review-badge">{review.service}</span>
+              </div>
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      </section>
 
       <Footer />
     </div>
