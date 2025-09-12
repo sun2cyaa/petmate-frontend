@@ -1,9 +1,22 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import SitterCard from "./../../../components/SitterCard";
 import SectionTitle from "./../../../components/SectionTitle";
 import Footer from "../../../components/common/Footer/Footer";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination } from "swiper/modules";
+import {
+  FaHeart,
+  FaHotel,
+  FaHandsHelping,
+  FaDog,
+  FaCut,
+  FaClinicMedical,
+  FaBell,
+  FaBirthdayCake,
+  FaSyringe,
+  FaUserShield,
+} from "react-icons/fa";
 import "swiper/css";
 import "swiper/css/pagination";
 import "../../../styles/HomePage.css";
@@ -12,46 +25,31 @@ import expoImg from "../../../assets/images/banners/pet-expo.jpg";
 import expo2Img from "../../../assets/images/banners/pet-expo2.jpg";
 import expo3Img from "../../../assets/images/banners/pet-expo3.jpg";
 import catexpoImg from "../../../assets/images/banners/cat-expo.jpg";
+import expo4Img from "../../../assets/images/banners/expo4Img.png";
+import expo5Img from "../../../assets/images/banners/expo5Img.jpg";
 
 const HomePage = () => {
   const [activeService, setActiveService] = useState("");
   const [searchText, setSearchText] = useState("");
+  const navigate = useNavigate();
 
-  // 행사 캐러셀
+  // 행사 배너 데이터
   const banners = [
-    {
-      title: "2025 케이펫 페어 수원 시즌3",
-      desc: "",
-      img: expoImg,
-      link: "https://k-pet.co.kr"
-    },
-    {
-      title: "2025 궁디팡팡 캣페스타",
-      desc: "",
-      img: catexpoImg,
-      link: "https://catfesta.com/"
-    },
-    {
-      title: "이천 펫축제",
-      desc: "",
-      img: expo2Img,
-      link: "https://www.icheon.go.kr/portal/universal/kalendar/detail.do?mid=0401030000&idx=256026"
-    },
-    {
-      title: "광주펫쇼",
-      desc: "",
-      img: expo3Img,
-      link: "https://www.gpet.co.kr"
-    },
+    { title: "2025 케이펫 페어 수원 시즌3", img: expoImg, link: "https://k-pet.co.kr" },
+    { title: "2025 궁디팡팡 캣페스타", img: catexpoImg, link: "https://catfesta.com/" },
+    { title: "이천 펫축제", img: expo2Img, link: "https://www.icheon.go.kr/portal/universal/kalendar/detail.do?mid=0401030000&idx=256026" },
+    { title: "광주펫쇼", img: expo3Img, link: "https://www.gpet.co.kr" },
+    { title: "멍스플래쉬", img: expo4Img, link: "https://www.mungkok.com" },
+    { title: "토요타 바른 DOG", img: expo5Img, link: "https://www.toyota.co.kr/bareundogfestival/agility-class/" },
   ];
 
   // 서비스
   const services = [
-    { id: "Hotel", name: "호텔", icon: "", desc: "소중한 가족 안심 호텔링" },
-    { id: "care", name: "돌봄", icon: "", desc: "집에서 안전하게" },
-    { id: "walk", name: "산책", icon: "", desc: "건강한 운동" },
-    { id: "beauty", name: "미용", icon: "", desc: "깔끔한 스타일링" },
-    { id: "hospital", name: "병원", icon: "", desc: "건강 체크업" },
+    { id: "Hotel", name: "호텔", icon: <FaHotel size={28} />, desc: "소중한 가족 안심 호텔링" },
+    { id: "care", name: "돌봄", icon: <FaHandsHelping size={28} />, desc: "집에서 안전하게" },
+    { id: "walk", name: "산책", icon: <FaDog size={28} />, desc: "건강한 운동" },
+    { id: "beauty", name: "미용", icon: <FaCut size={28} />, desc: "깔끔한 스타일링" },
+    { id: "hospital", name: "병원", icon: <FaClinicMedical size={28} />, desc: "건강 체크업" },
   ];
 
   // 추천 펫메이트
@@ -73,12 +71,12 @@ const HomePage = () => {
       id: 2,
       name: "선희네 24시",
       desc: "24시간 고양이 케어",
-      rating: 4.8,
+      rating: 4,
       reviews: 89,
       price: "20,000원",
       distance: "1.2km",
       tags: ["24시간", "고양이전문", "응급처치"],
-      img: "https://images.unsplash.com/photo-1555685812-4b943f1cb0eb?ixlib=rb-4.0.3&q=80&fm=jpg&crop=entropy&w=800",
+      img: "https://images.unsplash.com/photo-1555685812-4b943f1cb0eb?auto=format&fit=crop&w=800&q=80",
       isVerified: true,
       responseTime: "평균 30분 내 응답",
     },
@@ -94,6 +92,7 @@ const HomePage = () => {
       date: "2025.09.11",
       petType: "말티즈",
       img: "https://randomuser.me/api/portraits/women/44.jpg",
+      rating: 5,
     },
     {
       id: 2,
@@ -103,6 +102,7 @@ const HomePage = () => {
       date: "2025.09.10",
       petType: "골든리트리버",
       img: "https://randomuser.me/api/portraits/men/32.jpg",
+      rating: 4,
     },
   ];
 
@@ -119,18 +119,76 @@ const HomePage = () => {
   };
 
   const handleSearch = () => {
-    console.log("Searching:", searchText, "Service:", activeService);
+    navigate(`/map?service=${activeService}&keyword=${searchText}`);
   };
 
   return (
     <div className="home-container">
-      {/* Hero 캐러셀 */}
+      {/* 서비스 검색 */}
+      <section className="home-search-section">
+        <div className="search-container">
+          {/* 왼쪽 */}
+          <div className="search-left">
+            <div className="search-header">
+              <h2>어떤 도움이 필요하세요?</h2>
+              <p>우리 아이에게 맞는 서비스를 찾아보세요</p>
+            </div>
+            <div className="service-type-grid">
+              {services.map((service) => (
+                <button
+                  key={service.id}
+                  className={`service-type-btn ${activeService === service.id ? "active" : ""}`}
+                  onClick={() => handleServiceClick(service.id)}
+                >
+                  <div className="service-icon">{service.icon}</div>
+                  <span className="service-name">{service.name}</span>
+                  <span className="service-desc">{service.desc}</span>
+                </button>
+              ))}
+            </div>
+            <div className="search-bar">
+              <div className="search-input-wrapper">
+                <input
+                  type="text"
+                  placeholder="개인/법인명, 상품명을 검색해보세요"
+                  value={searchText}
+                  onChange={(e) => setSearchText(e.target.value)}
+                  className="search-input"
+                  onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+                />
+                <button className="search-btn" onClick={handleSearch}>
+                  검색
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* 오른쪽 알림 박스 */}
+          <div className="search-right">
+            <div className="pet-alert-card">
+              <img src="/images/dog2.jpg" alt="dog" className="pet-img" />
+
+              <div className="alert-box box1"><FaBell /> 오늘 예약이 있습니다!</div>
+              <div className="alert-box box2"><FaBirthdayCake /> 곰이의 생일이 다가와요</div>
+              <div className="alert-box box3"><FaClinicMedical /> 근처 동물병원 20곳</div>
+              <div className="alert-box box4"><FaCut /> 내일 오전 8시 미용 예약</div>
+              <div className="alert-box box5"><FaSyringe /> 예방접종 등록 필요</div>
+              <div className="alert-box box6"><FaUserShield /> 휴가 대비 펫시터 예약</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 행사 배너 */}
       <section className="home-banner-section">
+        <SectionTitle className="expo-title" title="반려동물 박람회 및 축제" center />
         <Swiper
           modules={[Autoplay, Pagination]}
-          autoplay={{ delay: 3000, disableOnInteraction: false }}
+          autoplay={{ delay: 2100, disableOnInteraction: false }}
           loop
           pagination={{ clickable: true }}
+          spaceBetween={20}
+          slidesPerView={3}
           className="banner-swiper"
         >
           {banners.map((banner, idx) => (
@@ -142,7 +200,6 @@ const HomePage = () => {
                 <div className="banner-overlay" />
                 <div className="banner-content">
                   <h1 className="banner-title">{banner.title}</h1>
-                  <p className="banner-desc">{banner.desc}</p>
                   <button
                     className="banner-cta"
                     onClick={() => window.open(banner.link, "_blank")}
@@ -156,59 +213,19 @@ const HomePage = () => {
         </Swiper>
       </section>
 
-      {/* 서비스 검색 */}
-      <section className="home-search-section">
-        <div className="search-container">
-          <div className="search-header">
-            <h2>어떤 도움이 필요하세요?</h2>
-            <p>우리 아이에게 맞는 서비스를 찾아보세요</p>
-          </div>
-          <div className="service-type-grid">
-            {services.map((service) => (
-              <button
-                key={service.id}
-                className={`service-type-btn ${
-                  activeService === service.id ? "active" : ""
-                }`}
-                onClick={() => handleServiceClick(service.id)}
-              >
-                <div className="service-icon">{service.icon}</div>
-                <span className="service-name">{service.name}</span>
-                <span className="service-desc">{service.desc}</span>
-              </button>
-            ))}
-          </div>
-          <div className="search-bar">
-            <div className="search-input-wrapper">
-              <input
-                type="text"
-                placeholder="개인/법인명, 상품명을 검색해보세요"
-                value={searchText}
-                onChange={(e) => setSearchText(e.target.value)}
-                className="search-input"
-              />
-              <button className="search-btn" onClick={handleSearch}>
-                검색
-              </button>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* 추천 펫메이트 */}
       <section className="home-sitters-section">
         <div className="sitters-container">
-          <SectionTitle
-            title="근처 추천 펫메이트"
-            subtitle="검증된 전문가들과 함께하세요"
-          />
+          <SectionTitle title="근처 추천 펫메이트" subtitle="검증된 전문가들과 함께하세요" />
           <div className="sitters-grid">
             {sitters.map((sitter) => (
-              <SitterCard key={sitter.id} sitter={sitter} />
+              <SitterCard key={sitter.id} sitter={sitter} onClick={() => navigate(`/map?sitterId=${sitter.id}`)} />
             ))}
           </div>
           <div className="view-more-section">
-            <button className="view-more-btn">더 많은 펫메이트 보기</button>
+            <button className="view-more-btn" onClick={() => navigate("/map")}>
+              더 많은 펫메이트 보기
+            </button>
           </div>
         </div>
       </section>
@@ -217,26 +234,10 @@ const HomePage = () => {
       <section className="home-benefits-section">
         <SectionTitle title="Petmate을 선택하는 이유" center />
         <div className="benefits-grid">
-          <div className="benefit-card">
-            <div className="benefit-icon"></div>
-            <h3>안심보장</h3>
-            <p>모든 펫메이트는 신원 확인과 전문성 검증을 거쳤습니다</p>
-          </div>
-          <div className="benefit-card">
-            <div className="benefit-icon"></div>
-            <h3>실시간 소통</h3>
-            <p>서비스 중 실시간 사진과 상황을 공유받을 수 있어요</p>
-          </div>
-          <div className="benefit-card">
-            <div className="benefit-icon"></div>
-            <h3>간편결제</h3>
-            <p>안전한 온라인 결제로 편리하게 이용하세요</p>
-          </div>
-          <div className="benefit-card">
-            <div className="benefit-icon"></div>
-            <h3>빠른 매칭</h3>
-            <p>AI 추천 시스템으로 최적의 펫메이트를 찾아드려요</p>
-          </div>
+          <div className="benefit-card"><h3>안심보장</h3><p>모든 펫메이트는 신원 확인과 전문성 검증을 거쳤습니다</p></div>
+          <div className="benefit-card"><h3>실시간 소통</h3><p>서비스 중 실시간 사진과 상황을 공유받을 수 있어요</p></div>
+          <div className="benefit-card"><h3>간편결제</h3><p>안전한 온라인 결제로 편리하게 이용하세요</p></div>
+          <div className="benefit-card"><h3>빠른 매칭</h3><p>AI 추천 시스템으로 최적의 펫메이트를 찾아드려요</p></div>
         </div>
       </section>
 
@@ -254,11 +255,7 @@ const HomePage = () => {
 
       {/* 후기 */}
       <section className="home-reviews-section">
-        <SectionTitle
-          title="이용자 후기"
-          subtitle="실제 이용자들의 생생한 경험담"
-          center
-        />
+        <SectionTitle title="이용자 후기" subtitle="실제 이용자들의 생생한 경험담" center />
         <Swiper
           modules={[Autoplay, Pagination]}
           autoplay={{ delay: 3000, disableOnInteraction: false }}
@@ -276,21 +273,16 @@ const HomePage = () => {
             <SwiperSlide key={review.id}>
               <div className="review-card">
                 <div className="review-header">
-                  <img
-                    src={review.img}
-                    alt={review.name}
-                    className="reviewer-img"
-                  />
+                  <img src={review.img} alt={review.name} className="reviewer-img" />
                   <div>
                     <h4>{review.name}</h4>
-                    <span className="review-meta">
-                      {review.petType} · {review.date}
-                    </span>
+                    <span className="review-meta">{review.petType} · {review.date}</span>
                   </div>
                 </div>
                 <div className="review-rating">
-                  {"⭐".repeat(review.rating)}{" "}
-                  {"☆".repeat(5 - review.rating)}
+                  {[...Array(5)].map((_, i) => (
+                    <FaHeart key={i} color={i < review.rating ? "#eb4b4b" : "#ddd"} style={{ marginRight: "4px" }} />
+                  ))}
                 </div>
                 <p>"{review.comment}"</p>
                 <span className="review-badge">{review.service}</span>
@@ -300,19 +292,6 @@ const HomePage = () => {
         </Swiper>
       </section>
 
-      {/* CTA */}
-      <section className="home-cta-section">
-        <div className="cta-container">
-          <h2>지금 바로 시작해보세요!</h2>
-          <p>우리 아이에게 꼭 맞는 펫메이트를 만나보세요</p>
-          <div className="cta-buttons">
-            <button className="cta-primary">서비스 예약하기</button>
-            <button className="cta-secondary">펫메이트 지원하기</button>
-          </div>
-        </div>
-      </section>
-
-      {/* Footer */}
       <Footer />
     </div>
   );
