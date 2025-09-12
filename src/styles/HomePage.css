@@ -3,7 +3,7 @@
   font-family: 'Noto Sans KR', sans-serif;
   line-height: 1.6;
   color: #333;
-  background: #fff;
+  background: linear-gradient(180deg, #fff 0%, #fff8f3 100%);
 }
 
 /* ---- 행사 캐러셀 ------ */
@@ -272,7 +272,7 @@
 /* --- 펫메이트 목록 ----- */
 .home-sitters-section {
   padding: 100px 20px;
-  background: #fafafa;
+  background: linear-gradient(180deg, #fff 0%, #fff8f3 100%);
 }
 
 .sitters-container {
@@ -357,66 +357,90 @@
 }
 
 .benefit-card {
-  background: #fff8f3;
+  background: #fff;
   border-radius: 20px;
   padding: 40px 24px;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.05);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.12);
   transition: all 0.3s ease;
+  text-align: center;
 }
 
 .benefit-card:hover {
   transform: translateY(-6px);
-  box-shadow: 0 12px 30px rgba(0,0,0,0.1);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.18);
 }
 
 .benefit-icon {
-  font-size: 36px;
-  margin-bottom: 16px;
+  font-size: 40px;
+  color: #eb9666;
+  margin-bottom: 20px;
 }
 
 .benefit-card h3 {
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 700;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
   color: #222;
 }
 
 .benefit-card p {
-  font-size: 14px;
-  color: #666;
+  font-size: 15px;
+  color: #555;
+  line-height: 1.5;
 }
 
-/* ---- 통계 --- */
+/* ---- 통계 ---- */
 .home-stats-section {
-  padding: 80px 20px;
-  background: #eb9666;
-  color: white;
+  padding: 120px 20px;
+  background: linear-gradient(180deg, #fff 0%, #fff8f3 100%);
   text-align: center;
 }
 
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 60px;
   max-width: 1000px;
   margin: 0 auto;
 }
 
 .stat-card h3 {
-  font-size: 32px;
-  font-weight: 800;
-  margin-bottom: 8px;
+  font-size: 48px;
+  font-weight: 900;
+  background: linear-gradient(135deg, #eb9666, #ffb88c);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 10px;
+  letter-spacing: -1px;
 }
 
 .stat-card p {
-  font-size: 14px;
-  opacity: 0.9;
+  font-size: 15px;
+  color: #666;
+  font-weight: 500;
+  position: relative;
+  display: inline-block;
+}
+
+.stat-card p::after {
+  content: "";
+  display: block;
+  width: 28px;
+  height: 2px;
+  background: #eb9666;
+  margin: 6px auto 0;
+  border-radius: 2px;
 }
 
 /*  ---- 후기 ---- */
 .home-reviews-section {
   padding: 20px 10px 50px;
   background: #fafafa;
+  position: relative;
+  margin-bottom: 180px;
+  padding-bottom: 25px;
+  
+
 }
 
 .reviews-swiper {
@@ -424,19 +448,28 @@
 }
 
 .reviews-swiper .swiper-slide {
-  display: flex;             
-  justify-content: center;
-  align-items: stretch;      
+  display: flex;
+  align-items: stretch;
+  
 }
 
+.reviews-swiper .swiper-pagination {
+  position: static;
+  /* position: relative; */
+
+}
+
+
 .review-card {
+  flex: 1;
+  width: 100%;
   background: #ffffff;
   border-radius: 16px;
   padding: 20px;
   box-shadow: 0 6px 15px rgba(0,0,0,0.05);
   transition: all 0.3s ease;
   min-height: 220px;
-  margin-bottom: 190px;
+  margin-bottom: 80px; 
 }
 
 .review-card:hover {
