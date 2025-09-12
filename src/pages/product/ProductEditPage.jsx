@@ -17,6 +17,17 @@ const ProductEditPage = () => {
   const [companies, setCompanies] = useState([]);
   const [serviceCategories, setServiceCategories] = useState([]);
 
+  // const [formData, setFormData] = useState({
+  //   companyId: "",
+  //   serviceTypeId: "",
+  //   name: "",
+  //   description: "",
+  //   price: "",
+  //   duration: "",
+  //   availableTimes: [],
+  //   isActive: true,
+  //   isAllDay: false,
+  // });
   const [formData, setFormData] = useState({
     companyId: "",
     serviceTypeId: "",
@@ -24,7 +35,6 @@ const ProductEditPage = () => {
     description: "",
     price: "",
     duration: "",
-    availableTimes: [],
     isActive: true,
     isAllDay: false,
   });
@@ -61,18 +71,29 @@ const ProductEditPage = () => {
         getServiceCategories(),
       ]);
 
+      // setFormData({
+      //   companyId: productData.companyId || "",
+      //   serviceTypeId: productData.serviceTypeId || "",
+      //   name: productData.name || "",
+      //   description: productData.description || "",
+      //   price: productData.price || "",
+      //   duration: productData.duration || "",
+      //   availableTimes: productData.availableTimes || [],
+      //   isActive:
+      //     productData.isActive !== undefined ? productData.isActive : true,
+      //   isAllDay: productData.isAllDay || false,
+      // });
+
       setFormData({
         companyId: productData.companyId || "",
-        serviceTypeId: productData.serviceTypeId || "",
+        serviceTypeId: productData.serviceType || "", // serviceType -> serviceTypeId
         name: productData.name || "",
-        description: productData.description || "",
+        description: productData.introText || "", // introText -> description
         price: productData.price || "",
-        duration: productData.duration || "",
-        availableTimes: productData.availableTimes || [],
-        isActive:
-          productData.isActive !== undefined ? productData.isActive : true,
-        isAllDay: productData.isAllDay || false,
-      });
+        duration: productData.durationMin || "", // durationMin -> duration
+        isActive: productData.isActive === 1, // integer -> boolean
+        isAllDay: productData.allDay === 1, // integer -> boolean
+      }); 
 
       setCompanies(companiesData);
       setServiceCategories(categoriesData);
@@ -98,15 +119,35 @@ const ProductEditPage = () => {
     }
   };
 
-  const handleTimeToggle = (time) => {
-    setFormData((prev) => ({
-      ...prev,
-      availableTimes: prev.availableTimes.includes(time)
-        ? prev.availableTimes.filter((t) => t !== time)
-        : [...prev.availableTimes, time].sort(),
-    }));
-  };
+  // const handleTimeToggle = (time) => {
+  //   setFormData((prev) => ({
+  //     ...prev,
+  //     availableTimes: prev.availableTimes.includes(time)
+  //       ? prev.availableTimes.filter((t) => t !== time)
+  //       : [...prev.availableTimes, time].sort(),
+  //   }));
+  // };
 
+  // const validateForm = () => {
+  //   const newErrors = {};
+
+  //   if (!formData.companyId) newErrors.companyId = "업체를 선택해주세요.";
+  //   if (!formData.serviceTypeId)
+  //     newErrors.serviceTypeId = "서비스 유형을 선택해주세요.";
+  //   if (!formData.name.trim()) newErrors.name = "상품명을 입력해주세요.";
+  //   if (!formData.description.trim())
+  //     newErrors.description = "상품 설명을 입력해주세요.";
+  //   if (!formData.price || formData.price <= 0)
+  //     newErrors.price = "올바른 가격을 입력해주세요.";
+  //   if (!formData.duration) newErrors.duration = "소요시간을 입력해주세요.";
+  //   if (!formData.isAllDay && formData.availableTimes.length === 0) {
+  //     newErrors.availableTimes =
+  //       "종일 상품이 아닌 경우 최소 하나의 이용 가능 시간을 선택해주세요.";
+  //   }
+
+  //   setErrors(newErrors);
+  //   return Object.keys(newErrors).length === 0;
+  // };
   const validateForm = () => {
     const newErrors = {};
 
@@ -119,10 +160,7 @@ const ProductEditPage = () => {
     if (!formData.price || formData.price <= 0)
       newErrors.price = "올바른 가격을 입력해주세요.";
     if (!formData.duration) newErrors.duration = "소요시간을 입력해주세요.";
-    if (!formData.isAllDay && formData.availableTimes.length === 0) {
-      newErrors.availableTimes =
-        "종일 상품이 아닌 경우 최소 하나의 이용 가능 시간을 선택해주세요.";
-    }
+    // availableTimes 관련 검증 제거
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -300,7 +338,7 @@ const ProductEditPage = () => {
           </label>
         </div>
 
-        <div className="form-group">
+        {/* <div className="form-group">
           <label>이용 가능 시간:</label>
           <div className="available-times-note">
             고객이 선택할 수 있는 시간대
@@ -323,7 +361,9 @@ const ProductEditPage = () => {
           {errors.availableTimes && (
             <span className="error-message">{errors.availableTimes}</span>
           )}
-        </div>
+        </div> */}
+
+
 
         <div className="form-group">
           <label className="checkbox-label active">

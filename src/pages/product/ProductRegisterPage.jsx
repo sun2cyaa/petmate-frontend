@@ -21,7 +21,7 @@ const ProductRegisterPage = () => {
     description: "",
     price: "",
     duration: "",
-    availableTimes: [],
+    isAllDay: false, // 백엔드의 allDay 필드에 해당
     isActive: true,
   });
 
@@ -60,7 +60,7 @@ const ProductRegisterPage = () => {
     } catch (error) {
       console.error("데이터 로드 실패", error);
       alert("데이터를 불러오는데 실패하였습니다.");
-      navigate("/products");
+      navigate("/product");
     } finally {
       setLoading(false);
     }
@@ -79,22 +79,35 @@ const ProductRegisterPage = () => {
     }
   };
 
-  const handleTimeToggle = (time) => {
-    setFormData((prev) => ({
-      ...prev,
-      availableTimes: prev.availableTimes.includes(time)
-        ? prev.availableTimes.filter((t) => t !== time)
-        : [...prev.availableTimes, time].sort(),
-    }));
+  // const handleTimeToggle = (time) => {
+  //   setFormData((prev) => ({
+  //     ...prev,
+  //     availableTimes: prev.availableTimes.includes(time)
+  //       ? prev.availableTimes.filter((t) => t !== time)
+  //       : [...prev.availableTimes, time].sort(),
+  //   }));
 
-    // 에러 메세지 제거
-    if (errors.availableTimes) {
-      setErrors((prev) => ({ ...prev, availableTimes: "" }));
-    }
-  };
+  //   // 에러 메세지 제거
+  //   if (errors.availableTimes) {
+  //     setErrors((prev) => ({ ...prev, availableTimes: "" }));
+  //   }
+  // };
 
   const validateForm = () => {
     const newErrors = {};
+
+    // if (!formData.companyId) newErrors.companyId = "업체를 선택해주세요.";
+    // if (!formData.serviceTypeId)
+    //   newErrors.serviceTypeId = "서비스 유형을 선택해주세요.";
+    // if (!formData.name.trim()) newErrors.name = "상품명을 입력해주세요.";
+    // if (!formData.description.trim())
+    //   newErrors.description = "상품 설명을 입력해주세요.";
+    // if (!formData.price || formData.price <= 0)
+    //   newErrors.price = "올바른 가격을 입력해주세요.";
+    // if (!formData.duration || formData.duration <= 0)
+    //   newErrors.duration = "올바른 소요시간을 입력해주세요.";
+    // if (formData.availableTimes.length === 0)
+    //   newErrors.availableTimes = "최소 하나의 이용 가능 시간을 선택해주세요.";
 
     if (!formData.companyId) newErrors.companyId = "업체를 선택해주세요.";
     if (!formData.serviceTypeId)
@@ -106,8 +119,6 @@ const ProductRegisterPage = () => {
       newErrors.price = "올바른 가격을 입력해주세요.";
     if (!formData.duration || formData.duration <= 0)
       newErrors.duration = "올바른 소요시간을 입력해주세요.";
-    if (formData.availableTimes.length === 0)
-      newErrors.availableTimes = "최소 하나의 이용 가능 시간을 선택해주세요.";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -287,7 +298,7 @@ const ProductRegisterPage = () => {
               )}
             </div>
           </div>
-          <div className="form-field">
+          {/* <div className="form-field">
             <label>이용 가능 시간 *</label>
             <div className="time-selection">
               {timeOptions.map((time) => (
@@ -309,6 +320,17 @@ const ProductRegisterPage = () => {
             <div style={{ marginTop: "8px", fontSize: "12px", color: "#666" }}>
               선택된 시간 : {formData.availableTimes.join(",") || "없음"}
             </div>
+          </div> */}
+          <div className="form-field">
+            <label className="checkbox-label">
+              <input
+                type="checkbox"
+                name="isAllDay"
+                checked={formData.isAllDay}
+                onChange={handleInputChange}
+              />
+              <span className="checkbox-text">종일 상품 (하루종일 이용 가능)</span>
+            </label>
           </div>
           <div className="form-field">
             <label className="checkbox-label">
