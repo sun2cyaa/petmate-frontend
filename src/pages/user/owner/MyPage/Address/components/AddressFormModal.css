@@ -48,6 +48,40 @@
   color: #374151;
 }
 
+/* 새로 추가된 스타일들 */
+.address_search_buttons {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.map_search_button {
+  background-color: #10b981;
+  color: white;
+  border: none;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.875rem;
+}
+
+.map_search_button:hover {
+  background-color: #059669;
+}
+
+.map_selected_indicator {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: #10b981;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
 .address_modal_form {
   display: flex;
   flex-direction: column;
