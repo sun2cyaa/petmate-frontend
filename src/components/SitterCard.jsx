@@ -1,5 +1,7 @@
 import React from "react";
 import "../styles/SitterCard.css";
+import { FaHeart } from "react-icons/fa";
+import { styleEffect } from "framer-motion";
 
 const SitterCard = ({ sitter }) => {
   return (
@@ -16,8 +18,14 @@ const SitterCard = ({ sitter }) => {
         <div className="sitter-header">
           <h3 className="sitter-name">{sitter.name}</h3>
           <div className="sitter-rating">
-            <span className="rating-star">⭐</span>
-            <span className="rating-score">{sitter.rating}</span>
+            {[...Array(5)].map((_, i) => (
+              <FaHeart
+                key={i}
+                color={i < Math.round(sitter.rating) ? "#eb4b4b" : "#ddd"}
+                style={{ marginRight: "3px" }}
+              />
+            ))}
+            <span className="rating-score">{sitter.rating.toFixed(1)}</span>
             <span className="rating-count">({sitter.reviews})</span>
           </div>
         </div>
