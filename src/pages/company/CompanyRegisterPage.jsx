@@ -221,14 +221,14 @@ function CompanyRegisterPage() {
             // companyService를 사용한 사업자 조회 API 호출
             const result = await checkBusinessNumber(cleanBusinessNumber);
             
-            if (result.success && result.data) {
+            if (result) {
                 // 개인/법인사업자에서만 사업자 조회 가능
-                handleInputChange('corporationName', result.data.companyName || '');
-                handleInputChange('representativeName', result.data.representativeName || '');
+                handleInputChange('corporationName', result.companyName || '');
+                handleInputChange('representativeName', result.representativeName || '');
                 
-                alert(`사업자 조회가 완료되었습니다.\n상호명: ${result.data.companyName || '정보 없음'}\n대표자: ${result.data.representativeName || '정보 없음'}`);
+                alert(`사업자 조회가 완료되었습니다.\n상호명: ${result.companyName || '정보 없음'}\n대표자: ${result.representativeName || '정보 없음'}`);
             } else {
-                alert(result.message || "등록되지 않은 사업자등록번호이거나 조회할 수 없습니다.");
+                alert("등록되지 않은 사업자등록번호이거나 조회할 수 없습니다.");
             }
         } catch (error) {
             console.error('사업자 조회 중 오류:', error);
@@ -438,11 +438,9 @@ function CompanyRegisterPage() {
                 // companyService를 사용한 API 호출
                 const result = await registerCompany(formData);
                 
-                if (result.success) {
+                if (result) {
                     alert('업체 등록이 완료되었습니다!');
                     navigate('/companymanage'); // 업체 목록 페이지로 이동
-                } else {
-                    alert(`등록 실패: ${result.message}`);
                 }
             } catch (error) {
                 console.error('업체 등록 중 오류:', error);
