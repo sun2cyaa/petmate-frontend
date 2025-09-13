@@ -111,7 +111,7 @@ function App() {
           <Route path="/notice" element={<Notice />} />
           <Route path="/event" element={<Event />} />
 
-          {/* 없는 경로 → 인트로 */}
+          {/* 없는 경로 -> 인트로 */}
           <Route path="*" element={<Navigate to="/intro" replace />} />
         </Routes>
       </AnimatePresence>
