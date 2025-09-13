@@ -12,7 +12,7 @@ const CouponBanner = ({ isLogined }) => {
       const lastDate = new Date(lastClosed).toDateString();
       const today = new Date().toDateString();
       if (lastDate === today) {
-        setIsClosed(true); // 오늘 닫았으면 안 보이게
+        setIsClosed(true); // 오늘 닫았으면 안 보이게함
       }
     }
   }, []);
