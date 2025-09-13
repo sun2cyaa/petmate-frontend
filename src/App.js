@@ -50,7 +50,9 @@ function App() {
         setIsLogined(false);
         setUser(null);
       });
-    return () => { mounted = false; };
+    return () => {
+      mounted = false;
+    };
   }, []);
 
   const hideHeader = location.pathname.startsWith("/intro");
@@ -63,19 +65,34 @@ function App() {
 
       <AnimatePresence mode="wait">
         <Routes location={location} key={location.pathname}>
-          {/* 기본 진입 → 인트로 */}
+          {/* 기본 진입 인트로 */}
           <Route path="/" element={<Navigate to="/intro" replace />} />
 
           {/* 무조건 공개 */}
           <Route path="/intro" element={<IntroPage />} />
-          <Route path="/home" element={<HomePage />} />
+          <Route
+            path="/home"
+            element={
+              <HomePage
+                isLogined={isLogined}
+                setIsLogined={setIsLogined}
+                user={user}
+              />
+            }
+          />
 
           {/* 로그인 / 회원가입 */}
-          <Route path="/signin" element={<SigninPage setIsLogined={setIsLogined} />} />
+          <Route
+            path="/signin"
+            element={<SigninPage setIsLogined={setIsLogined} />}
+          />
           <Route path="/signup" element={<SignupPage />} />
-          <Route path="/oauth2/redirect" element={<OAuth2Redirect setIsLogined={setIsLogined} />} />
+          <Route
+            path="/oauth2/redirect"
+            element={<OAuth2Redirect setIsLogined={setIsLogined} />}
+          />
 
-          {/* 나머지 (보호 여부 미정) */}
+          {/* 나머지 */}
           <Route path="/map" element={<MapPage />} />
           <Route path="/pets" element={<PetManagePage />} />
           <Route path="/profile" element={<ProfilePage />} />

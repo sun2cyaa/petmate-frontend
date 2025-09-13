@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { FaGift } from "react-icons/fa";
 import "./CouponBanner.css";
 
-const CouponBanner = () => {
+const CouponBanner = ({ isLogined }) => {
   const [isClosed, setIsClosed] = useState(false);
 
   useEffect(() => {
@@ -12,7 +12,7 @@ const CouponBanner = () => {
       const lastDate = new Date(lastClosed).toDateString();
       const today = new Date().toDateString();
       if (lastDate === today) {
-        setIsClosed(true); // 오늘 이미 닫았으면 안 보이게
+        setIsClosed(true); // 오늘 닫았으면 안 보이게
       }
     }
   }, []);
@@ -22,7 +22,8 @@ const CouponBanner = () => {
     localStorage.setItem("couponClosedAt", new Date().toISOString());
   };
 
-  if (isClosed) return null;
+  // 로그인 상태거나 닫은 경우에는 표시 안 함
+  if (isLogined || isClosed) return null;
 
   return (
     <div className="coupon-banner">
