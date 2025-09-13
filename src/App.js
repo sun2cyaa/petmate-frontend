@@ -28,6 +28,8 @@ import CompanyRegisterPage from "./pages/company/CompanyRegisterPage";
 import ProductManagePage from "./pages/product/ProductManagePage";
 import ProductRegisterPage from './pages/product/ProductRegisterPage';
 import ProductEditPage from './pages/product/ProductEditPage';
+import Notice from "./components/common/Header/Notice";
+import Event from "./components/common/Header/Event";
 
 function App() {
   const [isLogined, setIsLogined] = useState(false);
@@ -89,6 +91,8 @@ function App() {
           <Route path="/product/register" element={<ProductRegisterPage />} />
           <Route path="/product/edit/:productId" element={<ProductEditPage />} />
           <Route path="/test" element={<Test />} />
+          <Route path="/notice" element={<Notice />} />
+          <Route path="/event" element={<Event />} />
 
           {/* 없는 경로 → 인트로 */}
           <Route path="*" element={<Navigate to="/intro" replace />} />

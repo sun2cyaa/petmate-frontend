@@ -1,7 +1,11 @@
 import { Link } from "react-router-dom";
 import "./Header.css";
 import { signout } from "../../../services/authService";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
+import {
+  MapPin, Dog, User, Home, LogOut,
+  Map, CreditCard, Star, CalendarCheck, ClipboardList, Building2, Package
+} from "lucide-react"; 
 
 function Header({ isLogined, setIsLogined, user }) {
   const [userOpen, setUserOpen] = useState(false);
@@ -17,7 +21,7 @@ function Header({ isLogined, setIsLogined, user }) {
 
   const displayName =
     user?.name || user?.nickname || user?.email || user?.userId || "사용자";
-  const providerLabel = user?.provider ? ` (${user.provider})` : "";
+
   const profileSrc =
     user?.profileImage || user?.picture || user?.avatarUrl || null;
 
@@ -28,9 +32,7 @@ function Header({ isLogined, setIsLogined, user }) {
     }
     setUserOpen(true);
   };
-
   const onUserLeave = () => {
-    // 약간의 지연을 줘서 커서 이동 중 깜빡임 방지
     closeTimer.current = setTimeout(() => {
       setUserOpen(false);
       closeTimer.current = null;
@@ -39,84 +41,115 @@ function Header({ isLogined, setIsLogined, user }) {
 
   const onUserToggleClick = () => setUserOpen((v) => !v);
 
+  const locationAddress = user?.address || "위치를 설정해주세요";
+
+  // 스크롤할때 쉐도우 효과줌.
+  useEffect(() => {
+    const handleScroll = () => {
+      const headerEl = document.querySelector("header");
+      if (!headerEl) return;
+      if (window.scrollY > 10) {
+        headerEl.classList.add("scrolled");
+      } else {
+        headerEl.classList.remove("scrolled");
+      }
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
-    <header className="header">
-      <Link to="/home" className="logo"><h2>Petmate</h2></Link>
-      <Link to="/map">지도</Link>
-      <Link to="/payment">결제</Link>
-
-      <div className="header_dropdown">
-        <span className="header_company_manage">업체 관리</span>
-        <div className="header_company_manage_menu">
-          <Link to="/companymanage" className="header_company_manage_item">업체 목록</Link>
-          <Link to="/companyregister" className="header_company_manage_item">업체 등록</Link>
+    <header>
+      {/* Top Bar */}
+      <div className="top-bar">
+        <div className="top-left">
+          <Link to="/notice" className="top-btn highlight">공지사항</Link>
+          <Link to="/event" className="top-btn highlight">이벤트</Link>
         </div>
-      </div>
-
-      <div className="header_dropdown">
-        <span className="header_petmate">펫메이트</span>
-        <div className="header_petmate_menu">
-          <Link to="/booking" className="header_petmate_item">예약관리</Link>
-          <Link to="/product" className="header_petmate_item">상품관리</Link>
-        </div>
-      </div>
-
-      {isLogined && <Link to="/become-petmate">펫메이트 되기</Link>}
-
-      <nav className="nav">
-        {!isLogined && <Link to="/signin">로그인/회원가입</Link>}
-
-        {isLogined && (
-          <div
-            className={`header_dropdown user-dropdown ${userOpen ? "open" : ""}`}
-            onMouseEnter={onUserEnter}
-            onMouseLeave={onUserLeave}
-          >
-            <button
-              type="button"
-              className="user-badge"
-              title={displayName}
-              onClick={onUserToggleClick}
-            >
-              <div className="avatar">
-                {profileSrc ? (
-                  <img
-                    src={profileSrc}
-                    alt="프로필"
-                    className="avatar-img"
-                    referrerPolicy="no-referrer"
-                    crossOrigin="anonymous"
-                    onError={(e) => {
-                      e.currentTarget.style.display = "none";
-                      const sib = e.currentTarget.nextElementSibling;
-                      if (sib) sib.style.display = "flex";
-                    }}
-                  />
-                ) : null}
-                <div
-                  className="avatar-fallback"
-                  style={{ display: profileSrc ? "none" : "flex" }}
-                >
-                  {displayName?.trim()?.charAt(0)?.toUpperCase() || "U"}
-                </div>
-              </div>
-              <span className="user-name">
-                {displayName}
-                {providerLabel}
-              </span>
-            </button>
-
-            <div className="user-menu">
-              <Link to="/pets" className="user-menu_item">내 펫 관리</Link>
-              <Link to="/profile" className="user-menu_item">프로필 관리</Link>
-              <Link to="/address" className="user-menu_item">주소 관리</Link>
-              <button className="user-menu_item user-menu_logout" onClick={handleLogout}>
-                로그아웃
-              </button>
+        <div className="top-right">
+          {!isLogined ? (
+            <div className="auth-box">
+              <Link to="/signin" className="auth-btn auth-outline">로그인</Link>
             </div>
-          </div>
-        )}
-      </nav>
+          ) : (
+            <div
+              className={`header_dropdown user-dropdown ${userOpen ? "open" : ""}`}
+              onMouseEnter={onUserEnter}
+              onMouseLeave={onUserLeave}
+            >
+              <button type="button" className="user-badge" onClick={onUserToggleClick}>
+                <div className="avatar">
+                  {profileSrc ? (
+                    <img src={profileSrc} alt="프로필" className="avatar-img" referrerPolicy="no-referrer" />
+                  ) : (
+                    <div className="avatar-fallback">
+                      {displayName?.trim()?.charAt(0)?.toUpperCase() || "U"}
+                    </div>
+                  )}
+                </div>
+                <span className="user-name">{displayName}</span>
+              </button>
+              <div className="user-menu">
+                <Link to="/pets" className="user-menu_item">
+                  <Dog size={16} className="menu-icon" /> 내 펫 관리
+                </Link>
+                <Link to="/profile" className="user-menu_item">
+                  <User size={16} className="menu-icon" /> 프로필 관리
+                </Link>
+                <Link to="/address" className="user-menu_item">
+                  <Home size={16} className="menu-icon" /> 주소 관리
+                </Link>
+                <div className="user-menu_divider"></div>
+                <button className="user-menu_item user-menu_logout" onClick={handleLogout}>
+                  <LogOut size={16} className="menu-icon" /> 로그아웃
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Main Navigation */}
+      <div className="main-nav">
+        {/* 로고 */}
+        <div className="logo-wrap">
+          <Link to="/home" className="logo"><h2>Petmate</h2></Link>
+        </div>
+
+        {/* 로그인 했을 때 모든 메뉴 표시 */}
+        <nav className="nav">
+          {isLogined ? (
+            <>
+              <Link to="/map"><Map size={16} className="nav-icon" /> 지도</Link>
+              <Link to="/payment"><CreditCard size={16} className="nav-icon" /> 결제</Link>
+              <Link to="/favorites"><Star size={16} className="nav-icon" /> 즐겨찾기</Link>
+              <Link to="/bookings"><CalendarCheck size={16} className="nav-icon" /> 예약내역</Link>
+              <Link to="/booking"><ClipboardList size={16} className="nav-icon" /> 예약관리</Link>
+              <Link to="/companymanage"><Building2 size={16} className="nav-icon" /> 업체관리</Link>
+              <Link to="/product"><Package size={16} className="nav-icon" /> 상품관리</Link>
+            </>
+          ) : (
+            <>
+              <Link to="/map"><Map size={16} className="nav-icon" /> 지도</Link>
+            </>
+          )}
+        </nav>
+
+        {/* 내 주소 */}
+        <div className="header-address">
+          {isLogined ? (
+            <Link to="/address">
+              <MapPin size={18} color="#eb9666" style={{ marginRight: "6px" }} />
+              {locationAddress}
+            </Link>
+          ) : (
+            <span>
+              <MapPin size={18} color="#eb9666" style={{ marginRight: "6px" }} />
+              로그인 후 이용 가능
+            </span>
+          )}
+        </div>
+      </div>
     </header>
   );
 }
