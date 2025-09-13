@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import SitterCard from "./../../../components/SitterCard";
 import SectionTitle from "./../../../components/SectionTitle";
 import Footer from "../../../components/common/Footer/Footer";
+import CouponBanner from "./CouponBanner";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination } from "swiper/modules";
 import {
@@ -276,6 +277,8 @@ const HomePage = () => {
 
   return (
     <div className="home-container">
+      {/* 하단 배너 추가 */}
+      <CouponBanner />
       {/* 서비스 검색 */}
       <section className="home-search-section">
         <div className="search-container">
