@@ -33,7 +33,7 @@ import catexpoImg from "../../../assets/images/banners/cat-expo.jpg";
 import expo4Img from "../../../assets/images/banners/expo4Img.png";
 import expo5Img from "../../../assets/images/banners/expo5Img.jpg";
 
-const HomePage = () => {
+const HomePage = ({ isLogined }) => {
   const [activeService, setActiveService] = useState("");
   const [searchText, setSearchText] = useState("");
   const navigate = useNavigate();
@@ -59,213 +59,197 @@ const HomePage = () => {
 
   // 추천 펫메이트
   const sitters = [
-  {
-    id: 1,
-    name: "건이X산책",
-    desc: "강아지 산책 전문 서비스",
-    rating: 4.9,
-    reviews: 127,
-    price: "15,000원",
-    distance: "0.5km",
-    tags: ["산책전문", "대형견OK", "5년경력"],
-    img: "https://placedog.net/800/600?id=1",
-    isVerified: true,
-    responseTime: "평균 1시간 내 응답",
-  },
-  {
-    id: 2,
-    name: "선희의 펫하우스",
-    desc: "24시간 맞춤 돌봄 서비스",
-    rating: 4.8,
-    reviews: 203,
-    price: "25,000원",
-    distance: "2.1km",
-    tags: ["고양이전문", "소형견환영", "응급대응"],
-    img: "https://images.unsplash.com/photo-1592194996308-7b43878e84a6?auto=format&fit=crop&w=800&q=80", // 고양이 돌봄
-    isVerified: true,
-    responseTime: "평균 30분 내 응답",
-  },
-  {
-    id: 3,
-    name: "민중네 애견호텔",
-    desc: "소형견 전용 프리미엄 호텔링",
-    rating: 4.6,
-    reviews: 88,
-    price: "30,000원",
-    distance: "3.5km",
-    tags: ["호텔링", "실시간소통", "소형견전문"],
-    img: "https://placedog.net/800/600?id=2",
-    isVerified: false,
-    responseTime: "평균 2시간 내 응답",
-  },
-  {
-    id: 4,
-    name: "광현펫케어",
-    desc: "반려묘 전담 케어",
-    rating: 5.0,
-    reviews: 64,
-    price: "22,000원",
-    distance: "1.0km",
-    tags: ["고양이전문", "약물투여가능", "10년경력"],
-    img: "https://images.unsplash.com/photo-1518791841217-8f162f1e1131?auto=format&fit=crop&w=800&q=80", // 고양이 케어
-    isVerified: true,
-    responseTime: "평균 20분 내 응답",
-  },
-  {
-    id: 5,
-    name: "성택 펫케어",
-    desc: "대형견 산책과 훈련",
-    rating: 4.7,
-    reviews: 150,
-    price: "18,000원",
-    distance: "4.3km",
-    tags: ["대형견OK", "훈련가능", "운동전문"],
-    img: "https://placedog.net/800/601?id=3", 
-    isVerified: true,
-    responseTime: "평균 40분 내 응답",
-  },
-  {
-    id: 6,
-    name: "형선의 미용샵",
-    desc: "전문 미용 자격 펫 스타일링",
-    rating: 4.5,
-    reviews: 74,
-    price: "35,000원",
-    distance: "0.8km",
-    tags: ["미용전문", "부분미용", "목욕포함"],
-    img: "https://placedog.net/801/600?id=4",
-    isVerified: true,
-    responseTime: "평균 1시간 내 응답",
-  },
-];
-
-
-
+    {
+      id: 1,
+      name: "건이X산책",
+      desc: "강아지 산책 전문 서비스",
+      rating: 4.9,
+      reviews: 127,
+      price: "15,000원",
+      distance: "0.5km",
+      tags: ["산책전문", "대형견OK", "5년경력"],
+      img: "https://placedog.net/800/600?id=1",
+      isVerified: true,
+      responseTime: "평균 1시간 내 응답",
+    },
+    {
+      id: 2,
+      name: "선희의 펫하우스",
+      desc: "24시간 맞춤 돌봄 서비스",
+      rating: 4.8,
+      reviews: 203,
+      price: "25,000원",
+      distance: "2.1km",
+      tags: ["고양이전문", "소형견환영", "응급대응"],
+      img: "https://images.unsplash.com/photo-1592194996308-7b43878e84a6?auto=format&fit=crop&w=800&q=80",
+      isVerified: true,
+      responseTime: "평균 30분 내 응답",
+    },
+    {
+      id: 3,
+      name: "민중네 애견호텔",
+      desc: "소형견 전용 프리미엄 호텔링",
+      rating: 4.6,
+      reviews: 88,
+      price: "30,000원",
+      distance: "3.5km",
+      tags: ["호텔링", "실시간소통", "소형견전문"],
+      img: "https://placedog.net/800/600?id=2",
+      isVerified: false,
+      responseTime: "평균 2시간 내 응답",
+    },
+    {
+      id: 4,
+      name: "광현펫케어",
+      desc: "반려묘 전담 케어",
+      rating: 5.0,
+      reviews: 64,
+      price: "22,000원",
+      distance: "1.0km",
+      tags: ["고양이전문", "약물투여가능", "10년경력"],
+      img: "https://images.unsplash.com/photo-1518791841217-8f162f1e1131?auto=format&fit=crop&w=800&q=80",
+      isVerified: true,
+      responseTime: "평균 20분 내 응답",
+    },
+    {
+      id: 5,
+      name: "성택 펫케어",
+      desc: "대형견 산책과 훈련",
+      rating: 4.7,
+      reviews: 150,
+      price: "18,000원",
+      distance: "4.3km",
+      tags: ["대형견OK", "훈련가능", "운동전문"],
+      img: "https://placedog.net/800/601?id=3",
+      isVerified: true,
+      responseTime: "평균 40분 내 응답",
+    },
+    {
+      id: 6,
+      name: "형선의 미용샵",
+      desc: "전문 미용 자격 펫 스타일링",
+      rating: 4.5,
+      reviews: 74,
+      price: "35,000원",
+      distance: "0.8km",
+      tags: ["미용전문", "부분미용", "목욕포함"],
+      img: "https://placedog.net/801/600?id=4",
+      isVerified: true,
+      responseTime: "평균 1시간 내 응답",
+    },
+  ];
 
   // 후기
   const reviews = [
-  {
-    id: 1,
-    name: "김민주",
-    comment: "처음 맡겼는데 아이가 너무 즐겁게 다녀왔어요!",
-    service: "돌봄",
-    date: "2025.09.11",
-    petType: "말티즈",
-    img: "https://randomuser.me/api/portraits/women/44.jpg",
-    rating: 5,
-  },
-  {
-    id: 2,
-    name: "박철수",
-    comment: "강아지가 산책을 정말 좋아했어요.",
-    service: "산책",
-    date: "2025.09.10",
-    petType: "골든 리트리버",
-    img: "https://randomuser.me/api/portraits/men/32.jpg",
-    rating: 4,
-  },
-  {
-    id: 3,
-    name: "이서연",
-    comment: "펫시터님이 사진을 자주 보내주셔서 안심됐습니다.",
-    service: "돌봄",
-    date: "2025.09.09",
-    petType: "푸들",
-    img: "https://randomuser.me/api/portraits/women/65.jpg",
-    rating: 5,
-  },
-  {
-    id: 4,
-    name: "정우성",
-    comment: "호텔 서비스가 깔끔하고 만족스러웠어요.",
-    service: "호텔",
-    date: "2025.09.08",
-    petType: "시바견",
-    img: "https://randomuser.me/api/portraits/men/41.jpg",
-    rating: 4,
-  },
-  {
-    id: 5,
-    name: "한지민",
-    comment: "고양이가 낯을 가리는데 케어 잘 해주셔서 감사해요.",
-    service: "돌봄",
-    date: "2025.09.07",
-    petType: "스피츠",
-    img: "https://randomuser.me/api/portraits/women/23.jpg",
-    rating: 5,
-  },
-  {
-    id: 6,
-    name: "최민호",
-    comment: "미용 후에 아이가 너무 깔끔해졌습니다!",
-    service: "미용",
-    date: "2025.09.06",
-    petType: "포메라니안",
-    img: "https://randomuser.me/api/portraits/men/55.jpg",
-    rating: 5,
-  },
-  {
-    id: 7,
-    name: "오하늘",
-    comment: "응급 상황에도 빠르게 대처해주셨어요.",
-    service: "병원",
-    date: "2025.09.05",
-    petType: "닥스훈트",
-    img: "https://randomuser.me/api/portraits/women/18.jpg",
-    rating: 5,
-  },
-  {
-    id: 8,
-    name: "강동훈",
-    comment: "산책을 규칙적으로 해주셔서 아이가 건강해졌습니다.",
-    service: "산책",
-    date: "2025.09.04",
-    petType: "보더콜리",
-    img: "https://randomuser.me/api/portraits/men/67.jpg",
-    rating: 4,
-  },
-  {
-    id: 9,
-    name: "유지은",
-    comment: "처음 맡겨봤는데 걱정이 사라졌습니다.",
-    service: "호텔",
-    date: "2025.09.03",
-    petType: "스코티시폴드",
-    img: "https://randomuser.me/api/portraits/women/12.jpg",
-    rating: 5,
-  },
-  {
-    id: 10,
-    name: "장현수",
-    comment: "예방 접종 안내 덕분에 놓치지 않았습니다.",
-    service: "병원",
-    date: "2025.09.02",
-    petType: "믹스견",
-    img: "https://randomuser.me/api/portraits/men/29.jpg",
-    rating: 4,
-  },
-];
-
+    {
+      id: 1,
+      name: "김민주",
+      comment: "처음 맡겼는데 아이가 너무 즐겁게 다녀왔어요!",
+      service: "돌봄",
+      date: "2025.09.11",
+      petType: "말티즈",
+      img: "https://randomuser.me/api/portraits/women/44.jpg",
+      rating: 5,
+    },
+    {
+      id: 2,
+      name: "박철수",
+      comment: "강아지가 산책을 정말 좋아했어요.",
+      service: "산책",
+      date: "2025.09.10",
+      petType: "골든 리트리버",
+      img: "https://randomuser.me/api/portraits/men/32.jpg",
+      rating: 4,
+    },
+    {
+      id: 3,
+      name: "이서연",
+      comment: "펫시터님이 사진을 자주 보내주셔서 안심됐습니다.",
+      service: "돌봄",
+      date: "2025.09.09",
+      petType: "푸들",
+      img: "https://randomuser.me/api/portraits/women/65.jpg",
+      rating: 5,
+    },
+    {
+      id: 4,
+      name: "정우성",
+      comment: "호텔 서비스가 깔끔하고 만족스러웠어요.",
+      service: "호텔",
+      date: "2025.09.08",
+      petType: "시바견",
+      img: "https://randomuser.me/api/portraits/men/41.jpg",
+      rating: 4,
+    },
+    {
+      id: 5,
+      name: "한지민",
+      comment: "고양이가 낯을 가리는데 케어 잘 해주셔서 감사해요.",
+      service: "돌봄",
+      date: "2025.09.07",
+      petType: "스피츠",
+      img: "https://randomuser.me/api/portraits/women/23.jpg",
+      rating: 5,
+    },
+    {
+      id: 6,
+      name: "최민호",
+      comment: "미용 후에 아이가 너무 깔끔해졌습니다!",
+      service: "미용",
+      date: "2025.09.06",
+      petType: "포메라니안",
+      img: "https://randomuser.me/api/portraits/men/55.jpg",
+      rating: 5,
+    },
+    {
+      id: 7,
+      name: "오하늘",
+      comment: "응급 상황에도 빠르게 대처해주셨어요.",
+      service: "병원",
+      date: "2025.09.05",
+      petType: "닥스훈트",
+      img: "https://randomuser.me/api/portraits/women/18.jpg",
+      rating: 5,
+    },
+    {
+      id: 8,
+      name: "강동훈",
+      comment: "산책을 규칙적으로 해주셔서 아이가 건강해졌습니다.",
+      service: "산책",
+      date: "2025.09.04",
+      petType: "보더콜리",
+      img: "https://randomuser.me/api/portraits/men/67.jpg",
+      rating: 4,
+    },
+    {
+      id: 9,
+      name: "유지은",
+      comment: "처음 맡겨봤는데 걱정이 사라졌습니다.",
+      service: "호텔",
+      date: "2025.09.03",
+      petType: "스코티시폴드",
+      img: "https://randomuser.me/api/portraits/women/12.jpg",
+      rating: 5,
+    },
+    {
+      id: 10,
+      name: "장현수",
+      comment: "예방 접종 안내 덕분에 놓치지 않았습니다.",
+      service: "병원",
+      date: "2025.09.02",
+      petType: "믹스견",
+      img: "https://randomuser.me/api/portraits/men/29.jpg",
+      rating: 4,
+    },
+  ];
 
   // 통계
   const stats = [
-    { number: "50,000 +", label: "누적 서비스"},
-    { number: "98%", label: "만족도"},
-    { number: "1,200 +", label: "펫메이트"},
-    { number: "24시간 고객센터", label: "고객지원"},
+    { number: "50,000 +", label: "누적 서비스" },
+    { number: "98%", label: "만족도" },
+    { number: "1,200 +", label: "펫메이트" },
+    { number: "24시간 고객센터", label: "고객지원" },
   ];
-
-  {/* ---- 통계 ---- */}
-<section className="home-stats-section">
-  <div className="stats-grid">
-    {stats.map((stat, idx) => (
-      <div key={idx} className="stat-card">
-        <h3>{stat.number}</h3>
-        <p>{stat.label}</p>
-      </div>
-    ))}
-  </div>
-</section>
 
   const handleServiceClick = (serviceId) => {
     setActiveService(activeService === serviceId ? "" : serviceId);
@@ -277,8 +261,9 @@ const HomePage = () => {
 
   return (
     <div className="home-container">
-      {/* 하단 배너 추가 */}
-      <CouponBanner />
+      {/* 로그인 안 한 상태에서만 보임 */}
+      {!isLogined && <CouponBanner />}
+
       {/* 서비스 검색 */}
       <section className="home-search-section">
         <div className="search-container">
@@ -322,7 +307,6 @@ const HomePage = () => {
           <div className="search-right">
             <div className="pet-alert-card">
               <img src="/images/dog2.jpg" alt="dog" className="pet-img" />
-
               <div className="alert-box box1"><FaBell /> 오늘 예약이 있습니다!</div>
               <div className="alert-box box2"><FaBirthdayCake /> 곰이의 생일이 다가와요</div>
               <div className="alert-box box3"><FaClinicMedical /> 근처 동물병원 20곳</div>
@@ -374,7 +358,11 @@ const HomePage = () => {
           <SectionTitle title="근처 추천 펫메이트" subtitle="검증된 전문가들과 함께하세요" />
           <div className="sitters-grid">
             {sitters.map((sitter) => (
-              <SitterCard key={sitter.id} sitter={sitter} onClick={() => navigate(`/map?sitterId=${sitter.id}`)} />
+              <SitterCard
+                key={sitter.id}
+                sitter={sitter}
+                onClick={() => navigate(`/map?sitterId=${sitter.id}`)}
+              />
             ))}
           </div>
           <div className="view-more-section">
@@ -424,6 +412,7 @@ const HomePage = () => {
         </div>
       </section>
 
+      {/* 이용자 후기 */}
       <section className="home-reviews-section">
         <SectionTitle title="이용자 후기" subtitle="실제 이용자들의 생생한 경험담" center />
         <Swiper
