@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './Test.css';
+import { SingleImageUpload, MultipleImageUpload } from '../../util/ImageUploadUtil';
 
 const API_BASE_URL = 'http://localhost:8090/api/test/jpa';
+const FILE_API_BASE_URL = 'http://localhost:8090/api/files';
 
 const Test = () => {
     const [tests, setTests] = useState([]);
@@ -13,6 +15,12 @@ const Test = () => {
         description: ''
     });
     const [editingId, setEditingId] = useState(null);
+    
+    // 이미지 업로드 관련 상태
+    const [singleFile, setSingleFile] = useState(null);
+    const [multipleFiles, setMultipleFiles] = useState([]);
+    const [uploadResult, setUploadResult] = useState(null);
+    const [uploadedImages, setUploadedImages] = useState([]);
 
     // 전체 조회
     const fetchTests = async () => {
@@ -130,6 +138,130 @@ const Test = () => {
         }
     };
 
+    // 단일 파일 선택 핸들러
+    const handleSingleFileChange = (e) => {
+        const file = e.target.files[0];
+        setSingleFile(file);
+        setUploadResult(null);
+    };
+
+    // 다중 파일 선택 핸들러
+    const handleMultipleFileChange = (e) => {
+        const files = Array.from(e.target.files);
+        setMultipleFiles(files);
+        setUploadResult(null);
+    };
+
+    // 단일 이미지 업로드
+    const handleSingleUpload = async () => {
+        if (!singleFile) {
+            setError('파일을 선택해주세요.');
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('file', singleFile);
+        formData.append('imageTypeCode', '01');
+        formData.append('referenceId', 1);
+
+        setLoading(true);
+        setError('');
+
+        console.log('formData entries:');
+        for (let [key, value] of formData.entries()) {
+            console.log(key, value);
+        }
+        try {
+            const response = await axios.post(`${FILE_API_BASE_URL}/upload/single`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+
+            setUploadResult(response.data);
+            if (response.data.success) {
+                setUploadedImages(prev => [...prev, response.data.filePath]);
+            }
+            console.log('단일 업로드 성공:', response.data);
+        } catch (err) {
+            setError('단일 업로드 실패: ' + err.message);
+            console.error('단일 업로드 에러:', err);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // 다중 이미지 업로드
+    const handleMultipleUpload = async () => {
+        if (multipleFiles.length === 0) {
+            setError('파일을 선택해주세요.');
+            return;
+        }
+
+        const formData = new FormData();
+        multipleFiles.forEach(file => {
+            formData.append('files', file);
+        });
+        formData.append('imageTypeCode', '01');
+        formData.append('referenceId', 1);
+        formData.append('setFirstAsThumbnail', false);
+
+        setLoading(true);
+        setError('');
+
+        try {
+            const response = await axios.post(`${FILE_API_BASE_URL}/upload/multiple`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+
+            setUploadResult(response.data);
+            if (response.data.success) {
+                setUploadedImages(prev => [...prev, ...response.data.filePaths]);
+            }
+            console.log('다중 업로드 성공:', response.data);
+        } catch (err) {
+            setError('다중 업로드 실패: ' + err.message);
+            console.error('다중 업로드 에러:', err);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // 이미지 삭제
+    const handleDeleteImage = async (filePath) => {
+        if (!window.confirm('이미지를 삭제하시겠습니까?')) return;
+
+        setLoading(true);
+        setError('');
+
+        try {
+            const response = await axios.delete(`${FILE_API_BASE_URL}/delete`, {
+                params: { filePath }
+            });
+
+            if (response.data.success) {
+                setUploadedImages(prev => prev.filter(path => path !== filePath));
+                console.log('이미지 삭제 성공');
+            }
+        } catch (err) {
+            setError('이미지 삭제 실패: ' + err.message);
+            console.error('이미지 삭제 에러:', err);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // 파일 선택 초기화
+    const handleClearFiles = () => {
+        setSingleFile(null);
+        setMultipleFiles([]);
+        setUploadResult(null);
+        document.getElementById('singleFile').value = '';
+        document.getElementById('multipleFiles').value = '';
+    };
+
     return (
         <div id="test-container">
             <h1>🚀 USER 엔티티 테스트 페이지</h1>
@@ -177,6 +309,170 @@ const Test = () => {
                     </div>
                 </form>
             </div>
+
+            {/* 새로운 이미지 업로드 컴포넌트 테스트 */}
+            <div className="form-section">
+                <h2>🆕 이미지 업로드 유틸 컴포넌트 테스트</h2>
+
+                <div className="upload-section">
+                    <h3>단일 이미지 업로드 컴포넌트</h3>
+                    <SingleImageUpload
+                        imageTypeCode="01"
+                        referenceId={1}
+                        onUploadSuccess={(result) => {
+                            console.log('단일 업로드 성공:', result);
+                            alert(`업로드 성공: ${result.filePath}`);
+                        }}
+                        onUploadError={(error) => {
+                            console.error('단일 업로드 실패:', error);
+                            alert(`업로드 실패: ${error}`);
+                        }}
+                        buttonText="프로필 이미지 업로드"
+                        maxFileSize={5 * 1024 * 1024} // 5MB
+                    />
+                </div>
+
+                <div className="upload-section">
+                    <h3>다중 이미지 업로드 컴포넌트</h3>
+                    <MultipleImageUpload
+                        imageTypeCode="02"
+                        referenceId={2}
+                        maxFiles={5}
+                        setFirstAsThumbnail={true}
+                        onUploadSuccess={(result) => {
+                            console.log('다중 업로드 성공:', result);
+                            alert(`업로드 성공: ${result.filePaths?.length}개 파일`);
+                        }}
+                        onUploadError={(error) => {
+                            console.error('다중 업로드 실패:', error);
+                            alert(`업로드 실패: ${error}`);
+                        }}
+                        buttonText="펫 사진 업로드"
+                        maxFileSize={10 * 1024 * 1024} // 10MB
+                    />
+                </div>
+            </div>
+
+            {/* 기존 이미지 업로드 섹션 */}
+            <div className="form-section">
+                <h2>📷 기존 이미지 업로드 테스트</h2>
+                
+                {/* 단일 이미지 업로드 */}
+                <div className="upload-section">
+                    <h3>단일 이미지 업로드</h3>
+                    <div className="form-group">
+                        <label htmlFor="singleFile">이미지 선택:</label>
+                        <input
+                            type="file"
+                            id="singleFile"
+                            accept="image/*"
+                            onChange={handleSingleFileChange}
+                        />
+                        {singleFile && (
+                            <p className="file-info">선택된 파일: {singleFile.name} ({(singleFile.size / 1024).toFixed(1)}KB)</p>
+                        )}
+                    </div>
+                    <button 
+                        onClick={handleSingleUpload} 
+                        disabled={loading || !singleFile}
+                        className="btn-primary"
+                    >
+                        {loading ? '업로드 중...' : '단일 업로드'}
+                    </button>
+                </div>
+
+                {/* 다중 이미지 업로드 */}
+                <div className="upload-section">
+                    <h3>다중 이미지 업로드</h3>
+                    <div className="form-group">
+                        <label htmlFor="multipleFiles">이미지들 선택:</label>
+                        <input
+                            type="file"
+                            id="multipleFiles"
+                            accept="image/*"
+                            multiple
+                            onChange={handleMultipleFileChange}
+                        />
+                        {multipleFiles.length > 0 && (
+                            <div className="file-info">
+                                <p>선택된 파일 {multipleFiles.length}개:</p>
+                                <ul>
+                                    {multipleFiles.map((file, index) => (
+                                        <li key={index}>{file.name} ({(file.size / 1024).toFixed(1)}KB)</li>
+                                    ))}
+                                </ul>
+                            </div>
+                        )}
+                    </div>
+                    <button 
+                        onClick={handleMultipleUpload} 
+                        disabled={loading || multipleFiles.length === 0}
+                        className="btn-primary"
+                    >
+                        {loading ? '업로드 중...' : `다중 업로드 (${multipleFiles.length}개)`}
+                    </button>
+                </div>
+
+                {/* 파일 선택 초기화 */}
+                <button onClick={handleClearFiles} className="btn-secondary">
+                    🗑️ 파일 선택 초기화
+                </button>
+
+                {/* 업로드 결과 */}
+                {uploadResult && (
+                    <div className={`upload-result ${uploadResult.success ? 'success' : 'error'}`}>
+                        <h4>업로드 결과:</h4>
+                        <p><strong>상태:</strong> {uploadResult.success ? '성공' : '실패'}</p>
+                        <p><strong>메시지:</strong> {uploadResult.message}</p>
+                        {uploadResult.filePath && (
+                            <p><strong>파일 경로:</strong> {uploadResult.filePath}</p>
+                        )}
+                        {uploadResult.filePaths && (
+                            <div>
+                                <p><strong>업로드된 파일들 ({uploadResult.uploadCount}개):</strong></p>
+                                <ul>
+                                    {uploadResult.filePaths.map((path, index) => (
+                                        <li key={index}>{path}</li>
+                                    ))}
+                                </ul>
+                            </div>
+                        )}
+                    </div>
+                )}
+            </div>
+
+            {/* 업로드된 이미지 목록 */}
+            {uploadedImages.length > 0 && (
+                <div className="form-section">
+                    <h2>📁 업로드된 이미지 목록 ({uploadedImages.length}개)</h2>
+                    <div className="uploaded-images">
+                        {uploadedImages.map((imagePath, index) => (
+                            <div key={index} className="uploaded-image-item">
+                                <div className="image-info">
+                                    <p><strong>경로:</strong> {imagePath}</p>
+                                    <img 
+                                        src={`http://localhost:8090/${imagePath}`} 
+                                        alt={`Uploaded ${index + 1}`}
+                                        style={{ maxWidth: '200px', maxHeight: '150px', objectFit: 'cover' }}
+                                        onError={(e) => {
+                                            e.target.style.display = 'none';
+                                            e.target.nextSibling.style.display = 'block';
+                                        }}
+                                    />
+                                    <div style={{ display: 'none', color: 'red' }}>이미지 로드 실패</div>
+                                </div>
+                                <button 
+                                    onClick={() => handleDeleteImage(imagePath)}
+                                    className="btn-delete"
+                                    disabled={loading}
+                                >
+                                    🗑️ 삭제
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
 
             {/* 컨트롤 버튼들 */}
             <div className="control-section">
