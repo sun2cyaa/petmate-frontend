@@ -416,15 +416,16 @@ function CompanyRegisterPage() {
                 
                 // 개인(일반인) vs 개인/법인사업자별 정보
                 if (companyType === "PERSONAL") {
-                    // 개인(일반인) - 주민번호와 성함만
+                    // 개인(일반인) - 주민번호와 성함
                     formData.append('ssnFirst', formInputs.ssnFirst);
                     formData.append('ssnSecond', formInputs.ssnSecond);
-                    formData.append('repName', formInputs.personalName);
+                    formData.append('personalName', formInputs.personalName);
                 } else {
                     // 개인/법인사업자 - 사업자번호, 상호명, 대표자명
-                    formData.append('bizRegNo', formInputs.businessNumber);
-                    formData.append('companyName', formInputs.corporationName);
-                    formData.append('repName', formInputs.representativeName);
+                    const cleanBizRegNo = formInputs.businessNumber.replace(/[^0-9]/g, '');
+                    formData.append('bizRegNo', cleanBizRegNo);
+                    formData.append('corporationName', formInputs.corporationName);
+                    formData.append('representativeName', formInputs.representativeName);
                 }
                 
                 // 공통 정보
@@ -438,8 +439,16 @@ function CompanyRegisterPage() {
                 const fullPhoneNumber = `${formInputs.phone1}-${formInputs.phone2}-${formInputs.phone3}`;
                 formData.append('tel', fullPhoneNumber);
                 
-                // 서비스 관련
-                formData.append('repService', formInputs.mainService);
+                // 서비스 관련 (한글 라벨을 숫자 코드로 변환)
+                const serviceCodeMapping = {
+                    '돌봄': '1',
+                    '산책': '2',
+                    '미용': '3',
+                    '병원': '4',
+                    '기타': '9'
+                };
+                const repServiceCode = serviceCodeMapping[formInputs.mainService] || formInputs.mainService;
+                formData.append('repService', repServiceCode);
                 formData.append('services', JSON.stringify(checkService));
                 
                 // 운영시간
