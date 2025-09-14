@@ -52,6 +52,14 @@ export const updateCompanyStatus = async (id, status) => {
   return response.data;
 };
 
+// 국세청 사업자등록번호 검증
+export const validateBusinessNumber = async (businessNumber) => {
+  const response = await apiRequest.post('/api/company/validate-business', {
+    businessNumber: businessNumber
+  });
+  return response.data;
+};
+
 // 내가 등록한 업체 목록 조회
 export const getMyCompanies = async () => {
   const response = await apiRequest.get("/api/company/my");
