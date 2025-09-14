@@ -1,7 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './Test.css';
-import { SingleImageUpload, MultipleImageUpload } from '../../util/ImageUploadUtil';
+import {
+    SingleImageUpload,
+    MultipleImageUpload,
+    ImageSlider,
+    ImageUploadViewer,
+    fetchImagesByReference,
+    fetchSingleImage
+} from '../../util/ImageUtil';
 
 const API_BASE_URL = 'http://localhost:8090/api/test/jpa';
 const FILE_API_BASE_URL = 'http://localhost:8090/api/files';
@@ -310,12 +317,13 @@ const Test = () => {
                 </form>
             </div>
 
-            {/* 새로운 이미지 업로드 컴포넌트 테스트 */}
+            {/* 🆕 새로운 ImageUtil 컴포넌트 테스트 */}
             <div className="form-section">
-                <h2>🆕 이미지 업로드 유틸 컴포넌트 테스트</h2>
+                <h2>🆕 ImageUtil 컴포넌트 테스트</h2>
 
+                {/* 기본 업로드 컴포넌트 */}
                 <div className="upload-section">
-                    <h3>단일 이미지 업로드 컴포넌트</h3>
+                    <h3>1. 단일 이미지 업로드 컴포넌트</h3>
                     <SingleImageUpload
                         imageTypeCode="01"
                         referenceId={1}
@@ -333,7 +341,7 @@ const Test = () => {
                 </div>
 
                 <div className="upload-section">
-                    <h3>다중 이미지 업로드 컴포넌트</h3>
+                    <h3>2. 다중 이미지 업로드 컴포넌트</h3>
                     <MultipleImageUpload
                         imageTypeCode="02"
                         referenceId={2}
@@ -351,9 +359,117 @@ const Test = () => {
                         maxFileSize={10 * 1024 * 1024} // 10MB
                     />
                 </div>
+
+                {/* 이미지 슬라이더 테스트 */}
+                <div className="upload-section">
+                    <h3>3. 이미지 슬라이더 컴포넌트</h3>
+                    <p>📝 테스트용 샘플 이미지들을 슬라이드로 표시:</p>
+                    <ImageSlider
+                        images={[
+                            { filePath: 'https://picsum.photos/400/300?random=1', alt: '샘플 이미지 1' },
+                            { filePath: 'https://picsum.photos/400/300?random=2', alt: '샘플 이미지 2' },
+                            { filePath: 'https://picsum.photos/400/300?random=3', alt: '샘플 이미지 3' },
+                        ]}
+                        showDots={true}
+                        showArrows={true}
+                        autoSlide={true}
+                        slideInterval={4000}
+                        onImageClick={(image, index) => {
+                            console.log('이미지 클릭:', image, index);
+                            alert(`${index + 1}번째 이미지 클릭됨`);
+                        }}
+                        className="test-slider"
+                    />
+                </div>
+
+                {/* 통합 업로드/뷰어 컴포넌트 */}
+                <div className="upload-section">
+                    <h3>4. 통합 업로드/뷰어 컴포넌트 (단일 모드)</h3>
+                    <p>📝 이미지가 없으면 업로드 영역, 있으면 이미지 표시 + 변경 버튼:</p>
+                    <ImageUploadViewer
+                        imageTypeCode="03"
+                        referenceId={3}
+                        mode="single"
+                        onUploadSuccess={(result) => {
+                            console.log('통합 단일 업로드 성공:', result);
+                            alert('단일 이미지 업로드 성공!');
+                        }}
+                        onUploadError={(error) => {
+                            console.error('통합 단일 업로드 실패:', error);
+                            alert(`업로드 실패: ${error}`);
+                        }}
+                        onViewError={(error) => {
+                            console.error('이미지 조회 실패:', error);
+                        }}
+                        emptyPlaceholder="프로필 이미지를 업로드하려면 클릭하세요"
+                        className="test-upload-viewer"
+                    />
+                </div>
+
+                <div className="upload-section">
+                    <h3>5. 통합 업로드/뷰어 컴포넌트 (다중 모드)</h3>
+                    <p>📝 이미지들을 슬라이드로 보여주며 추가 업로드 가능:</p>
+                    <ImageUploadViewer
+                        imageTypeCode="04"
+                        referenceId={4}
+                        mode="multiple"
+                        maxFiles={8}
+                        onUploadSuccess={(result) => {
+                            console.log('통합 다중 업로드 성공:', result);
+                            alert(`다중 이미지 업로드 성공! ${result.uploadCount}개 파일`);
+                        }}
+                        onUploadError={(error) => {
+                            console.error('통합 다중 업로드 실패:', error);
+                            alert(`업로드 실패: ${error}`);
+                        }}
+                        onViewError={(error) => {
+                            console.error('이미지 조회 실패:', error);
+                        }}
+                        emptyPlaceholder="펫 사진들을 업로드하려면 클릭하세요"
+                        className="test-upload-viewer"
+                    />
+                </div>
+
+                {/* 조회 기능 테스트 */}
+                <div className="upload-section">
+                    <h3>6. 이미지 조회 기능 테스트</h3>
+                    <div style={{ display: 'flex', gap: '10px', marginBottom: '15px' }}>>
+                        <button
+                            className="btn-secondary"
+                            onClick={async () => {
+                                try {
+                                    const result = await fetchImagesByReference('01', 1);
+                                    console.log('다중 조회 결과:', result);
+                                    alert(`조회 성공: ${result.data?.length || 0}개 이미지`);
+                                } catch (error) {
+                                    console.error('조회 실패:', error);
+                                    alert('조회 실패: ' + error.message);
+                                }
+                            }}
+                        >
+                            📄 참조 기준 다중 조회 (타입:01, 참조ID:1)
+                        </button>
+                        <button
+                            className="btn-secondary"
+                            onClick={async () => {
+                                try {
+                                    const result = await fetchSingleImage('uploads/sample.jpg');
+                                    console.log('단일 조회 결과:', result);
+                                    alert('단일 조회 성공');
+                                } catch (error) {
+                                    console.error('단일 조회 실패:', error);
+                                    alert('단일 조회 실패: ' + error.message);
+                                }
+                            }}
+                        >
+                            🖼️ 단일 이미지 조회 테스트
+                        </button>
+                    </div>
+                    <p><small>💡 브라우저 콘솔에서 결과를 확인하세요.</small></p>
+                </div>
             </div>
 
-            {/* 기존 이미지 업로드 섹션 */}
+            {/* 🔧 기존 이미지 업로드 섹션 (디버깅용) */}
             <div className="form-section">
                 <h2>📷 기존 이미지 업로드 테스트</h2>
                 
