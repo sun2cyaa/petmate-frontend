@@ -514,10 +514,12 @@ export const ImageUploadViewer = ({
     maxFiles = 10,
     className = '',
     emptyPlaceholder = '이미지를 업로드하려면 클릭하거나 드래그하세요',
-    disabled = false
+    disabled = false,
+    files,
+    setFiles
 }) => {
     const [images, setImages] = useState([]);
-    const [uploadFiles, setUploadFiles] = useState([]);
+    // const [uploadFiles, setUploadFiles] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [uploadMode, setUploadMode] = useState(false);
@@ -561,10 +563,10 @@ export const ImageUploadViewer = ({
 
         if (mode === 'single') {
             // 단일 모드: 기존 파일 대체
-            setUploadFiles(fileArray.slice(0, 1));
+            setFiles(fileArray.slice(0, 1));
         } else {
             // 다중 모드: 파일 추가 (최대 개수 제한)
-            setUploadFiles(prev => {
+            setFiles(prev => {
                 const combined = [...prev, ...fileArray];
                 if (combined.length > maxFiles) {
                     setError(`최대 ${maxFiles}개의 파일만 업로드할 수 있습니다.`);
@@ -589,21 +591,21 @@ export const ImageUploadViewer = ({
 
     // 파일 삭제
     const handleRemoveFile = (indexToRemove) => {
-        setUploadFiles(prev => prev.filter((_, index) => index !== indexToRemove));
+        setFiles(prev => prev.filter((_, index) => index !== indexToRemove));
     };
 
     // 업로드 실행
     const handleUpload = async () => {
-        if (uploadFiles.length === 0) {
+        if (files.length === 0) {
             setError('파일을 선택해주세요.');
             return;
         }
 
         const formData = new FormData();
         if (mode === 'single') {
-            formData.append('file', uploadFiles[0]);
+            formData.append('file', files[0]);
         } else {
-            uploadFiles.forEach(file => {
+            files.forEach(file => {
                 formData.append('files', file);
             });
             formData.append('setFirstAsThumbnail', false);
@@ -624,7 +626,7 @@ export const ImageUploadViewer = ({
 
             if (response.data.success) {
                 onUploadSuccess(response.data);
-                setUploadFiles([]);
+                setFiles([]);
                 setUploadMode(false);
                 loadImages(); // 목록 새로고침
             } else {
@@ -642,14 +644,14 @@ export const ImageUploadViewer = ({
     // 업로드 모드 진입
     const handleStartUpload = () => {
         setUploadMode(true);
-        setUploadFiles([]);
+        setFiles([]);
         setError('');
     };
 
     // 업로드 취소
     const handleCancelUpload = () => {
         setUploadMode(false);
-        setUploadFiles([]);
+        setFiles([]);
         setError('');
     };
 
@@ -699,11 +701,11 @@ export const ImageUploadViewer = ({
 
                     <div
                         className="file-upload-area"
-                        onClick={uploadFiles.length === 0 ? handleClickArea : undefined}
+                        onClick={files.length === 0 ? handleClickArea : undefined}
                         onDragOver={(e) => e.preventDefault()}
                         onDrop={handleDrop}
                     >
-                        {uploadFiles.length === 0 ? (
+                        {files.length === 0 ? (
                             <div className="upload-placeholder">
                                 <div className="upload-icon">📁</div>
                                 <p>여기에 이미지를 드래그하거나 클릭해서 업로드하세요</p>
@@ -711,7 +713,7 @@ export const ImageUploadViewer = ({
                             </div>
                         ) : (
                             <div className="uploaded-files">
-                                {uploadFiles.map((file, index) => (
+                                {files.map((file, index) => (
                                     <div key={index} className="file-item">
                                         <img
                                             src={URL.createObjectURL(file)}
@@ -729,7 +731,7 @@ export const ImageUploadViewer = ({
                                     </div>
                                 ))}
 
-                                {mode === 'multiple' && uploadFiles.length < maxFiles && (
+                                {mode === 'multiple' && files.length < maxFiles && (
                                     <div className="add-more-files" onClick={handleClickArea}>
                                         + 추가
                                     </div>
@@ -762,10 +764,10 @@ export const ImageUploadViewer = ({
                         <button
                             type="button"
                             onClick={handleUpload}
-                            disabled={loading || uploadFiles.length === 0}
+                            disabled={loading || files.length === 0}
                             className="upload-btn"
                         >
-                            {loading ? '업로드 중...' : `업로드 (${uploadFiles.length}개)`}
+                            {loading ? '업로드 중...' : `업로드 (${files.length}개)`}
                         </button>
                     </div>
                 </div>

@@ -758,6 +758,8 @@ function CompanyRegisterPage() {
                                 referenceId={11}
                                 buttonText="업체 사진 업로드"
                                 mode="multiple"
+                                files={files}
+                                setFiles={setFiles}
                             />
 
                         </div>
