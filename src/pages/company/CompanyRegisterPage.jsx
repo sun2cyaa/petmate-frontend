@@ -1,11 +1,15 @@
 import React, { useState, useRef, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import "./CompanyRegisterPage.css";
-import { registerCompany, checkBusinessNumber } from "../../services/companyService";
+import { registerCompany, updateCompany, getCompanyById, checkBusinessNumber, validateBusinessNumber } from "../../services/companyService";
 import MapModal from "../user/owner/MyPage/Address/components/MapModal";
-import { ImageUploadViewer, MultipleImageUpload } from "../../util/ImageUtil";
+import { ImageUploadViewer } from "../../util/ImageUtil";
 
 function CompanyRegisterPage() {
+    // URL에서 ID 파라미터 가져오기 (수정 모드 감지)
+    const { id: companyId } = useParams();
+    const isEditMode = Boolean(companyId);
+    const navigate = useNavigate();
 
     const serviceCategories = ["돌봄", "산책", "미용", "병원", "기타"];
     const days = ["월요일", "화요일", "수요일", "목요일", "금요일", "토요일", "일요일"];
@@ -15,6 +19,14 @@ function CompanyRegisterPage() {
         );
     const clone = (obj) =>
         typeof structuredClone === "function" ? structuredClone(obj) : JSON.parse(JSON.stringify(obj));
+
+    // 서비스 코드 매핑
+    const serviceCodeMapping = {
+        '돌봄': '1', '산책': '2', '미용': '3', '병원': '4', '기타': '9'
+    };
+    const serviceLabelMapping = {
+        '1': '돌봄', '2': '산책', '3': '미용', '4': '병원', '9': '기타'
+    };
 
     // hook
     const [companyType, setCompanyType] = useState("PERSONAL");
@@ -54,8 +66,12 @@ function CompanyRegisterPage() {
         phone3: '',
         introduction: ''
     });
-    const navigate = useNavigate();
-    const inputRef = useRef(null);
+    
+    // 수정 모드용 추가 상태들
+    const [loading, setLoading] = useState(isEditMode); // 수정 모드일 때만 로딩
+    const [isTypeLocked, setIsTypeLocked] = useState(false); // 라디오 버튼 잠금
+    const [isIdBlockLocked, setIsIdBlockLocked] = useState(false); // 식별 정보 잠금
+    
     const backupRef = useRef(null);
     const ssnSecondRef = useRef(null);
     const telSecondRef = useRef(null);
@@ -77,26 +93,109 @@ function CompanyRegisterPage() {
         }
     }, []);
 
+    // 수정 모드일 때 데이터 로드
+    useEffect(() => {
+        if (isEditMode && companyId) {
+            loadCompanyData();
+        }
+    }, [isEditMode, companyId]); // loadCompanyData는 의존성에서 제외 (함수 내부에서만 사용)
+
+    const loadCompanyData = async () => {
+        try {
+            const c = await getCompanyById(companyId);
+
+            // 유형 결정 및 잠금
+            const dbType = c?.type || "";
+            const lockedType = dbType === "B" ? "BUSINESS" : "PERSONAL";
+            setCompanyType(lockedType);
+            setIsTypeLocked(true); // 수정 모드에서는 타입 변경 불가
+            setIsIdBlockLocked(true); // 식별 정보 변경 불가
+
+            // 전화번호 파싱
+            const tel = c?.tel || "";
+            const [p1 = "", p2 = "", p3 = ""] = tel.split("-");
+
+            // 주소 정보
+            const lat = c?.lat ?? c?.latitude;
+            const lng = c?.lng ?? c?.longitude;
+
+            // 개인 정보 처리
+            const ssnFirst = c?.ssnFirst || "";
+            const ssnSecond = c?.ssnSecond || "";
+            const personalName = c?.personalName || "";
+
+            // 사업자 정보 처리
+            const corporationName = c?.name || "";
+            const repName = c?.repName || "";
+            const bizRegNo = c?.bizRegNo || "";
+
+            // 대표 서비스 처리
+            const rawMainService = c?.repService ?? "";
+            const normalizedMainService = serviceLabelMapping[rawMainService] || "";
+
+            // 제공 서비스 처리
+            if (c?.services) {
+                const services = typeof c.services === "string" ? JSON.parse(c.services) : c.services;
+                const normalized = serviceCategories.reduce(
+                    (acc, s) => ({ ...acc, [s]: !!services[s] }),
+                    {}
+                );
+                const allChecked = serviceCategories.every((s) => normalized[s]);
+                setCheckService({ 전체: allChecked, ...normalized });
+            }
+
+            // 운영시간 처리
+            if (c?.operatingHours) {
+                const oh = typeof c.operatingHours === "string" ? JSON.parse(c.operatingHours) : c.operatingHours;
+                setAllDay(Boolean(oh?.allDay));
+                setTime(oh?.schedule ?? makeDefault());
+            } else {
+                setAllDay(false);
+                setTime(makeDefault());
+            }
+
+            // 폼 데이터 설정
+            setFormInputs({
+                // 개인(일반인) 정보
+                ssnFirst: ssnFirst,
+                ssnSecond: ssnSecond,
+                personalName: personalName,
+                // 사업자 정보
+                businessNumber: formatBusinessNumber(bizRegNo),
+                corporationName: corporationName,
+                representativeName: repName,
+                // 공통
+                roadAddr: c?.roadAddr ?? "",
+                detailAddr: c?.detailAddr ?? "",
+                postcode: c?.postcode ?? "",
+                latitude: lat != null ? String(lat) : "",
+                longitude: lng != null ? String(lng) : "",
+                mainService: normalizedMainService,
+                phone1: p1,
+                phone2: p2,
+                phone3: p3,
+                introduction: c?.descText ?? "",
+            });
+
+            setLoading(false);
+        } catch (error) {
+            console.error('업체 정보 로드 오류:', error);
+            alert('업체 정보를 불러오는 중 오류가 발생했습니다.');
+            navigate('/companymanage');
+        }
+    };
+
+    // 사업자번호 포맷팅 함수
+    const formatBusinessNumber = (bizRegNo) => {
+        if (!bizRegNo) return "";
+        const cleaned = bizRegNo.replace(/[^0-9]/g, "");
+        if (cleaned.length === 10) {
+            return `${cleaned.slice(0, 3)}-${cleaned.slice(3, 5)}-${cleaned.slice(5)}`;
+        }
+        return cleaned;
+    };
+
     // handler
-    // 파일넣기
-    const handleFiles = (newFiles) => {
-        const fileArray = Array.from(newFiles);
-        setFiles((prev) => [...prev, ...fileArray]);
-    };
-
-    const handleDrop = (e) => {
-        e.preventDefault();
-        handleFiles(e.dataTransfer.files);
-    };
-
-    const handleClickArea = () => {
-        inputRef.current?.click();  // current가 null/undefined면 아무 것도 안하고 undefined 반환하고 유효하면 click() 호출
-    };
-
-    // 사진 삭제 기능
-    const handleRemoveFile = (indexToRemove) => {
-        setFiles(prev => prev.filter((_, index) => index !== indexToRemove));
-    };
 
     // 입력 필드 값 변경 핸들러
     const handleInputChange = (field, value) => {
@@ -111,17 +210,17 @@ function CompanyRegisterPage() {
         return value.replace(/[^0-9]/g, '').slice(0, maxLength);
     };
 
-    // 사업자등록번호 포맷팅 (###-##-#####)
-    const formatBusinessNumber = (value) => {
-        const numbers = value.replace(/[^0-9]/g, '');
-        if (numbers.length <= 3) return numbers;
-        if (numbers.length <= 5) return `${numbers.slice(0, 3)}-${numbers.slice(3)}`;
-        return `${numbers.slice(0, 3)}-${numbers.slice(3, 5)}-${numbers.slice(5, 10)}`;
-    };
-
-    // 사업자등록번호 입력 핸들러
+    // 사업자등록번호 입력 핸들러 (기존 formatBusinessNumber 함수 사용)
     const handleBusinessNumberInput = (e) => {
-        const formattedValue = formatBusinessNumber(e.target.value);
+        const numbers = e.target.value.replace(/[^0-9]/g, '');
+        let formattedValue;
+        if (numbers.length <= 3) {
+            formattedValue = numbers;
+        } else if (numbers.length <= 5) {
+            formattedValue = `${numbers.slice(0, 3)}-${numbers.slice(3)}`;
+        } else {
+            formattedValue = `${numbers.slice(0, 3)}-${numbers.slice(3, 5)}-${numbers.slice(5, 10)}`;
+        }
         handleInputChange('businessNumber', formattedValue);
     };
 
@@ -202,7 +301,7 @@ function CompanyRegisterPage() {
     
     // 사업자 정보 조회
     const handleBizNoSearchBtnClick = async () => {
-        console.log("사업자 정보 조회 실행");
+        console.log("국세청 사업자등록번호 검증 실행");
 
         const businessNumber = formInputs.businessNumber.trim();
         
@@ -221,21 +320,23 @@ function CompanyRegisterPage() {
         }
 
         try {
-            // companyService를 사용한 사업자 조회 API 호출
-            const result = await checkBusinessNumber(cleanBusinessNumber);
+            // 국세청 API를 통한 사업자등록번호 검증
+            const result = await validateBusinessNumber(cleanBusinessNumber);
             
-            if (result) {
-                // 개인/법인사업자에서만 사업자 조회 가능
-                handleInputChange('corporationName', result.companyName || '');
-                handleInputChange('representativeName', result.representativeName || '');
+            if (result.isValid) {
+                alert(`✅ ${result.message}\n\n사업자등록번호: ${result.businessNumber}\n\n※ 상호명과 대표자명은 직접 입력해주세요.`);
                 
-                alert(`사업자 조회가 완료되었습니다.\n상호명: ${result.companyName || '정보 없음'}\n대표자: ${result.representativeName || '정보 없음'}`);
+                // 포커스를 상호명 입력 필드로 이동 (사용자가 직접 입력하도록)
+                const corporationNameInput = document.querySelector('input[placeholder*="홍길동펫샵"]');
+                if (corporationNameInput) {
+                    corporationNameInput.focus();
+                }
             } else {
-                alert("등록되지 않은 사업자등록번호이거나 조회할 수 없습니다.");
+                alert(`❌ ${result.message}`);
             }
         } catch (error) {
-            console.error('사업자 조회 중 오류:', error);
-            alert('사업자 정보 조회 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
+            console.error('사업자등록번호 검증 중 오류:', error);
+            alert('사업자등록번호 검증 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
         }
     }
 
@@ -395,8 +496,9 @@ function CompanyRegisterPage() {
         setShowMapModal(false);
     };
 
-    const handleCompanyRegisterBtnClick = async () => {
-        console.log("업체 등록 요청");
+    const handleCompanySubmitBtnClick = async () => {
+        const action = isEditMode ? "수정" : "등록";
+        console.log(`업체 ${action} 요청`);
 
         // 폼 유효성 검사
         const hasErrors = validateForm();
@@ -405,27 +507,37 @@ function CompanyRegisterPage() {
             return;
         }
 
-        if(window.confirm("업체 등록을 하시겠습니까?")) {
+        if(window.confirm(`업체 ${action}을 하시겠습니까?`)) {
             try {
-                // FormData 생성 (파일 업로드 때문에)
+                // FormData 생성
                 const formData = new FormData();
                 
-                // 업체 기본 정보 (백엔드 그룹코드에 맞춤)
-                const typeCode = companyType === "PERSONAL" ? "PERSONAL" : "BUSINESS";
-                formData.append('type', typeCode); // 개인(일반인): PERSONAL, 개인/법인사업자: BUSINESS
-                
-                // 개인(일반인) vs 개인/법인사업자별 정보
-                if (companyType === "PERSONAL") {
-                    // 개인(일반인) - 주민번호와 성함
-                    formData.append('ssnFirst', formInputs.ssnFirst);
-                    formData.append('ssnSecond', formInputs.ssnSecond);
-                    formData.append('personalName', formInputs.personalName);
+                if (isEditMode) {
+                    // 수정 모드: CompanyUpdateRequestDto에 맞는 필드만 전송
+                    // name 필드: BUSINESS는 상호명, PERSONAL은 개인명
+                    if (companyType === "BUSINESS") {
+                        formData.append("name", formInputs.corporationName);
+                    } else if (companyType === "PERSONAL") {
+                        formData.append("name", formInputs.personalName);
+                    }
                 } else {
-                    // 개인/법인사업자 - 사업자번호, 상호명, 대표자명
-                    const cleanBizRegNo = formInputs.businessNumber.replace(/[^0-9]/g, '');
-                    formData.append('bizRegNo', cleanBizRegNo);
-                    formData.append('corporationName', formInputs.corporationName);
-                    formData.append('representativeName', formInputs.representativeName);
+                    // 등록 모드: 기존 로직 유지
+                    const typeCode = companyType === "PERSONAL" ? "PERSONAL" : "BUSINESS";
+                    formData.append('type', typeCode);
+                    
+                    // 개인(일반인) vs 개인/법인사업자별 정보
+                    if (companyType === "PERSONAL") {
+                        // 개인(일반인) - 주민번호와 성함
+                        formData.append('ssnFirst', formInputs.ssnFirst);
+                        formData.append('ssnSecond', formInputs.ssnSecond);
+                        formData.append('personalName', formInputs.personalName);
+                    } else {
+                        // 개인/법인사업자 - 사업자번호, 상호명, 대표자명
+                        const cleanBizRegNo = formInputs.businessNumber.replace(/[^0-9]/g, '');
+                        formData.append('bizRegNo', cleanBizRegNo);
+                        formData.append('corporationName', formInputs.corporationName);
+                        formData.append('representativeName', formInputs.representativeName);
+                    }
                 }
                 
                 // 공통 정보
@@ -439,16 +551,16 @@ function CompanyRegisterPage() {
                 const fullPhoneNumber = `${formInputs.phone1}-${formInputs.phone2}-${formInputs.phone3}`;
                 formData.append('tel', fullPhoneNumber);
                 
-                // 서비스 관련 (한글 라벨을 숫자 코드로 변환)
-                const serviceCodeMapping = {
-                    '돌봄': '1',
-                    '산책': '2',
-                    '미용': '3',
-                    '병원': '4',
-                    '기타': '9'
-                };
-                const repServiceCode = serviceCodeMapping[formInputs.mainService] || formInputs.mainService;
-                formData.append('repService', repServiceCode);
+                // 서비스 관련
+                if (isEditMode) {
+                    // 수정 모드: 한글명으로 전송 (백엔드에서 코드로 변환)
+                    formData.append('repService', formInputs.mainService);
+                } else {
+                    // 등록 모드: 숫자 코드로 변환
+                    const repServiceCode = serviceCodeMapping[formInputs.mainService] || formInputs.mainService;
+                    formData.append('repService', repServiceCode);
+                }
+                
                 formData.append('services', JSON.stringify(checkService));
                 
                 // 운영시간
@@ -458,27 +570,40 @@ function CompanyRegisterPage() {
                 }));
                 
                 // 업체 소개
-                formData.append('introduction', formInputs.introduction);
-                
-                // 파일 추가
-                files.forEach((file) => {
-                    formData.append('images', file);
-                });
+                if (isEditMode) {
+                    formData.append('descText', formInputs.introduction);
+                } else {
+                    formData.append('introduction', formInputs.introduction);
+                    
+                    // 파일 추가 (등록 시에만)
+                    files.forEach((file) => {
+                        formData.append('images', file);
+                    });
+                }
 
-                // companyService를 사용한 API 호출
-                const result = await registerCompany(formData);
+                // API 호출 분기
+                let result;
+                if (isEditMode) {
+                    result = await updateCompany(companyId, formData);
+                } else {
+                    result = await registerCompany(formData);
+                }
                 
                 if (result) {
-                    alert('업체 등록이 완료되었습니다!');
-                    navigate('/companymanage'); // 업체 목록 페이지로 이동
+                    alert(`업체 ${action}이 완료되었습니다!`);
+                    navigate('/companymanage');
                 }
             } catch (error) {
-                console.error('업체 등록 중 오류:', error);
-                alert('등록 중 오류가 발생했습니다. 다시 시도해주세요.');
+                console.error(`업체 ${action} 중 오류:`, error);
+                alert(`${action} 중 오류가 발생했습니다. 다시 시도해주세요.`);
             }
         }
     }
                                                             
+
+    if (loading) {
+        return <div className="loading">로딩 중...</div>;
+    }
 
     return(
         <div className="company_register_page">
@@ -487,8 +612,8 @@ function CompanyRegisterPage() {
                     {/* 헤더 섹션 */}
                     <div className="section-header">
                         <div className="header_info">
-                        <h2 className="section-title">업체 등록</h2>
-                        <p className="section-subtitle">펫케어 업체 정보를 등록하세요</p>
+                        <h2 className="section-title">{isEditMode ? "업체 수정" : "업체 등록"}</h2>
+                        <p className="section-subtitle">{isEditMode ? "펫케어 업체 정보를 수정하세요" : "펫케어 업체 정보를 등록하세요"}</p>
                         </div>
                     </div>
 
@@ -496,24 +621,26 @@ function CompanyRegisterPage() {
                     <div className="company_register_section">
                         <h3>업체 구분</h3>
                         <div className="radio_group">
-                            <label className="radio_item">
+                            <label className={`radio_item ${isTypeLocked ? "locked" : ""}`}>
                             <input
                                 type="radio"
                                 name="company_type"
                                 value="PERSONAL"
                                 checked={companyType === "PERSONAL"}
-                                onChange={(e) => setCompanyType(e.target.value)}
+                                onChange={(e) => !isTypeLocked && setCompanyType(e.target.value)}
+                                disabled={isTypeLocked}
                             />
                             <span>개인(일반인)</span>
                         </label>
 
-                        <label className="radio_item">
+                        <label className={`radio_item ${isTypeLocked ? "locked" : ""}`}>
                             <input
                                 type="radio"
                                 name="company_type"
                                 value="BUSINESS"
                                 checked={companyType === "BUSINESS"}
-                                onChange={(e) => setCompanyType(e.target.value)}
+                                onChange={(e) => !isTypeLocked && setCompanyType(e.target.value)}
+                                disabled={isTypeLocked}
                             />
                             <span>개인/법인사업자</span>
                         </label>
@@ -534,6 +661,7 @@ function CompanyRegisterPage() {
                                                     maxLength={6}
                                                     value={formInputs.ssnFirst}
                                                     onChange={handleSsnFirstInput}
+                                                    readOnly={isIdBlockLocked}
                                                 />
                                                 -
                                                 <input 
@@ -543,6 +671,7 @@ function CompanyRegisterPage() {
                                                     value={formInputs.ssnSecond}
                                                     onChange={handleSsnSecondInput}
                                                     ref={ssnSecondRef}
+                                                    readOnly={isIdBlockLocked}
                                                 />
                                             </div>
                                         </div>
@@ -554,6 +683,7 @@ function CompanyRegisterPage() {
                                                 placeholder="홍길동"
                                                 value={formInputs.personalName}
                                                 onChange={(e) => handleInputChange('personalName', e.target.value)}
+                                                readOnly={isIdBlockLocked}
                                             />
                                         </div>
                                     </div>
@@ -574,9 +704,10 @@ function CompanyRegisterPage() {
                                                     value={formInputs.businessNumber}
                                                     onChange={handleBusinessNumberInput}
                                                     maxLength={12}
+                                                    readOnly={isIdBlockLocked}
                                                 />
                                                 <button type="button" className="search_btn" onClick={handleBizNoSearchBtnClick}>
-                                                    사업장 조회
+                                                    번호 검증
                                                 </button>
                                             </div>       
                                         </div>
@@ -590,6 +721,7 @@ function CompanyRegisterPage() {
                                                 placeholder="홍길동펫샵 또는 (주)펫메이트"
                                                 value={formInputs.corporationName}
                                                 onChange={(e) => handleInputChange('corporationName', e.target.value)}
+                                                readOnly={isIdBlockLocked}
                                             />
                                         </div>
                                         <div className="company_form_group">
@@ -600,6 +732,7 @@ function CompanyRegisterPage() {
                                                 placeholder="홍길동"
                                                 value={formInputs.representativeName}
                                                 onChange={(e) => handleInputChange('representativeName', e.target.value)}
+                                                readOnly={isIdBlockLocked}
                                             />
                                         </div>
                                     </div>
@@ -788,7 +921,9 @@ function CompanyRegisterPage() {
                         {/* 버튼 영역 */}
                         <div className="company_form_btn">
                             <button type="button" className="cancel_btn" onClick={handleCompanyRegisterCancleBtnClick}>취소</button>
-                            <button type="submit" className="submit_btn" onClick={handleCompanyRegisterBtnClick}>등록</button>
+                            <button type="submit" className="submit_btn" onClick={handleCompanySubmitBtnClick}>
+                                {isEditMode ? "수정" : "등록"}
+                            </button>
                         </div>
 
                     </div>

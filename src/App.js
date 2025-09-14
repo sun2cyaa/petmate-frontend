@@ -30,7 +30,6 @@ import ProductRegisterPage from './pages/product/ProductRegisterPage';
 import ProductEditPage from './pages/product/ProductEditPage';
 import Notice from "./components/common/Header/Notice";
 import Event from "./components/common/Header/Event";
-import CompanyEditPage from "./pages/company/CompanyEditPage";
 
 function App() {
   const [isLogined, setIsLogined] = useState(false);
@@ -103,8 +102,8 @@ function App() {
           <Route path="/payment/fail" element={<PaymentFailPage />} />
           <Route path="/become-petmate" element={<PetMateSignupPage />} />
           <Route path="/companymanage" element={<CompanyManagePage />} />
-          <Route path="/companyregister" element={<CompanyRegisterPage />} />
-          <Route path="/companyedit/:id" element={<CompanyEditPage />} />
+          <Route path="/companyform" element={<CompanyRegisterPage />} />
+          <Route path="/companyform/:id" element={<CompanyRegisterPage />} />
           <Route path="/booking" element={<BookingManagePage />} />
           <Route path="/product" element={<ProductManagePage />} />
           <Route path="/product/register" element={<ProductRegisterPage />} />

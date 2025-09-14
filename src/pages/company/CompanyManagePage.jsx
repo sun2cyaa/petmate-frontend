@@ -171,12 +171,12 @@ function CompanyManagePage() {
 
     // 업체 등록 페이지로 이동
     const handleAddCompany = () => {
-        navigate('/companyregister');
+        navigate('/companyform');
     };
 
     // 업체 수정 페이지로 이동
     const handleEditCompany = (companyId) => {
-        navigate(`/companyedit/${companyId}`);
+        navigate(`/companyform/${companyId}`);
     };
 
     // 업체 삭제
