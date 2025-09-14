@@ -2,6 +2,8 @@ import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./CompanyRegisterPage.css";
 import { registerCompany, checkBusinessNumber } from "../../services/companyService";
+import MapModal from "../user/owner/MyPage/Address/components/MapModal";
+import { ImageUploadViewer, MultipleImageUpload } from "../../util/ImageUtil";
 
 function CompanyRegisterPage() {
 
@@ -27,6 +29,7 @@ function CompanyRegisterPage() {
     const [allDay, setAllDay] = useState(false);
     const [time, setTime] = useState(() => makeDefault());
     const [files, setFiles] = useState([]);
+    const [showMapModal, setShowMapModal] = useState(false);
 
     // 폼 입력 필드 상태
     const [formInputs, setFormInputs] = useState({
@@ -40,8 +43,8 @@ function CompanyRegisterPage() {
         corporationName: '',
         representativeName: '',
         // 공통 정보
-        roadAddress: '',
-        detailAddress: '',
+        roadAddr: '',
+        detailAddr: '',
         postcode: '',
         latitude: '',
         longitude: '',
@@ -179,7 +182,7 @@ function CompanyRegisterPage() {
         }
 
         // 공통 필수 필드 체크
-        if (!formInputs.roadAddress.trim() ||
+        if (!formInputs.roadAddr.trim() ||
             !formInputs.mainService ||
             !formInputs.phone1 || formInputs.phone1.length !== 3 ||
             !formInputs.phone2 || formInputs.phone2.length !== 4 ||
@@ -251,9 +254,9 @@ function CompanyRegisterPage() {
                 const postcode = data.zonecode; // 우편번호
                 
                 // 주소와 우편번호를 상태에 저장
-                handleInputChange('roadAddress', addr);
+                handleInputChange('roadAddr', addr);
                 handleInputChange('postcode', postcode);
-                
+
                 // 카카오 좌표계 변환 API 호출
                 if (window.kakao && window.kakao.maps && window.kakao.maps.services) {
                     const geocoder = new window.kakao.maps.services.Geocoder();
@@ -261,11 +264,14 @@ function CompanyRegisterPage() {
                         if (status === window.kakao.maps.services.Status.OK) {
                             const latitude = parseFloat(result[0].y);
                             const longitude = parseFloat(result[0].x);
-                            
-                            handleInputChange('latitude', latitude);
-                            handleInputChange('longitude', longitude);
-                            
+
+                            handleInputChange('latitude', latitude.toString());
+                            handleInputChange('longitude', longitude.toString());
+
                             console.log('검색된 주소:', addr, '우편번호:', postcode, '좌표:', { latitude, longitude });
+
+                            // 지도 모달 열기
+                            setShowMapModal(true);
                         } else {
                             // 좌표 변환 실패시 좌표 없이 저장
                             console.log('좌표 변환 실패, 주소만 저장:', addr, '우편번호:', postcode);
@@ -374,6 +380,21 @@ function CompanyRegisterPage() {
     }
 
     // 업체 등록
+    // 지도 모달 핸들러
+    const handleLocationSelect = (location) => {
+        handleInputChange('roadAddr', location.address);
+        if (location.postcode) {
+            handleInputChange('postcode', location.postcode);
+        }
+        handleInputChange('latitude', location.latitude.toString());
+        handleInputChange('longitude', location.longitude.toString());
+        setShowMapModal(false);
+    };
+
+    const handleCloseMapModal = () => {
+        setShowMapModal(false);
+    };
+
     const handleCompanyRegisterBtnClick = async () => {
         console.log("업체 등록 요청");
 
@@ -407,8 +428,8 @@ function CompanyRegisterPage() {
                 }
                 
                 // 공통 정보
-                formData.append('roadAddr', formInputs.roadAddress);
-                formData.append('detailAddr', formInputs.detailAddress);
+                formData.append('roadAddr', formInputs.roadAddr);
+                formData.append('detailAddr', formInputs.detailAddr);
                 formData.append('postcode', formInputs.postcode);
                 formData.append('latitude', formInputs.latitude);
                 formData.append('longitude', formInputs.longitude);
@@ -586,7 +607,7 @@ function CompanyRegisterPage() {
                                         type="text"
                                         className="form_input"
                                         placeholder="도로명 주소를 검색해주세요"
-                                        value={formInputs.roadAddress}
+                                        value={formInputs.roadAddr}
                                         readOnly
                                     />
                                     <button type="button" className="search_btn" onClick={handleAddressSearchBtnClick}>
@@ -600,8 +621,8 @@ function CompanyRegisterPage() {
                                     type="text"
                                     className="form_input"
                                     placeholder="상세 주소를 입력해주세요"
-                                    value={formInputs.detailAddress}
-                                    onChange={(e) => handleInputChange('detailAddress', e.target.value)}
+                                    value={formInputs.detailAddr}
+                                    onChange={(e) => handleInputChange('detailAddr', e.target.value)}
                                 />
                             </div>
                         </div>
@@ -732,62 +753,13 @@ function CompanyRegisterPage() {
                         {/* 업체 사진 */}
                         <div className="company_form_section">
                             <span>업체 사진</span>
-                            <div
-                                className="file_upload_area"
-                                onClick={files.length === 0 ? handleClickArea : undefined}
-                                onDragOver={(e) => e.preventDefault()}
-                                onDrop={handleDrop}
-                                role={files.length === 0 ? "button" : undefined}
-                                tabIndex={files.length === 0 ? 0 : undefined}
-                                onKeyDown={files.length === 0 ? (e) => (e.key === "Enter" || e.key === " ") && handleClickArea() : undefined}
-                            >
-                                {/* 업로드 안내 메시지 - 파일이 없을 때만 표시 */}
-                                {files.length === 0 && (
-                                    <div className="upload_content">
-                                        <div className="upload_icon">📁</div>
-                                        <p>여기에 사진을 드래그하거나 클릭해서 업로드하세요</p>
-                                    </div>
-                                )}
+                            <ImageUploadViewer
+                                imageTypeCode="03"
+                                referenceId={11}
+                                buttonText="업체 사진 업로드"
+                                mode="multiple"
+                            />
 
-                                <input 
-                                    type="file"
-                                    accept="image/*"
-                                    multiple
-                                    ref={inputRef}
-                                    onChange={(e) => handleFiles(e.target.files)}
-                                    style={{ display: "none" }}
-                                />
-                                
-                                {/* 업로드된 파일 목록 표시 */}
-                                {files.length > 0 && (
-                                    <div className="uploaded_files">
-                                        {files.map((file, index) => (
-                                            <div key={index} className="file_item">
-                                                <img 
-                                                    src={URL.createObjectURL(file)} 
-                                                    alt={file.name}
-                                                />
-                                                <button
-                                                    type="button"
-                                                    className="file_remove_btn"
-                                                    onClick={() => handleRemoveFile(index)}
-                                                >
-                                                    ✕
-                                                </button>
-                                                <p>{file.name}</p>
-                                            </div>
-                                        ))}
-
-                                        {/* 추가 업로드 버튼 */}
-                                        <div 
-                                            className="add_more_files"
-                                            onClick={handleClickArea}
-                                        >
-                                            + 추가
-                                        </div>
-                                    </div>
-                                )}
-                            </div>
                         </div>
 
                         {/* 업체 소개 */}
@@ -811,6 +783,13 @@ function CompanyRegisterPage() {
                     </div>
                 </div>
             </div>
+
+            {/* 지도 모달 */}
+            <MapModal
+                show={showMapModal}
+                onClose={handleCloseMapModal}
+                onLocationSelect={handleLocationSelect}
+            />
         </div>
     );
 }
