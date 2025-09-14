@@ -4,7 +4,7 @@ import { signout } from "../../../services/authService";
 import { useRef, useState, useEffect } from "react";
 import {
   MapPin, Dog, User, Home, LogOut,
-  Map, CreditCard, Star, CalendarCheck, ClipboardList, Building2, Package
+  Map, CreditCard, Star, CalendarCheck, ClipboardList, Building2, Package, Users
 } from "lucide-react"; 
 
 // 공통 헤더 컴포넌트
@@ -13,7 +13,7 @@ import {
 // - setIsLogined: 로그인 상태 변경 함수
 // - user: 로그인된 사용자 정보 객체 (name, nickname, email, picture, address 등)
 function Header({ isLogined, setIsLogined, user }) {
-  // 드롭다운 열림 여부 상태
+  // 프로필 드롭다운 열림 여부 상태
   const [userOpen, setUserOpen] = useState(false);
   // 드롭다운 닫힘 지연 처리용 ref
   const closeTimer = useRef(null);
@@ -77,25 +77,22 @@ function Header({ isLogined, setIsLogined, user }) {
 
   return (
     <header>
-      {/*   수정한 부분: Top Bar 추가 */}
-      {/* - 좌측에 공지사항, 이벤트 버튼
-          - 우측에 로그인 버튼 또는 프로필 드롭다운 */}
+      {/* ---------------- Top Bar ---------------- */}
+      {/* 좌측: 공지사항/이벤트 / 우측: 로그인 or 프로필 */}
       <div className="top-bar">
-        {/* 좌측: 공지사항 + 이벤트 */}
         <div className="top-left">
           <Link to="/notice" className="top-btn highlight">공지사항</Link>
           <Link to="/event" className="top-btn highlight">이벤트</Link>
         </div>
 
-        {/* 우측: 로그인 안했을 때 → 로그인 버튼 / 로그인 했을 때 → 프로필 드롭다운 */}
         <div className="top-right">
           {!isLogined ? (
-            // 로그인 안 한 상태
+            // 비로그인 상태 → 로그인 버튼만
             <div className="auth-box">
               <Link to="/signin" className="auth-btn auth-outline">로그인</Link>
             </div>
           ) : (
-            // 로그인 한 상태 → 프로필 드롭다운
+            // 로그인 상태 → 프로필 드롭다운
             <div
               className={`header_dropdown user-dropdown ${userOpen ? "open" : ""}`}
               onMouseEnter={onUserEnter}
@@ -107,7 +104,7 @@ function Header({ isLogined, setIsLogined, user }) {
                   {profileSrc ? (
                     <img src={profileSrc} alt="프로필" className="avatar-img" referrerPolicy="no-referrer" />
                   ) : (
-                    // 프로필 이미지 없을 때 fallback (첫 글자)
+                    // 프로필 이미지 없을 때 → 첫 글자 fallback
                     <div className="avatar-fallback">
                       {displayName?.trim()?.charAt(0)?.toUpperCase() || "U"}
                     </div>
@@ -116,23 +113,18 @@ function Header({ isLogined, setIsLogined, user }) {
                 <span className="user-name">{displayName}</span>
               </button>
 
-              {/* 수정한 부분: 드롭다운 메뉴에 아이콘 추가 + 로그아웃 스타일 개선 */}
+              {/* 드롭다운 메뉴 */}
               <div className="user-menu">
-                {/* 내 펫 관리 */}
                 <Link to="/pets" className="user-menu_item">
                   <Dog size={16} className="menu-icon" /> 내 펫 관리
                 </Link>
-                {/* 프로필 관리 */}
                 <Link to="/profile" className="user-menu_item">
                   <User size={16} className="menu-icon" /> 프로필 관리
                 </Link>
-                {/* 주소 관리 */}
                 <Link to="/address" className="user-menu_item">
                   <Home size={16} className="menu-icon" /> 주소 관리
                 </Link>
-                {/* 구분선 */}
                 <div className="user-menu_divider"></div>
-                {/* 로그아웃 */}
                 <button className="user-menu_item user-menu_logout" onClick={handleLogout}>
                   <LogOut size={16} className="menu-icon" /> 로그아웃
                 </button>
@@ -142,39 +134,53 @@ function Header({ isLogined, setIsLogined, user }) {
         </div>
       </div>
 
-      {/*   수정한 부분: Main Navigation 개선 */}
-      {/* - 로고, 메뉴, 내 주소 영역 포함
-          - 로그인 여부에 따라 메뉴 전체 or 지도만 보이게 처리 */}
+      {/* ---------------- Main Navigation ---------------- */}
       <div className="main-nav">
         {/* 로고 (클릭 시 홈으로 이동) */}
         <div className="logo-wrap">
           <Link to="/home" className="logo"><h2>Petmate</h2></Link>
         </div>
 
-        {/* 메뉴 */}
+        {/* 네비게이션 메뉴 */}
         <nav className="nav">
           {isLogined ? (
-            // 로그인 시: 모든 메뉴 노출
             <>
+              {/* 공통 메뉴 */}
               <Link to="/map"><Map size={16} className="nav-icon" /> 지도</Link>
               <Link to="/payment"><CreditCard size={16} className="nav-icon" /> 결제</Link>
               <Link to="/favorites"><Star size={16} className="nav-icon" /> 즐겨찾기</Link>
               <Link to="/bookings"><CalendarCheck size={16} className="nav-icon" /> 예약내역</Link>
-              <Link to="/booking"><ClipboardList size={16} className="nav-icon" /> 예약관리</Link>
-              <Link to="/companymanage"><Building2 size={16} className="nav-icon" /> 업체관리</Link>
-              <Link to="/product"><Package size={16} className="nav-icon" /> 상품관리</Link>
+
+              {/* 업체 관리 (드롭다운) */}
+              <div className="header_dropdown">
+                <span className="nav-link"><Building2 size={16} className="nav-icon" /> 업체 관리</span>
+                <div className="header_company_manage_menu">
+                  <Link to="/companymanage" className="header_company_manage_item">업체 목록</Link>
+                  <Link to="/companyregister" className="header_company_manage_item">업체 등록</Link>
+                </div>
+              </div>
+
+              {/* 펫메이트 관리 (드롭다운) */}
+              <div className="header_dropdown">
+                <span className="nav-link"><Users size={16} className="nav-icon" /> 펫메이트</span>
+                <div className="header_petmate_menu">
+                  <Link to="/booking" className="header_petmate_item">예약관리</Link>
+                  <Link to="/product" className="header_petmate_item">상품관리</Link>
+                </div>
+              </div>
+
+              {/* 펫메이트 되기 버튼 */}
+              <Link to="/become-petmate" className="nav-link">펫메이트 되기</Link>
             </>
           ) : (
-            // 비로그인 시: 지도만 노출
+            // 비로그인 상태 → 지도만 보임
             <>
               <Link to="/map"><Map size={16} className="nav-icon" /> 지도</Link>
             </>
           )}
         </nav>
 
-        {/*   수정한 부분: 내 주소 표시 영역 */}
-        {/* - 로그인 했을 때: 실제 user.address 값 출력
-            - 로그인 안했을 때: "로그인 후 이용 가능" 문구 출력 */}
+        {/* 주소 표시 영역 */}
         <div className="header-address">
           {isLogined ? (
             <Link to="/address">
