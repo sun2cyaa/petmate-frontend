@@ -147,6 +147,21 @@
   margin: 0;
 }
 
+/* 추가 정보 스타일 */
+.company_sub_info {
+  margin-top: 4px;
+  margin-bottom: 8px;
+}
+
+.sub_info_text {
+  font-size: 13px;
+  color: #6b7280;
+  background-color: #f3f4f6;
+  padding: 2px 8px;
+  border-radius: 4px;
+  display: inline-block;
+}
+
 .company_type {
   background: #f8f9fa;
   color: #333;
@@ -198,6 +213,17 @@
   flex-shrink: 0;
 }
 
+/* 휴무일 스타일 */
+.closed_days_label {
+  font-weight: 500;
+  color: #6b7280;
+}
+
+.closed_days {
+  color: #dc2626;
+  font-weight: 500;
+}
+
 /* 서비스 태그 */
 .services_list {
   display: flex;
@@ -214,6 +240,15 @@
   font-size: 12px;
   font-weight: 500;
   border: 1px solid #e9ecef;
+}
+
+/* 대표 서비스 스타일 */
+.service_tag.main_service {
+  background: #eb9666;
+  color: white;
+  border-color: #eb9666;
+  font-weight: 600;
+  box-shadow: 0 1px 3px rgba(235, 150, 102, 0.3);
 }
 
 /* 업체 소개 */

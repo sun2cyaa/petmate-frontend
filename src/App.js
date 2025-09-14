@@ -104,7 +104,7 @@ function App() {
           <Route path="/become-petmate" element={<PetMateSignupPage />} />
           <Route path="/companymanage" element={<CompanyManagePage />} />
           <Route path="/companyregister" element={<CompanyRegisterPage />} />
-          <Route path="/companyedit" element={<CompanyEditPage user={user} />} />
+          <Route path="/companyedit/:id" element={<CompanyEditPage />} />
           <Route path="/booking" element={<BookingManagePage />} />
           <Route path="/product" element={<ProductManagePage />} />
           <Route path="/product/register" element={<ProductRegisterPage />} />
