@@ -148,7 +148,7 @@ function Header({ isLogined, setIsLogined, user }) {
               {/* 공통 메뉴 */}
               <Link to="/map"><Map size={16} className="nav-icon" /> 지도</Link>
               <Link to="/payment"><CreditCard size={16} className="nav-icon" /> 결제</Link>
-              <Link to="/favorite"><Star size={16} className="nav-icon" /> 즐겨찾기</Link>
+              <Link to="/home"><Star size={16} className="nav-icon" /> 즐겨찾기</Link>
               <Link to="/booking"><CalendarCheck size={16} className="nav-icon" /> 예약내역</Link>
 
               {/* 업체 관리 (드롭다운) */}
