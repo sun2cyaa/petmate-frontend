@@ -66,12 +66,11 @@
 }
 
 .banner-cta:hover {
-  background: transparent;
-  border: 2px solid #fff;
-  color: #fff;
-  box-shadow: 0 6px 20px rgba(255,255,255,0.3);
-  transform: translateY(-2px);
+  background: linear-gradient(135deg, #EB9666, #E05353);
+  border: none;
+  box-shadow: 0 6px 20px rgba(235,150,102,0.45);
 }
+
 
 /* ---- 검색 섹션 --- */
 .home-search-section {
@@ -93,6 +92,7 @@
   flex-direction: column;
   gap: 20px;
 }
+
 .search-header h2 {
   font-size: 32px;
   font-weight: 700;
@@ -112,7 +112,7 @@
   gap: 10px;
 }
 .service-type-btn {
-  background: #f8d2bb;
+  background: #fff;
   border: 2px solid #eee;
   border-radius: 16px;
   padding: 20px;
@@ -126,6 +126,7 @@
 .service-type-btn:hover,
 .service-type-btn.active {
   border-color: #E05353;
+  background: linear-gradient(135deg, #fff8f3, #fff);
   box-shadow: 0 6px 15px rgba(235,150,102,0.2);
   transform: translateY(-4px);
 }
@@ -214,6 +215,7 @@
   align-items: center;
   gap: 6px;
 }
+
 .alert-box svg {
   font-size: 18px;
 }
@@ -224,6 +226,13 @@
 .box4 { bottom: 130px; left: -30px; animation: floatY 5.5s ease-in-out infinite; }
 .box5 { bottom: 60px; right: 0; animation: floatX 4.5s ease-in-out infinite; }
 .box6 { bottom: 10px; left: 50%; transform: translateX(-50%); animation: floatDiag 6.5s ease-in-out infinite; }
+
+.box1 { background: #ffe2d5; color:#E05353; }
+.box2 { background: #fff0d9; color:#EB9666; }
+.box3 { background: #eaf7ff; color:#0081cc; }
+.box4 { background: #fce4ec; color:#d81b60; }
+.box5 { background: #e8f5e9; color:#43a047; }
+.box6 { background: #ede7f6; color:#5e35b1; }
 
 /* 둥둥 애니메이션 */
 @keyframes floatY {
@@ -419,7 +428,7 @@
 .home-reviews-section .review-card {
   flex: 1;
   width: 100%;
-  background: #f8d2bb;
+  background: #fde3d0;
   border-radius: 16px;
   padding: 20px;
   box-shadow: 0 6px 15px rgba(0,0,0,0.05);
