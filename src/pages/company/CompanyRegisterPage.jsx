@@ -4,6 +4,7 @@ import "./CompanyRegisterPage.css";
 import { registerCompany, updateCompany, getCompanyById, getBusinessInfo, verifyPersonalIdentity } from "../../services/companyService";
 import MapModal from "../user/owner/MyPage/Address/components/MapModal";
 import { ImageUploadViewer } from "../../util/ImageUtil";
+import { Map, MapPinned } from "lucide-react";
 
 function CompanyRegisterPage() {
     // URL에서 ID 파라미터 가져오기 (수정 모드 감지)
@@ -379,8 +380,6 @@ function CompanyRegisterPage() {
 
                             console.log('검색된 주소:', addr, '우편번호:', postcode, '좌표:', { latitude, longitude });
 
-                            // 지도 모달 열기
-                            setShowMapModal(true);
                         } else {
                             // 좌표 변환 실패시 좌표 없이 저장
                             console.log('좌표 변환 실패, 주소만 저장:', addr, '우편번호:', postcode);
@@ -498,6 +497,15 @@ function CompanyRegisterPage() {
         handleInputChange('latitude', location.latitude.toString());
         handleInputChange('longitude', location.longitude.toString());
         setShowMapModal(false);
+
+        // 최종 확정 값 찍기
+        console.log("[선택 위치 확정]", {
+            address: location.address,
+            postcode: location.postcode ?? "",
+            latitude: location.latitude,
+            longitude: location.longitude,
+        });
+        
     };
 
     const handleCloseMapModal = () => {
@@ -784,6 +792,16 @@ function CompanyRegisterPage() {
                                     />
                                     <button type="button" className="search_btn" onClick={handleAddressSearchBtnClick}>
                                         주소 검색
+                                    </button>
+                                </div>
+                                <div className="address_search_buttons">
+                                    <button
+                                        type="button"
+                                        className="map_search_button"
+                                        onClick={() => setShowMapModal(true)}
+                                    >
+                                        <Map size={16} />
+                                        지도에서 찾기
                                     </button>
                                 </div>
                             </div>
