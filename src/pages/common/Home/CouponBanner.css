@@ -1,0 +1,76 @@
+.coupon-banner {
+    position: fixed;
+    bottom: 16px;
+    right: 16px; 
+    background: rgba(235, 150, 102, 0.95);
+    backdrop-filter: blur(6px);
+    color: #fff;
+    padding: 10px 16px;       
+    border-radius: 12px;    
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+    display: flex;
+    align-items: center;
+    gap: 10px;              
+    font-size: 14px;         
+    font-weight: 500;
+    z-index: 10000;
+    animation: fadeInRight 0.4s ease;
+  }
+  
+  .coupon-text {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;        
+    white-space: nowrap;
+  }
+  
+  .coupon-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  
+  .coupon-btn {
+    background: #fff;
+    color: #eb9666;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;      
+    padding: 4px 10px;       
+    font-size: 13px;         
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  }
+  
+  .coupon-btn:hover {
+    background: #f9f9f9;
+    transform: translateY(-1px);
+    box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+  }
+  
+  .coupon-close {
+    background: transparent;
+    color: #fff;
+    font-size: 16px;           
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+  }
+  
+  .coupon-close:hover {
+    transform: rotate(90deg);
+  }
+  
+  @keyframes fadeInRight {
+    from {
+      opacity: 0;
+      transform: translateX(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  

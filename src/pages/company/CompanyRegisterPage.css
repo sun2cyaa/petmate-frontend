@@ -315,6 +315,81 @@
   cursor: pointer;
 }
 
+/* 업로드된 파일 목록 */
+.uploaded_files {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 20px;
+  text-align: left;
+}
+
+.file_item {
+  position: relative;
+  display: inline-block;
+  margin: 10px;
+}
+
+.file_item img {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 5px;
+  border: 1px solid #e1e5e9;
+}
+
+.file_item p {
+  font-size: 12px;
+  margin-top: 5px;
+  word-break: break-all;
+  text-align: center;
+  color: #666;
+}
+
+.file_remove_btn {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: none;
+  background-color: #dc3545;
+  color: white;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease;
+}
+
+.file_remove_btn:hover {
+  background-color: #c82333;
+}
+
+.add_more_files {
+  display: inline-block;
+  width: 100px;
+  height: 100px;
+  border: 2px dashed #ccc;
+  border-radius: 5px;
+  margin: 10px;
+  cursor: pointer;
+  text-align: center;
+  line-height: 100px;
+  color: #666;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.add_more_files:hover {
+  border-color: #eb9666;
+  color: #eb9666;
+  background-color: #fff9f4;
+}
+
 /* 업체 소개 */
 .company_form_textarea {
   width: 100%;

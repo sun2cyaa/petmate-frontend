@@ -1,169 +1,308 @@
-/* 로고 스타일 */
+/* ----- Header 전체 고정 ---- */
+header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 2000;
+  background: #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  transition: box-shadow 0.3s ease;
+}
+header.scrolled {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+/* 컨텐츠 밀기 */
+body {
+  padding-top: 104px; 
+}
+
+/* ------ 로고 --- */
 .logo {
   text-decoration: none;
-  color: inherit;
-  cursor: pointer;
+  color: #eb9666;
+  font-weight: 700;
+  transition: color 0.2s ease;
 }
-
 .logo h2 {
   margin: 0;
-  color: inherit;
+  font-size: 24px;
+  font-weight: 700;
+  color: #eb9666;
+  transition: color 0.2s ease;
+}
+.logo:hover h2 {
+  color: #d45f2f;
 }
 
-/* 공통 드롭다운 */
+/* ----- Top Bar ---- */
+.top-bar {
+  min-height: 40px;
+  background: #fafafa;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 24px;
+  font-size: 13px;
+}
+.top-btn {
+  margin-left: 16px;
+  color: #555;
+  text-decoration: none;
+  font-weight: 500;
+}
+.top-btn.highlight {
+  padding: 3px 10px;
+  border: 1px solid #eb9666;
+  border-radius: 14px;
+  color: #eb9666;
+  font-size: 12px;
+}
+.top-btn.highlight:hover {
+  background: #eb9666;
+  color: #fff;
+}
+
+/* ----- 로그인 (비회원 상태) ------ */
+.auth-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  margin-left: 16px;
+}
+.auth-btn {
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 500;
+  border-radius: 12px;
+  padding: 4px 10px;
+  transition: all 0.2s ease;
+}
+.auth-btn.auth-outline {
+  color: #eb9666;
+  border: 1px solid #eb9666;
+}
+.auth-btn.auth-outline:hover {
+  background: #eb9666;
+  color: #fff;
+}
+
+/* -- Main Navigation ------ */
+.main-nav {
+  height: 64px;
+  background: #fff;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 28px;
+}
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+.nav a {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  text-decoration: none;
+  color: #2c3e50;
+  font-size: 15px;
+  transition: color 0.2s;
+}
+.nav a:hover { color: #eb9666; }
+.nav-icon {
+  color: #555;
+}
+.nav a:hover .nav-icon {
+  color: #eb9666;
+}
+
+.header-address {
+  font-size: 14px;
+  color: #555;
+  display: flex;
+  align-items: center;
+}
+
+/* 주소 아이콘 스타일 */
+.header-address .map-icon {
+  margin-right: 6px;
+  color: #eb9666;
+}
+
+.header-address a {
+  text-decoration: none;
+  color: #2c3e50;
+  display: flex;
+  align-items: center;
+}
+.header-address a:hover { text-decoration: underline; }
+
+/* --- 프로필 드롭다운 ---- */
+.user-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+.avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #f0f2f5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #ddd;
+}
+.avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.avatar-fallback {
+  font-weight: 600;
+  font-size: 14px;
+  color: #555;
+}
+.user-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: #2c3e50;
+}
+
+/* 드롭다운 애니메이션 */
+.user-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: #fff;
+  min-width: 180px;
+  box-shadow: 0 4px 12px rgba(0,0,0,.15);
+  border-radius: 8px;
+  z-index: 1200;
+  padding: 6px 0;
+  opacity: 0;
+  transform: translateY(-5px);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+.user-dropdown.open .user-menu {
+  display: block;
+  opacity: 1;
+  transform: translateY(0);
+}
+.user-menu_item {
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #333;
+  text-decoration: none;
+  font-size: 14px;
+  background: transparent;
+  border: none;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+.user-menu_item:hover { background: #f5f5f5; }
+.menu-icon {
+  flex-shrink: 0;
+  color: #555;
+}
+
+/* 구분선 */
+.user-menu_divider {
+  height: 1px;
+  background: #eee;
+  margin: 6px 0;
+}
+
+/* 로그아웃 버튼 */
+.user-menu_logout {
+  color: #e74c3c;
+  font-weight: 500;
+}
+.user-menu_logout .menu-icon {
+  color: #e74c3c;
+}
+.user-menu_logout:hover {
+  background: #fdecea;
+  color: #c0392b;
+}
+.user-menu_logout:hover .menu-icon {
+  color: #c0392b;
+}
+
+/* ----- 드롭다운 공통 ------ */
 .header_dropdown {
   position: relative;
   display: inline-block;
 }
 
-.header_company_manage,
-.header_petmate {
+/* 드롭다운 트리거 (업체관리, 펫메이트) */
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 6px;
   cursor: pointer;
-  padding: 8px 12px;
-  color: #333;
+  font-size: 15px;
+  color: #2c3e50;
   text-decoration: none;
+  padding: 6px 10px;
+  transition: color 0.2s ease;
+}
+.nav-link:hover {
+  color: #eb9666;
+}
+.nav-link:hover .nav-icon {
+  color: #eb9666;
 }
 
+/* 업체 관리 / 펫메이트 드롭다운 메뉴 */
 .header_company_manage_menu,
 .header_petmate_menu {
   display: none;
   position: absolute;
-  top: 120%;
+  top: 100%;
   left: 0;
   background: #fff;
-  min-width: 160px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  min-width: 180px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
   border-radius: 6px;
-  z-index: 1000;
+  z-index: 1500;
+  padding: 6px 0;
 }
 
+/* hover 시 보이게 */
 .header_dropdown:hover .header_company_manage_menu,
 .header_dropdown:hover .header_petmate_menu {
   display: block;
 }
 
+/* 드롭다운 메뉴 항목 */
 .header_company_manage_item,
 .header_petmate_item {
   display: block;
-  padding: 12px 16px;
+  padding: 10px 14px;
+  font-size: 14px;
   text-decoration: none;
   color: #333;
-  border-bottom: 1px solid #eee;
+  transition: background 0.2s ease, color 0.2s ease;
 }
-
 .header_company_manage_item:hover,
 .header_petmate_item:hover {
-  background-color: #f5f5f5;
-}
-
-/* 유저 영역 */
-.user-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  background: transparent;
-  border: 0;
-  padding: 4px 6px;
-  cursor: pointer;
-}
-
-.avatar {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  overflow: hidden;
-  background: #f0f2f5;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  border: 1px solid rgba(0,0,0,0.06);
-}
-
-.avatar-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-
-.avatar-fallback {
-  width: 100%;
-  height: 100%;
-  font-weight: 600;
-  color: #4b5563;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 14px;
-}
-
-.user-name {
-  white-space: nowrap;
-  max-width: 220px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-/* 드롭다운: 사용자 이름/아바타에 hover 시 표시 */
-.user-dropdown { position: relative; display: inline-block; }
-
-.user-menu {
-  display: none;
-  position: absolute;
-  top: 120%;
-  right: 0;
-  background: #fff;
-  min-width: 180px;
-  box-shadow: 0 2px 8px rgba(0,0,0,.1);
-  border-radius: 8px;
-  z-index: 1100;
-  padding: 6px 0;
-}
-
-.user-dropdown:hover .user-menu { display: block; }
-
-.user-menu_item {
-  width: 100%;
-  text-align: left;
-  padding: 10px 14px;
-  display: block;
-  color: #333;
-  text-decoration: none;
-  background: #fff;
-  border: 0;
-  cursor: pointer;
-}
-
-.user-menu_item:hover { background: #f5f5f5; }
-
-.user-menu_logout { color: #ef4444; }
-
-/* 프로필 드롭다운 안정화 */
-.user-dropdown { position: relative; }
-.user-badge { display: flex; align-items: center; gap: 8px; background: transparent; border: 0; padding: 0; cursor: pointer; }
-
-.user-menu {
-  position: absolute;
-  top: 100%;
-  right: 0;
-  min-width: 180px;
-  display: none;
-  z-index: 1000;
-  /* 필요시 배경/그림자 */
-  background: #fff; /* 다크모드 쓰면 기존 변수로 맞추세요 */
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  padding: 6px 0;
-}
-
-.user-dropdown.open .user-menu { display: block; }
-
-/* 메뉴가 트리거와 겹치도록 여백 제거해 끊김 방지 */
-.user-dropdown .user-menu,
-.user-dropdown .user-badge { pointer-events: auto; }
-
-/* 아바타 영역이 hover 간격 없이 이어지도록 */
-.user-dropdown { /* 필요시 여백 제거 */
-  /* padding-bottom: 0; */
+  background: #f5f5f5;
+  color: #eb9666;
 }
