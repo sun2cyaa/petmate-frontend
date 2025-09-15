@@ -612,7 +612,234 @@
     cursor: not-allowed;
 }
 
+/* ====== 이미지 그리드 스타일 ====== */
+.images-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 16px;
+    padding: 16px;
+    background-color: white;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+}
+
+.image-grid-item {
+    position: relative;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: all 0.2s;
+    background: white;
+}
+
+.image-grid-item:hover {
+    border-color: #3b82f6;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.image-wrapper {
+    position: relative;
+    width: 100%;
+    height: 150px;
+    overflow: hidden;
+}
+
+.grid-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.delete-image-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background-color: rgba(239, 68, 68, 0.9);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    opacity: 0.8;
+}
+
+.delete-image-btn:hover {
+    background-color: rgba(220, 38, 38, 1);
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+.image-info {
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.image-name {
+    font-size: 12px;
+    color: #374151;
+    word-break: break-word;
+    line-height: 1.3;
+    max-height: 2.6em;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.thumbnail-badge {
+    background-color: #10b981;
+    color: white;
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 12px;
+    align-self: flex-start;
+    font-weight: 500;
+}
+
+/* ====== 관리 모드 섹션 스타일 ====== */
+.existing-images-section,
+.new-images-section {
+    margin-bottom: 24px;
+}
+
+.existing-images-section h4,
+.new-images-section h4 {
+    margin: 0 0 12px 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #374151;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #e5e7eb;
+}
+
+.existing-images-section h4 {
+    color: #1f2937;
+}
+
+.new-images-section h4 {
+    color: #059669;
+}
+
+/* ====== 간단한 이미지 관리자 스타일 ====== */
+.simple-image-manager {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.simple-upload-area {
+    border: 2px dashed #d1d5db;
+    border-radius: 8px;
+    padding: 24px;
+    text-align: center;
+    background-color: #f9fafb;
+    cursor: pointer;
+    transition: all 0.2s;
+    min-height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.simple-upload-area.empty {
+    min-height: 200px;
+}
+
+.simple-upload-area:hover {
+    border-color: #3b82f6;
+    background-color: #f0f9ff;
+}
+
+.simple-upload-area .upload-placeholder {
+    color: #6b7280;
+}
+
+.simple-upload-area .upload-icon {
+    font-size: 32px;
+    margin-bottom: 8px;
+    opacity: 0.7;
+}
+
+.simple-upload-area .upload-placeholder p {
+    margin: 0;
+    font-size: 14px;
+}
+
+.selected-files {
+    background-color: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-radius: 8px;
+    padding: 16px;
+}
+
+.selected-files h4 {
+    margin: 0 0 12px 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: #059669;
+}
+
+.selected-files .uploaded-files {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.selected-files .file-item {
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    padding: 8px;
+    background: white;
+    text-align: center;
+}
+
+.selected-files .file-preview {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 4px;
+    margin-bottom: 8px;
+}
+
+.selected-files .file-name {
+    font-size: 11px;
+    color: #6b7280;
+    word-break: break-word;
+    line-height: 1.2;
+}
+
 /* 반응형 스타일 */
+@media (max-width: 768px) {
+    .images-grid {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 12px;
+        padding: 12px;
+    }
+
+    .image-wrapper {
+        height: 120px;
+    }
+
+    .delete-image-btn {
+        width: 24px;
+        height: 24px;
+        font-size: 14px;
+        top: 6px;
+        right: 6px;
+    }
+}
+
 @media (max-width: 480px) {
     .file-info {
         flex-direction: column;
