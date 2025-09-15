@@ -64,10 +64,13 @@
   transition: all 0.3s ease;
   box-shadow: 0 4px 15px rgba(235,150,102,0.3);
 }
+
 .banner-cta:hover {
-  background: #d87b4c;
+  background: transparent;
+  border: 2px solid #fff;
+  color: #fff;
+  box-shadow: 0 6px 20px rgba(255,255,255,0.3);
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(235,150,102,0.5);
 }
 
 /* ---- 검색 섹션 --- */
@@ -75,6 +78,7 @@
   padding: 60px 40px;
   background: #fff8f3;
 }
+
 .search-container {
   display: grid;
   grid-template-columns: 1fr 0.8fr;
@@ -102,8 +106,10 @@
 }
 .service-type-grid {
   display: grid;
+  height: 120px;
+  margin-bottom: 40px;
   grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 16px;
+  gap: 10px;
 }
 .service-type-btn {
   background: #f8d2bb;
@@ -153,8 +159,9 @@
   padding: 12px 16px;
   font-size: 15px;
 }
+
 .search-btn {
-  background: #eb9666;
+  background: linear-gradient(135deg, #eb9666, #e05353);
   color: white;
   border: none;
   padding: 10px 24px;
@@ -163,9 +170,12 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(235,150,102,0.3);
 }
+
 .search-btn:hover {
-  background: #d87b4c;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(235,150,102,0.5);
 }
 
 /* ---- 오른쪽 알림 카드 --- */
@@ -239,23 +249,27 @@
   padding: 100px 20px;
   background: linear-gradient(180deg, #fff 0%, #fff8f3 100%);
 }
+
 .sitters-container {
   max-width: 1200px;
   margin: 0 auto;
 }
+
 .sitter-title {
   color: #E05353;
 }
+
 .sitters-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 28px;
   margin: 40px 0 60px;
 }
+
 .view-more-btn {
-  background: #eb9666;
-  color: white;
-  border: none;
+  background: #fff;
+  color: #eb9666;
+  border: 2px solid #eb9666;
   padding: 14px 36px;
   border-radius: 40px;
   font-size: 15px;
@@ -263,9 +277,13 @@
   cursor: pointer;
   transition: all 0.3s ease;
 }
+
 .view-more-btn:hover {
-  background: #d87b4c;
+  background: #eb9666;
+  color: #fff;
+  box-shadow: 0 6px 20px rgba(235,150,102,0.4);
 }
+
 
 /* ---- sitter card --- */
 .sitter-tag {
@@ -353,15 +371,6 @@
   max-width: 1000px;
   margin: 0 auto;
 }
-.stat-card {
-  opacity: 0;
-  transform: translateY(30px);
-  transition: all 0.8s ease;
-}
-.stat-card.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
 .stat-card h3 {
   font-size: 48px;
   font-weight: 900;
@@ -387,7 +396,6 @@
   margin: 6px auto 0;
   border-radius: 2px;
 }
-
 
 /*  ---- 후기 ---- */
 .home-reviews-section {

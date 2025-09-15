@@ -6,102 +6,160 @@
   background: #fff;
 }
 
-/* 상단 옵션 영역 - 헤더 아래 위치 */
-.map_wrap > div:first-child {
-  height: 50px;
-  background: #f8f9fa;
-  border-bottom: 1px solid #dee2e6;
+/* 상단 바 */
+.map-top-bar {
   display: flex;
   align-items: center;
-  padding: 0 20px;
-  font-size: 14px;
-  color: #666;
-  flex-shrink: 0;
+  justify-content: space-between;
+  padding: 12px 20px;
+  background: #fff;
+  border-bottom: 1px solid #eee;
+  gap: 20px;
 }
 
-/* 메인 컨텐츠 영역 */
+/* 검색 박스 */
+.search-box {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border: 1.5px solid #ddd;
+  border-radius: 40px;
+  padding: 6px 10px;
+  margin-top: 15px;
+  max-width: 420px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+  transition: all 0.2s ease;
+}
+.search-box:focus-within {
+  border-color: #eb9666;
+  box-shadow: 0 0 0 3px rgba(235,150,102,0.2);
+}
+.search-box .search-icon {
+  font-size: 16px;
+  color: #888;
+  margin: 0 6px;
+}
+.search-box input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  font-size: 14px;
+  outline: none;
+  color: #333;
+  padding: 8px;
+}
+.search-btn {
+  background: linear-gradient(135deg, #EB9666, #E05353);
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  padding: 6px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.search-btn:hover {
+  background: linear-gradient(135deg, #E05353, #EB9666);
+  box-shadow: 0 4px 12px rgba(224,83,83,0.35); 
+}
+
+/* 서비스 필터 버튼 */
+.service-filter-buttons {
+  display: flex;
+  gap: 10px;
+}
+.pill-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 30px;
+  background: #fff;
+  border: 1.5px solid #eb9666;
+  color: #eb9666;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.pill-btn:hover {
+  background: #fff8f3;
+  box-shadow: 0 4px 12px rgba(235,150,102,0.25);
+}
+.pill-btn.active {
+  background: linear-gradient(135deg, #eb9666, #e05353);
+  color: #fff;
+  border: none;
+  box-shadow: 0 4px 12px rgba(235,150,102,0.35);
+}
+.pill-btn svg {
+  font-size: 14px;
+}
+
+/* 메인 컨텐츠 */
 .map_content {
   display: flex;
   flex: 1;
-  height: calc(100% - 50px);
+  min-height: 0; 
 }
 
-/* 사이드바 스타일링 */
+/* 사이드바 */
 .sidebar {
-  width: 320px;
+  width: 300px;
   padding: 20px;
-  background-color: #ffffff;
-  border-right: 1px solid #e0e0e0;
-  overflow-y: auto;
-  height: 100%;
-  box-shadow: 2px 0 8px rgba(0,0,0,0.1);
+  border-right: 1px solid #eee;
+  background: #fff;
 }
-
 .sidebar h3 {
-  margin: 0 0 20px 0;
-  font-size: 18px;
+  margin-bottom: 16px;
+  font-size: 16px;
   font-weight: 700;
   color: #333;
   border-bottom: 2px solid #eb9666;
-  padding-bottom: 10px;
+  padding-bottom: 8px;
 }
 
-.sidebar input {
-  width: calc(100% - 24px);
-  padding: 12px;
-  margin-bottom: 12px;
-  border: 2px solid #e9ecef;
-  border-radius: 8px;
-  font-size: 14px;
-}
-
-.sidebar input:focus {
-  outline: none;
-  border-color: #eb9666;
-}
-
-.sidebar button {
-  width: 100%;
-  padding: 12px 20px;
-  background: #eb9666;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: 600;
-  margin-bottom: 20px;
-  transition: background-color 0.3s;
-}
-
-.sidebar button:hover {
-  background: #d6824a;
-}
-
+/* 리스트 */
 .list {
-  border-top: 1px solid #e9ecef;
-  padding-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 10px;
 }
-
-.list p {
-  padding: 12px;
-  margin: 0 0 8px 0;
+.list-item {
+  background: #fff;
+  padding: 14px 18px;
+  border-radius: 12px;
+  border: 1px solid #eee;
   cursor: pointer;
+  transition: all 0.25s ease;
   font-size: 14px;
-  border-radius: 6px;
-  transition: all 0.2s;
-  border: 1px solid transparent;
+  font-weight: 500;
+  color: #333;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
-
-.list p:hover {
-  background: #f8f9fa;
+.list-item:hover {
+  background: #fffdfc;
   border-color: #eb9666;
-  transform: translateX(4px);
+  box-shadow: 0 6px 14px rgba(235,150,102,0.15);
+  transform: translateY(-2px);
+}
+.list-item span {
+  font-size: 14px;
+  color: #eb9666;
+  font-weight: bold;
 }
 
-/* 지도 영역 */
+/* 지도 */
 .map_area {
   flex: 1;
-  height: 100%;
+  margin-right: 20px;
+  height: 80%;
+  min-height: 500px;
   position: relative;
 }

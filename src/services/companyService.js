@@ -10,14 +10,6 @@ export const registerCompany = async (formData) => {
   return response.data;
 };
 
-// 사업자등록번호 조회
-export const checkBusinessNumber = async (businessNumber) => {
-  const response = await apiRequest.post("/api/business/check", {
-    businessNumber: businessNumber
-  });
-  return response.data;
-};
-
 // 업체 목록 조회
 export const getCompanies = async (params = {}) => {
   const response = await apiRequest.get("/api/company", { params });
@@ -52,16 +44,24 @@ export const updateCompanyStatus = async (id, status) => {
   return response.data;
 };
 
-// 국세청 사업자등록번호 검증
-export const validateBusinessNumber = async (businessNumber) => {
-  const response = await apiRequest.post('/api/company/validate-business', {
-    businessNumber: businessNumber
+// 내가 등록한 업체 목록 조회
+export const getMyCompanies = async () => {
+  const response = await apiRequest.get("/api/company/my");
+  return response.data;
+};
+
+// 개인 신원 인증 (소셜로그인 이름 vs 입력한 이름)
+export const verifyPersonalIdentity = async (personalName) => {
+  const response = await apiRequest.post("/api/company/verify-personal", {
+    personalName: personalName
   });
   return response.data;
 };
 
-// 내가 등록한 업체 목록 조회
-export const getMyCompanies = async () => {
-  const response = await apiRequest.get("/api/company/my");
+// 사업자등록정보 조회 (사업자번호로 상호명, 대표자명 자동 입력)
+export const getBusinessInfo = async (businessNumber) => {
+  const response = await apiRequest.post('/api/company/get-business-info', {
+    businessNumber: businessNumber
+  });
   return response.data;
 };

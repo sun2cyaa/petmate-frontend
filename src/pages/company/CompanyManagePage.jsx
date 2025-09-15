@@ -41,7 +41,7 @@ function CompanyManagePage() {
     const getDisplayName = (company) => {
         if (company.type === 'P') {
             // 개인(일반인): 성함 표시
-            return company.personalName || company.repName || company.name || '이름 없음';
+            return company.repName || company.name || '이름 없음';
         } else {
             // 개인/법인사업자: 상호명
             return company.name || '상호명 없음';
@@ -171,12 +171,12 @@ function CompanyManagePage() {
 
     // 업체 등록 페이지로 이동
     const handleAddCompany = () => {
-        navigate('/companyform');
+        navigate('/companyregister');
     };
 
     // 업체 수정 페이지로 이동
     const handleEditCompany = (companyId) => {
-        navigate(`/companyform/${companyId}`);
+        navigate(`/companyregister/${companyId}`);
     };
 
     // 업체 삭제
@@ -255,8 +255,8 @@ function CompanyManagePage() {
                                                         </div>
                                                         {/* 타입별 추가 정보 표시 */}
                                                         <div className="company_sub_info">
-                                                            {company.type === 'P' && company.personalName && (
-                                                                <span className="sub_info_text">성함: {company.personalName}</span>
+                                                            {company.type === 'P' && company.repName && (
+                                                                <span className="sub_info_text">성함: {company.repName}</span>
                                                             )}
                                                             {company.type === 'B' && company.repName && (
                                                                 <span className="sub_info_text">대표자: {company.repName}</span>
