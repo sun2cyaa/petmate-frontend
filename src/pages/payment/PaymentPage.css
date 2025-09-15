@@ -80,15 +80,15 @@
 
 .payment-button:hover {
   background: linear-gradient(135deg, #E05353, #EB9666);
-  box-shadow: 0 4px 12px rgba(224,83,83,0.35); /* 그림자 살짝만 */
-  transform: none; /* 살짝 들리는 효과 제거 */
+  box-shadow: 0 4px 12px rgba(224,83,83,0.35); 
+  transform: none; 
 }
 
 
 .payment-info {
   background: #fff8f5;
   border: 1px solid #ffe0d5;
-  border-left: 4px solid #EB9666; /* 메인 포인트 컬러 */
+  border-left: 4px solid #EB9666; 
   padding: 14px 16px;
   border-radius: 12px;
   margin-bottom: 28px;
@@ -97,5 +97,5 @@
 .payment-info-title {
   font-size: 14px;
   font-weight: 600;
-  color: #E05353; /* 안내 제목 → 레드 포인트 */
+  color: #E05353; 
 }
