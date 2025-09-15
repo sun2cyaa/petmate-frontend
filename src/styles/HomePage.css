@@ -62,6 +62,7 @@
   border-radius: 40px;
   cursor: pointer;
   transition: all 0.3s ease;
+  margin-bottom: 25px;
   box-shadow: 0 4px 15px rgba(235,150,102,0.3);
 }
 
