@@ -21,6 +21,7 @@ export default function SigninPage() {
     <article className="signin-page">
       <div className="signin-wrap">
         <h1 className="signin-title">로그인</h1>
+        <p className="signin-subtitle">Petmate에 오신 것을 환영합니다.</p>
 
         <button
           className="signin-btn naver"
@@ -45,7 +46,18 @@ export default function SigninPage() {
           <img src={googleIcon} alt="구글" className="signin-icon" />
           구글로 로그인/회원가입
         </button>
+
+        <div className="signin-footer">
+      <p>
+        로그인 시, Petmate의 <br />
+        <a href="/privacy">[서비스 약관]과</a> · <a href="/terms">[개인정보 처리방침]에 동의하게 됩니다.</a>
+        </p>
+        </div>
+
       </div>
+
+      
+
     </article>
   );
 }
