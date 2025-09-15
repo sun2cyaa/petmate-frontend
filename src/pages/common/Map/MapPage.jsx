@@ -47,14 +47,14 @@ function MapPage() {
     if (!isKakaoLoaded) return;
     const container = document.getElementById("map");
 
-    const initMap = (lat, lng, label) => {
+    const initMap = (latitude, longitude, label) => {
       const options = {
-        center: new window.kakao.maps.LatLng(lat, lng),
+        center: new window.kakao.maps.LatLng(latitude, longitude),
         level: 3,
       };
       const map = new window.kakao.maps.Map(container, options);
       const marker = new window.kakao.maps.Marker({
-        position: new window.kakao.maps.LatLng(lat, lng),
+        position: new window.kakao.maps.LatLng(latitude, longitude),
       });
       marker.setMap(map);
       const infowindow = new window.kakao.maps.InfoWindow({
