@@ -7,7 +7,8 @@ import { ImageUploadViewer } from "../../../util/ImageUtil";
 
 export default function PetMateSignupPage() {
     const nav = useNavigate();
-    const imageUploadRef = useRef(null);
+    const profileImageRef = useRef(null);
+    const certImageRef = useRef(null);
     const [form, setForm] = useState({
         email: "",
         provider: "",
@@ -21,14 +22,10 @@ export default function PetMateSignupPage() {
         pets: [],
         agree: false,
     });
-    const [profileFile, setProfileFile] = useState(null);
-    const [profilePreview, setProfilePreview] = useState(null);
-    const [certFiles, setCertFiles] = useState([]);       // File[]
-    const [certPreviews, setCertPreviews] = useState([]); // { name, url }[]
     const [submitting, setSubmitting] = useState(false);
     const [doneOpen, setDoneOpen] = useState(false);
-    const [profileDragOver, setProfileDragOver] = useState(false);
-    const [certDragOver, setCertDragOver] = useState(false);
+    const [profileFile, setProfileFile] = useState([]);
+    const [certFiles, setCertFiles] = useState([]);
 
     useEffect(() => {
         apiRequest.get("/auth/me", { withCredentials: true })
@@ -43,7 +40,6 @@ export default function PetMateSignupPage() {
                     phone: u.phone || "",
                     userId: u.userId || "",
                 }));
-                if (u.picture) setProfilePreview(u.picture);
             })
             .catch(() => { });
     }, []);
@@ -54,58 +50,58 @@ export default function PetMateSignupPage() {
     };
 
     // ===== 프로필 업로드 =====
-    const handleProfileDragOver = (e) => { e.preventDefault(); setProfileDragOver(true); };
-    const handleProfileDragLeave = (e) => { e.preventDefault(); setProfileDragOver(false); };
-    const handleProfileDrop = (e) => {
-        e.preventDefault(); setProfileDragOver(false);
-        const files = e.dataTransfer.files;
-        if (files.length > 0 && files[0].type.startsWith("image/")) {
-            const file = files[0]; setProfileFile(file); setProfilePreview(URL.createObjectURL(file));
-        }
-    };
-    const onProfileFile = (e) => {
-        const file = e.target.files?.[0] || null;
-        if (file) { setProfileFile(file); setProfilePreview(URL.createObjectURL(file)); }
-    };
+    // const handleProfileDragOver = (e) => { e.preventDefault(); setProfileDragOver(true); };
+    // const handleProfileDragLeave = (e) => { e.preventDefault(); setProfileDragOver(false); };
+    // const handleProfileDrop = (e) => {
+    //     e.preventDefault(); setProfileDragOver(false);
+    //     const files = e.dataTransfer.files;
+    //     if (files.length > 0 && files[0].type.startsWith("image/")) {
+    //         const file = files[0]; setProfileFile(file); setProfilePreview(URL.createObjectURL(file));
+    //     }
+    // };
+    // const onProfileFile = (e) => {
+    //     const file = e.target.files?.[0] || null;
+    //     if (file) { setProfileFile(file); setProfilePreview(URL.createObjectURL(file)); }
+    // };
 
     // ===== 자격증 업로드: 추가(append) 방식 =====
-    const appendCerts = (incoming) => {
-        const images = incoming.filter((f) => f && f.type?.startsWith("image/"));
-        if (images.length === 0) return;
+    // const appendCerts = (incoming) => {
+    //     const images = incoming.filter((f) => f && f.type?.startsWith("image/"));
+    //     if (images.length === 0) return;
 
-        // 중복 방지: name+size 기준
-        setCertFiles((prev) => {
-            const prevKey = new Set(prev.map((f) => `${f.name}:${f.size}`));
-            const dedup = images.filter((f) => !prevKey.has(`${f.name}:${f.size}`));
-            return [...prev, ...dedup];
-        });
+    //     // 중복 방지: name+size 기준
+    //     setCertFiles((prev) => {
+    //         const prevKey = new Set(prev.map((f) => `${f.name}:${f.size}`));
+    //         const dedup = images.filter((f) => !prevKey.has(`${f.name}:${f.size}`));
+    //         return [...prev, ...dedup];
+    //     });
 
-        setCertPreviews((prev) => {
-            const prevKey = new Set(prev.map((p) => p.name));
-            const toAdd = images.map((f) => ({ name: `${f.name}:${f.size}`, url: URL.createObjectURL(f) }));
-            // 프리뷰 키도 name:size로 맞춤
-            const filtered = toAdd.filter((p) => !prevKey.has(p.name));
-            return [...prev, ...filtered];
-        });
-    };
+    //     setCertPreviews((prev) => {
+    //         const prevKey = new Set(prev.map((p) => p.name));
+    //         const toAdd = images.map((f) => ({ name: `${f.name}:${f.size}`, url: URL.createObjectURL(f) }));
+    //         // 프리뷰 키도 name:size로 맞춤
+    //         const filtered = toAdd.filter((p) => !prevKey.has(p.name));
+    //         return [...prev, ...filtered];
+    //     });
+    // };
 
-    const handleCertDragOver = (e) => { e.preventDefault(); setCertDragOver(true); };
-    const handleCertDragLeave = (e) => { e.preventDefault(); setCertDragOver(false); };
-    const handleCertDrop = (e) => {
-        e.preventDefault(); setCertDragOver(false);
-        const files = Array.from(e.dataTransfer.files || []);
-        appendCerts(files);
-    };
-    const onCertFiles = (e) => {
-        const files = Array.from(e.target.files || []);
-        appendCerts(files);
-        e.target.value = ""; // 같은 파일 재선택 시도 가능하도록 리셋
-    };
+    // const handleCertDragOver = (e) => { e.preventDefault(); setCertDragOver(true); };
+    // const handleCertDragLeave = (e) => { e.preventDefault(); setCertDragOver(false); };
+    // const handleCertDrop = (e) => {
+    //     e.preventDefault(); setCertDragOver(false);
+    //     const files = Array.from(e.dataTransfer.files || []);
+    //     appendCerts(files);
+    // };
+    // const onCertFiles = (e) => {
+    //     const files = Array.from(e.target.files || []);
+    //     appendCerts(files);
+    //     e.target.value = ""; // 같은 파일 재선택 시도 가능하도록 리셋
+    // };
 
-    const removeCertFile = (index) => {
-        setCertFiles((files) => files.filter((_, i) => i !== index));
-        setCertPreviews((prev) => prev.filter((_, i) => i !== index));
-    };
+    // const removeCertFile = (index) => {
+    //     setCertFiles((files) => files.filter((_, i) => i !== index));
+    //     setCertPreviews((prev) => prev.filter((_, i) => i !== index));
+    // };
 
     // ===== 검증 및 제출 =====
     const validate = () => {
@@ -126,21 +122,25 @@ export default function PetMateSignupPage() {
         try {
             setSubmitting(true);
 
-            // 참고: ImageUploadViewer의 이미지들은 관리 모드에서 개별적으로 업로드되므로
-            // 여기서는 별도로 업로드하지 않습니다.
+            // 1. 이미지 업로드 먼저 실행
+            if (profileImageRef.current && profileImageRef.current.hasFiles) {
+                await profileImageRef.current.handleUpload();
+            }
 
+            if (certImageRef.current && certImageRef.current.hasFiles) {
+                await certImageRef.current.handleUpload();
+            }
+
+            // 2. 폼 데이터 전송
             const fd = new FormData();
             fd.append("email", form.email);
-            fd.append("provider", form.provider);   // 히든 전송
+            fd.append("provider", form.provider);
             fd.append("name", form.name.trim());
             fd.append("nickName", form.nickName || "");
             fd.append("phone", form.phone || "");
             fd.append("gender", form.gender);
             fd.append("age", String(form.age));
             fd.append("userId", form.userId);
-
-            if (profileFile) fd.append("profile", profileFile);
-            certFiles.forEach((f) => fd.append("certificates", f)); // 누적된 파일 전송
 
             await apiRequest.post("/user/petmate/apply", fd, { withCredentials: true });
             setDoneOpen(true);
@@ -203,33 +203,14 @@ export default function PetMateSignupPage() {
 
                     <div className="form-group">
                         <label className="form-label">프로필 사진</label>
-                        <div
-                            className={`drop-zone ${profileDragOver ? "drag-over" : ""} ${profilePreview ? "has-image" : ""}`}
-                            onDragOver={handleProfileDragOver}
-                            onDragLeave={handleProfileDragLeave}
-                            onDrop={handleProfileDrop}
-                            onClick={() => document.getElementById("petmate-profile-input")?.click()}
-                        >
-                            {profilePreview ? (
-                                <div className="image-preview">
-                                    <img
-                                        src={profilePreview}
-                                        alt="프로필"
-                                        referrerPolicy="no-referrer"
-                                        crossOrigin="anonymous"
-                                        onError={() => setProfilePreview(null)}
-                                    />
-                                    <div className="image-overlay"><span>클릭하거나 드래그하여 변경</span></div>
-                                </div>
-                            ) : (
-                                <div className="drop-zone-content">
-                                    <div className="drop-icon">📷</div>
-                                    <p>프로필 사진을 드래그하거나 클릭하여 업로드</p>
-                                    <span className="drop-hint">JPG, PNG 파일만 지원</span>
-                                </div>
-                            )}
-                            <input id="petmate-profile-input" type="file" accept="image/*" onChange={onProfileFile} hidden />
-                        </div>
+                        <ImageUploadViewer
+                            ref={profileImageRef}
+                            imageTypeCode="01"
+                            referenceId={form.userId}
+                            mode="single"
+                            files={profileFile}
+                            setFiles={setProfileFile}
+                        />
                     </div>
                 </section>
 
@@ -238,7 +219,7 @@ export default function PetMateSignupPage() {
                     <div className="form-group">
                         <label className="form-label">자격증 업로드</label>
                         <ImageUploadViewer
-                            ref={imageUploadRef}
+                            ref={certImageRef}
                             imageTypeCode="05"
                             referenceId={form.userId}
                             mode="multiple"
