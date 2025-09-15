@@ -1,277 +1,272 @@
-import { useState, useEffect } from "react"
-import { X, MapPin, Loader2, Navigation } from "lucide-react"
-import './MapModal.css'
+import { useState, useEffect } from "react";
+import { X, MapPin, Loader2, Navigation } from "lucide-react";
+import "./MapModal.css";
 
-export default function MapModal({
-    show,
-    onClose,
-    onLocationSelect
-}) {
-    const [isKakaoLoaded, setIsKakaoLoaded] = useState(false)
-    const [map, setMap] = useState(null)
-    const [marker, setMarker] = useState(null)
-    const [selectedLocation, setSelectedLocation] = useState(null)
-    const [isLoadingLocation, setIsLoadingLocation] = useState(false)
+export default function MapModal({ show, onClose, onLocationSelect }) {
+  const [isKakaoLoaded, setIsKakaoLoaded] = useState(false);
+  const [map, setMap] = useState(null);
+  const [marker, setMarker] = useState(null);
+  const [selectedLocation, setSelectedLocation] = useState(null);
+  const [isLoadingLocation, setIsLoadingLocation] = useState(false);
 
-    // 카카오 맵 스크립트 로드
-    useEffect(() => {
-        if (!show) return
+  // coord2Address 응답 파싱(도로명 우선, 우편번호 road_address.zone_no)
+  const parseAddressFromCoord2Address = (result) => {
+    const first = result?.[0];
+    const road = first?.road_address;
+    const jibun = first?.address;
+    return {
+      address: road?.address_name ?? jibun?.address_name ?? "",
+      postcode: road?.zone_no ?? "",
+    };
+  };
 
-        const loadKakaoMap = () => {
-            if (window.kakao && window.kakao.maps) {
-                setIsKakaoLoaded(true)
-                return
-            }
+  // 카카오 맵 스크립트 로드 (중복 로드 방지)
+  useEffect(() => {
+    if (!show) return;
 
-            const script = document.createElement("script")
-            script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.REACT_APP_KAKAO_MAP_KEY}&autoload=false&libraries=services`
-            script.async = true
+    const ensureKakaoLoaded = () => {
+      if (window.kakao && window.kakao.maps) {
+        setIsKakaoLoaded(true);
+        return;
+      }
 
-            script.onload = () => {
-                window.kakao.maps.load(() => {
-                    setIsKakaoLoaded(true)
-                })
-            }
+      const EXISTING_ID = "kakao-maps-sdk";
+      if (!document.getElementById(EXISTING_ID)) {
+        const script = document.createElement("script");
+        script.id = EXISTING_ID;
+        script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.REACT_APP_KAKAO_MAP_KEY}&autoload=false&libraries=services`;
+        // async/defer 사용 안 함 (document.write 충돌 회피)
+        script.onload = () => {
+          window.kakao.maps.load(() => setIsKakaoLoaded(true));
+        };
+        script.onerror = () => {
+          console.error("카카오 맵 스크립트 로딩 실패");
+        };
+        document.head.appendChild(script);
+      } else {
+        // 이미 존재하면 load만 보장
+        const tryLoad = () => {
+          if (window.kakao && window.kakao.maps) {
+            window.kakao.maps.load(() => setIsKakaoLoaded(true));
+          } else {
+            setTimeout(tryLoad, 100);
+          }
+        };
+        tryLoad();
+      }
+    };
 
-            script.onerror = () => {
-                console.error("카카오 맵 스크립트 로딩에 실패했습니다.")
-            }
+    ensureKakaoLoaded();
+  }, [show]);
 
-            document.head.appendChild(script)
+  // 지도 초기화
+  useEffect(() => {
+    if (!isKakaoLoaded || !show) return;
+
+    const container = document.getElementById("modal-map");
+    if (!container) return;
+
+    const defaultLat = 37.5665;
+    const defaultLng = 126.9780;
+    const defaultPosition = new window.kakao.maps.LatLng(defaultLat, defaultLng);
+
+    const options = { center: defaultPosition, level: 3 };
+    const newMap = new window.kakao.maps.Map(container, options);
+    setMap(newMap);
+
+    const newMarker = new window.kakao.maps.Marker({
+      position: defaultPosition,
+      draggable: true,
+    });
+    newMarker.setMap(newMap);
+    setMarker(newMarker);
+
+    // 초기 위치 정보
+    setSelectedLocation({
+      address: "서울특별시 중구 태평로1가 31 (서울시청)",
+      latitude: defaultLat,
+      longitude: defaultLng,
+      postcode: "",
+    });
+
+    const geocoder = new window.kakao.maps.services.Geocoder();
+
+    // 마커 드래그 종료 → 좌표→주소
+    window.kakao.maps.event.addListener(newMarker, "dragend", function () {
+      const position = newMarker.getPosition();
+      geocoder.coord2Address(position.getLng(), position.getLat(), (result, status) => {
+        if (status === window.kakao.maps.services.Status.OK) {
+          const { address, postcode } = parseAddressFromCoord2Address(result);
+          setSelectedLocation({
+            address,
+            postcode,
+            latitude: position.getLat(),
+            longitude: position.getLng(),
+          });
         }
+      });
+    });
 
-        loadKakaoMap()
-    }, [show])
-
-    // 지도 초기화
-    useEffect(() => {
-        if (!isKakaoLoaded || !show) return
-
-        const initializeMap = () => {
-            const container = document.getElementById("modal-map")
-            if (!container) return
-
-            // 서울시청을 기본 위치로 설정
-            const defaultPosition = new window.kakao.maps.LatLng(37.5665, 126.9780)
-
-            const options = {
-                center: defaultPosition,
-                level: 3,
-            }
-
-            const newMap = new window.kakao.maps.Map(container, options)
-            setMap(newMap)
-
-            // 기본 마커 생성
-            const newMarker = new window.kakao.maps.Marker({
-                position: defaultPosition,
-                draggable: true
-            })
-            newMarker.setMap(newMap)
-            setMarker(newMarker)
-
-            // 초기 위치 정보 설정
-            const initialLocation = {
-                address: "서울특별시 중구 태평로1가 31 (서울시청)",
-                latitude: 37.5665,
-                longitude: 126.9780
-            }
-            setSelectedLocation(initialLocation)
-
-            // Geocoder 객체 생성
-            const geocoder = new window.kakao.maps.services.Geocoder()
-
-            // 마커 드래그 이벤트
-            window.kakao.maps.event.addListener(newMarker, 'dragend', function () {
-                const position = newMarker.getPosition()
-
-                // 좌표로 주소 검색
-                geocoder.coord2Address(position.getLng(), position.getLat(), function (result, status) {
-                    if (status === window.kakao.maps.services.Status.OK) {
-                        const address = result[0].address.address_name
-                        setSelectedLocation({
-                            address: address,
-                            latitude: position.getLat(),
-                            longitude: position.getLng()
-                        })
-                    }
-                })
-            })
-
-            // 지도 클릭 이벤트
-            window.kakao.maps.event.addListener(newMap, 'click', function (mouseEvent) {
-                const position = mouseEvent.latLng
-
-                // 마커 위치 이동
-                newMarker.setPosition(position)
-
-                // 좌표로 주소 검색
-                geocoder.coord2Address(position.getLng(), position.getLat(), function (result, status) {
-                    if (status === window.kakao.maps.services.Status.OK) {
-                        const address = result[0].address.address_name
-                        const postcode = result[0].address.zone_no || result[0].road_address?.zone_no || ""
-                        console.log('지도 클릭 - 좌표로 검색된 결과:', result[0])
-                        console.log('지도 클릭 - address 객체:', result[0].address)
-                        console.log('지도 클릭 - road_address 객체:', result[0].road_address)
-                        setSelectedLocation({
-                            address: address,
-                            postcode: postcode,
-                            latitude: position.getLat(),
-                            longitude: position.getLng()
-                        })
-                    }
-                })
-            })
-
-            // 현재 위치로 이동 시도
-            getCurrentLocationAndMove(newMap, newMarker, geocoder)
+    // 지도 클릭 → 마커 이동 + 좌표→주소
+    window.kakao.maps.event.addListener(newMap, "click", function (mouseEvent) {
+      const position = mouseEvent.latLng;
+      newMarker.setPosition(position);
+      geocoder.coord2Address(position.getLng(), position.getLat(), (result, status) => {
+        if (status === window.kakao.maps.services.Status.OK) {
+          const { address, postcode } = parseAddressFromCoord2Address(result);
+          setSelectedLocation({
+            address,
+            postcode,
+            latitude: position.getLat(),
+            longitude: position.getLng(),
+          });
         }
+      });
+    });
 
-        initializeMap()
-    }, [isKakaoLoaded, show])
+    // 현재 위치로 한번 이동 시도
+    getCurrentLocationAndMove(newMap, newMarker, geocoder);
+  }, [isKakaoLoaded, show]);
 
-    const getCurrentLocationAndMove = (mapInstance, markerInstance, geocoder) => {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    const lat = position.coords.latitude
-                    const lng = position.coords.longitude
-                    const currentPosition = new window.kakao.maps.LatLng(lat, lng)
+  const getCurrentLocationAndMove = (mapInstance, markerInstance, geocoder) => {
+    if (!navigator.geolocation) return;
 
-                    // 지도 중심과 마커를 현재 위치로 이동
-                    mapInstance.setCenter(currentPosition)
-                    markerInstance.setPosition(currentPosition)
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const lat = pos.coords.latitude;
+        const lng = pos.coords.longitude;
+        const current = new window.kakao.maps.LatLng(lat, lng);
 
-                    // 현재 위치의 주소 검색
-                    geocoder.coord2Address(lng, lat, function (result, status) {
-                        if (status === window.kakao.maps.services.Status.OK) {
-                            const address = result[0].address.address_name
-                            const postcode = result[0].address.zone_no || result[0].road_address?.zone_no || ""
-                            console.log('현재 위치 - 좌표로 검색된 결과:', result[0])
-                            console.log('현재 위치 - address 객체:', result[0].address)
-                            console.log('현재 위치 - road_address 객체:', result[0].road_address)
-                            setSelectedLocation({
-                                address: address,
-                                postcode: postcode,
-                                latitude: lat,
-                                longitude: lng
-                            })
-                        }
-                    })
-                },
-                (error) => {
-                    console.log("위치 정보를 가져올 수 없습니다:", error)
-                }
-            )
-        }
+        mapInstance.setCenter(current);
+        markerInstance.setPosition(current);
+
+        geocoder.coord2Address(lng, lat, (result, status) => {
+          if (status === window.kakao.maps.services.Status.OK) {
+            const { address, postcode } = parseAddressFromCoord2Address(result);
+            setSelectedLocation({ address, postcode, latitude: lat, longitude: lng });
+          }
+        });
+      },
+      (err) => {
+        console.log("현재 위치 가져오기 실패:", err);
+      }
+    );
+  };
+
+  const handleCurrentLocation = () => {
+    if (!map || !marker) return;
+    setIsLoadingLocation(true);
+
+    if (!navigator.geolocation) {
+      alert("브라우저가 위치 정보를 지원하지 않습니다.");
+      setIsLoadingLocation(false);
+      return;
     }
 
-    const handleCurrentLocation = () => {
-        if (!map || !marker) return
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const lat = pos.coords.latitude;
+        const lng = pos.coords.longitude;
+        const current = new window.kakao.maps.LatLng(lat, lng);
 
-        setIsLoadingLocation(true)
+        map.setCenter(current);
+        marker.setPosition(current);
 
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    const lat = position.coords.latitude
-                    const lng = position.coords.longitude
-                    const currentPosition = new window.kakao.maps.LatLng(lat, lng)
+        const geocoder = new window.kakao.maps.services.Geocoder();
+        geocoder.coord2Address(lng, lat, (result, status) => {
+          if (status === window.kakao.maps.services.Status.OK) {
+            const { address, postcode } = parseAddressFromCoord2Address(result);
+            setSelectedLocation({ address, postcode, latitude: lat, longitude: lng });
+          }
+          setIsLoadingLocation(false);
+        });
+      },
+      (err) => {
+        console.error("현재 위치를 가져올 수 없습니다:", err);
+        alert("현재 위치를 가져올 수 없습니다. 위치 권한을 확인해주세요.");
+        setIsLoadingLocation(false);
+      }
+    );
+  };
 
-                    // 지도 중심과 마커를 현재 위치로 이동
-                    map.setCenter(currentPosition)
-                    marker.setPosition(currentPosition)
+  // 선택 확정: 우편번호가 비었으면 한번 더 보정 후 부모로 전달
+  const handleSelect = () => {
+    if (!selectedLocation) return;
 
-                    // Geocoder로 주소 검색
-                    const geocoder = new window.kakao.maps.services.Geocoder()
-                    geocoder.coord2Address(lng, lat, function (result, status) {
-                        if (status === window.kakao.maps.services.Status.OK) {
-                            const address = result[0].address.address_name
-                            const postcode = result[0].address.zone_no || result[0].road_address?.zone_no || ""
-                            console.log('현재위치 버튼 - 좌표로 검색된 결과:', result[0])
-                            console.log('현재위치 버튼 - address 객체:', result[0].address)
-                            console.log('현재위치 버튼 - road_address 객체:', result[0].road_address)
-                            setSelectedLocation({
-                                address: address,
-                                postcode: postcode,
-                                latitude: lat,
-                                longitude: lng
-                            })
-                        }
-                    })
-
-                    setIsLoadingLocation(false)
-                },
-                (error) => {
-                    console.error("위치 정보를 가져올 수 없습니다:", error)
-                    alert("현재 위치를 가져올 수 없습니다. 위치 권한을 확인해주세요.")
-                    setIsLoadingLocation(false)
-                }
-            )
-        }
+    const { latitude, longitude, postcode } = selectedLocation || {};
+    if (postcode || latitude == null || longitude == null) {
+      onLocationSelect?.(selectedLocation);
+      onClose?.();
+      return;
     }
 
-    const handleLocationSelect = () => {
-        if (selectedLocation) {
-            onLocationSelect?.(selectedLocation)
-        }
-        onClose()
-    }
+    const geocoder = new window.kakao.maps.services.Geocoder();
+    geocoder.coord2Address(Number(longitude), Number(latitude), (result, status) => {
+      let finalLoc = { ...selectedLocation };
+      if (status === window.kakao.maps.services.Status.OK) {
+        const { address: a2, postcode: p2 } = parseAddressFromCoord2Address(result);
+        finalLoc.address = a2 || finalLoc.address || "";
+        finalLoc.postcode = p2 || finalLoc.postcode || "";
+      }
+      onLocationSelect?.(finalLoc);
+      onClose?.();
+    });
+  };
 
-    if (!show) return null
+  if (!show) return null;
 
-    return (
-        <div className="modal-overlay">
-            <div className="map-modal-content">
-                <div className="modal-header">
-                    <h3 className="modal-title">지도에서 주소 찾기</h3>
-                    <button className="close-button" onClick={onClose}>
-                        <X size={16} />
-                    </button>
-                </div>
-
-                <div className="map-content">
-                    {!isKakaoLoaded && (
-                        <div className="map-loading">
-                            <Loader2 size={32} className="spin" />
-                            <p>지도를 로딩 중...</p>
-                        </div>
-                    )}
-                    <div
-                        id="modal-map"
-                        style={{
-                            width: "100%",
-                            height: "400px",
-                            display: isKakaoLoaded ? 'block' : 'none'
-                        }}
-                    ></div>
-                </div>
-
-                <div className="map-info">
-                    <div className="location-info">
-                        <MapPin size={16} />
-                        <span>{selectedLocation?.address || "위치를 선택해주세요"}</span>
-                    </div>
-                    <button
-                        className="current-location-btn"
-                        onClick={handleCurrentLocation}
-                        disabled={isLoadingLocation}
-                    >
-                        {isLoadingLocation ? <Loader2 size={16} className="spin" /> : <Navigation size={16} />}
-                        현재 위치로 이동
-                    </button>
-                </div>
-
-                <div className="map-actions">
-                    <button
-                        onClick={handleLocationSelect}
-                        className="select-location-button"
-                        disabled={!selectedLocation}
-                    >
-                        이 위치로 설정
-                    </button>
-                </div>
-            </div>
+  return (
+    <div className="modal-overlay">
+      <div className="map-modal-content">
+        <div className="modal-header">
+          <h3 className="modal-title">지도에서 주소 찾기</h3>
+          <button className="close-button" onClick={onClose}>
+            <X size={16} />
+          </button>
         </div>
-    )
+
+        <div className="map-content">
+          {!isKakaoLoaded && (
+            <div className="map-loading">
+              <Loader2 size={32} className="spin" />
+              <p>지도를 로딩 중...</p>
+            </div>
+          )}
+          <div
+            id="modal-map"
+            style={{
+              width: "100%",
+              height: "400px",
+              display: isKakaoLoaded ? "block" : "none",
+            }}
+          />
+        </div>
+
+        <div className="map-info">
+          <div className="location-info">
+            <MapPin size={16} />
+            <span>{selectedLocation?.address || "위치를 선택해주세요"}</span>
+          </div>
+          <button
+            className="current-location-btn"
+            onClick={handleCurrentLocation}
+            disabled={isLoadingLocation}
+          >
+            {isLoadingLocation ? <Loader2 size={16} className="spin" /> : <Navigation size={16} />}
+            현재 위치로 이동
+          </button>
+        </div>
+
+        <div className="map-actions">
+          <button
+            onClick={handleSelect}
+            className="select-location-button"
+            disabled={!selectedLocation}
+          >
+            이 위치로 설정
+          </button>
+        </div>
+      </div>
+    </div>
+  );
 }
