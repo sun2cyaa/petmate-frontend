@@ -2,8 +2,6 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './Test.css';
 import {
-    SingleImageUpload,
-    MultipleImageUpload,
     ImageSlider,
     ImageUploadViewer,
     fetchImagesByReference,
@@ -321,45 +319,6 @@ const Test = () => {
             <div className="form-section">
                 <h2>🆕 ImageUtil 컴포넌트 테스트</h2>
 
-                {/* 기본 업로드 컴포넌트 */}
-                <div className="upload-section">
-                    <h3>1. 단일 이미지 업로드 컴포넌트</h3>
-                    <SingleImageUpload
-                        imageTypeCode="01"
-                        referenceId={1}
-                        onUploadSuccess={(result) => {
-                            console.log('단일 업로드 성공:', result);
-                            alert(`업로드 성공: ${result.filePath}`);
-                        }}
-                        onUploadError={(error) => {
-                            console.error('단일 업로드 실패:', error);
-                            alert(`업로드 실패: ${error}`);
-                        }}
-                        buttonText="프로필 이미지 업로드"
-                        maxFileSize={5 * 1024 * 1024} // 5MB
-                    />
-                </div>
-
-                <div className="upload-section">
-                    <h3>2. 다중 이미지 업로드 컴포넌트</h3>
-                    <MultipleImageUpload
-                        imageTypeCode="02"
-                        referenceId={2}
-                        maxFiles={5}
-                        setFirstAsThumbnail={true}
-                        onUploadSuccess={(result) => {
-                            console.log('다중 업로드 성공:', result);
-                            alert(`업로드 성공: ${result.filePaths?.length}개 파일`);
-                        }}
-                        onUploadError={(error) => {
-                            console.error('다중 업로드 실패:', error);
-                            alert(`업로드 실패: ${error}`);
-                        }}
-                        buttonText="펫 사진 업로드"
-                        maxFileSize={10 * 1024 * 1024} // 10MB
-                    />
-                </div>
-
                 {/* 이미지 슬라이더 테스트 */}
                 <div className="upload-section">
                     <h3>3. 이미지 슬라이더 컴포넌트</h3>
@@ -433,7 +392,7 @@ const Test = () => {
                 {/* 조회 기능 테스트 */}
                 <div className="upload-section">
                     <h3>6. 이미지 조회 기능 테스트</h3>
-                    <div style={{ display: 'flex', gap: '10px', marginBottom: '15px' }}>>
+                    <div style={{ display: 'flex', gap: '10px', marginBottom: '15px' }}>
                         <button
                             className="btn-secondary"
                             onClick={async () => {
