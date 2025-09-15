@@ -6,6 +6,8 @@ import Footer from "../../../components/common/Footer/Footer";
 import CouponBanner from "./CouponBanner";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination } from "swiper/modules";
+import CountUp from "react-countup";
+import { useInView } from "react-intersection-observer";
 import {
   FaHeart,
   FaHotel,
@@ -138,6 +140,12 @@ const HomePage = ({ isLogined }) => {
       responseTime: "평균 1시간 내 응답",
     },
   ];
+
+  // 통계 트리거
+  const { ref: statsRef, inView } = useInView({
+    triggerOnce: false,
+    threshold: 0.3,
+  });
 
   // 후기
   const reviews = [
@@ -401,16 +409,72 @@ const HomePage = ({ isLogined }) => {
       </section>
 
       {/* 통계 */}
-      <section className="home-stats-section">
-        <div className="stats-grid">
-          {stats.map((stat, idx) => (
-            <div key={idx} className="stat-card">
-              <h3>{stat.number}</h3>
-              <p>{stat.label}</p>
-            </div>
-          ))}
-        </div>
-      </section>
+      <section ref={statsRef} className="home-stats-section">
+  <div className="stats-grid">
+    <div className={`stat-card ${inView ? "visible" : ""}`}>
+      <h3>
+        {inView && (
+          <CountUp
+            start={0}
+            end={50000}
+            duration={2.5}
+            separator=","
+            key={inView ? "service" : "service-reset"}
+          />
+        )}
+        +
+      </h3>
+      <p>누적 서비스</p>
+    </div>
+
+    <div className={`stat-card ${inView ? "visible" : ""}`}>
+      <h3>
+        {inView && (
+          <CountUp
+            start={0}
+            end={98}
+            duration={2}
+            key={inView ? "satisfaction" : "satisfaction-reset"}
+          />
+        )}
+        %
+      </h3>
+      <p>만족도</p>
+    </div>
+
+    <div className={`stat-card ${inView ? "visible" : ""}`}>
+      <h3>
+        {inView && (
+          <CountUp
+            start={0}
+            end={1200}
+            duration={2.5}
+            separator=","
+            key={inView ? "mates" : "mates-reset"}
+          />
+        )}
+        +
+      </h3>
+      <p>펫메이트</p>
+    </div>
+
+    <div className={`stat-card ${inView ? "visible" : ""}`}>
+      <h3>
+        {inView && (
+          <CountUp
+            start={0}
+            end={24}
+            duration={2}
+            key={inView ? "support" : "support-reset"}
+          />
+        )}
+        시간
+      </h3>
+      <p>고객지원</p>
+    </div>
+  </div>
+</section>
+
 
       {/* 이용자 후기 */}
       <section className="home-reviews-section">
