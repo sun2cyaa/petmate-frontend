@@ -1,11 +1,18 @@
 import { Link } from "react-router-dom";
 import "./Header.css";
 import { signout } from "../../../services/authService";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 
 function Header({ isLogined, setIsLogined, user }) {
   const [userOpen, setUserOpen] = useState(false);
   const closeTimer = useRef(null);
+
+  useEffect(() => {
+    if (user) {
+      console.log("📦 서버로부터 받은 user 정보:", user);
+      console.log("🖼️ 프로필 이미지 URL:", user.picture);
+    }
+  }, [user]);
 
   const handleLogout = async () => {
     try {
@@ -18,8 +25,8 @@ function Header({ isLogined, setIsLogined, user }) {
   const displayName =
     user?.name || user?.nickname || user?.email || user?.userId || "사용자";
   const providerLabel = user?.provider ? ` (${user.provider})` : "";
-  const profileSrc =
-    user?.profileImage || user?.picture || user?.avatarUrl || null;
+  
+  const profileSrc = user?.picture || null;
 
   const onUserEnter = () => {
     if (closeTimer.current) {
@@ -30,7 +37,6 @@ function Header({ isLogined, setIsLogined, user }) {
   };
 
   const onUserLeave = () => {
-    // 약간의 지연을 줘서 커서 이동 중 깜빡임 방지
     closeTimer.current = setTimeout(() => {
       setUserOpen(false);
       closeTimer.current = null;
@@ -84,13 +90,6 @@ function Header({ isLogined, setIsLogined, user }) {
                     src={profileSrc}
                     alt="프로필"
                     className="avatar-img"
-                    referrerPolicy="no-referrer"
-                    crossOrigin="anonymous"
-                    onError={(e) => {
-                      e.currentTarget.style.display = "none";
-                      const sib = e.currentTarget.nextElementSibling;
-                      if (sib) sib.style.display = "flex";
-                    }}
                   />
                 ) : null}
                 <div
