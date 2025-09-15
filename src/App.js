@@ -28,6 +28,8 @@ import CompanyRegisterPage from "./pages/company/CompanyRegisterPage";
 import ProductManagePage from "./pages/product/ProductManagePage";
 import ProductRegisterPage from './pages/product/ProductRegisterPage';
 import ProductEditPage from './pages/product/ProductEditPage';
+import Notice from "./components/common/Header/Notice";
+import Event from "./components/common/Header/Event";
 
 function App() {
   const [isLogined, setIsLogined] = useState(false);
@@ -48,7 +50,9 @@ function App() {
         setIsLogined(false);
         setUser(null);
       });
-    return () => { mounted = false; };
+    return () => {
+      mounted = false;
+    };
   }, []);
 
   const hideHeader = location.pathname.startsWith("/intro");
@@ -61,19 +65,34 @@ function App() {
 
       <AnimatePresence mode="wait">
         <Routes location={location} key={location.pathname}>
-          {/* 기본 진입 → 인트로 */}
+          {/* 기본 진입 인트로 */}
           <Route path="/" element={<Navigate to="/intro" replace />} />
 
           {/* 무조건 공개 */}
           <Route path="/intro" element={<IntroPage />} />
-          <Route path="/home" element={<HomePage />} />
+          <Route
+            path="/home"
+            element={
+              <HomePage
+                isLogined={isLogined}
+                setIsLogined={setIsLogined}
+                user={user}
+              />
+            }
+          />
 
           {/* 로그인 / 회원가입 */}
-          <Route path="/signin" element={<SigninPage setIsLogined={setIsLogined} />} />
+          <Route
+            path="/signin"
+            element={<SigninPage setIsLogined={setIsLogined} />}
+          />
           <Route path="/signup" element={<SignupPage />} />
-          <Route path="/oauth2/redirect" element={<OAuth2Redirect setIsLogined={setIsLogined} />} />
+          <Route
+            path="/oauth2/redirect"
+            element={<OAuth2Redirect setIsLogined={setIsLogined} />}
+          />
 
-          {/* 나머지 (보호 여부 미정) */}
+          {/* 나머지 */}
           <Route path="/map" element={<MapPage />} />
           <Route path="/pets" element={<PetManagePage />} />
           <Route path="/profile" element={<ProfilePage />} />
@@ -83,14 +102,17 @@ function App() {
           <Route path="/payment/fail" element={<PaymentFailPage />} />
           <Route path="/become-petmate" element={<PetMateSignupPage />} />
           <Route path="/companymanage" element={<CompanyManagePage />} />
-          <Route path="/companyregister" element={<CompanyRegisterPage />} />
+          <Route path="/companyform" element={<CompanyRegisterPage />} />
+          <Route path="/companyform/:id" element={<CompanyRegisterPage />} />
           <Route path="/booking" element={<BookingManagePage />} />
           <Route path="/product" element={<ProductManagePage />} />
           <Route path="/product/register" element={<ProductRegisterPage />} />
           <Route path="/product/edit/:productId" element={<ProductEditPage />} />
           <Route path="/test" element={<Test />} />
+          <Route path="/notice" element={<Notice />} />
+          <Route path="/event" element={<Event />} />
 
-          {/* 없는 경로 → 인트로 */}
+          {/* 없는 경로 -> 인트로 */}
           <Route path="*" element={<Navigate to="/intro" replace />} />
         </Routes>
       </AnimatePresence>

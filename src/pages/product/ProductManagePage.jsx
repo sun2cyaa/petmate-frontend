@@ -8,6 +8,18 @@ import {
   getServiceCategories,
 } from "../../services/product/productService";
 
+// 서비스 타입 코드를 이름으로 변환하는 함수
+  const getServiceTypeName = (serviceType) => {
+    switch (serviceType) {
+      case "C": return "돌봄";
+      case "W": return "산책";
+      case "G": return "미용";
+      case "M": return "병원";
+      case "E": return "기타";
+      default: return serviceType || "알 수 없음";
+    }
+  };
+
 const ProductManagePage = () => {
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
@@ -95,10 +107,11 @@ const ProductManagePage = () => {
   };
 
   const formatTime = (minutes) => {
+    if (!minutes) return "정보 없음";
     const hours = Math.floor(minutes / 60);
     const mins = minutes % 60;
     return hours > 0
-      ? `${hours}시간${mins > 0 ? `${mins}분` : ""}`
+      ? `${hours}시간${mins > 0 ? ` ${mins}분` : ""}`
       : `${mins}분`;
   };
 
@@ -175,7 +188,7 @@ const ProductManagePage = () => {
             <div className="service-header">
               <div className="service-title">
                 <span className="service-badge">
-                  {product.serviceType || "돌봄"}
+                  {product.serviceTypeName || getServiceTypeName(product.serviceType)}
                 </span>
               </div>
             </div>
@@ -193,12 +206,12 @@ const ProductManagePage = () => {
                 {product.name}
               </div>
               <div className="service-price">
-                <strong>가격 : {formatPrice(product.price)}원</strong>
+              <strong>가격 : {formatPrice(product.price)}원</strong>
               </div>
               <div className="service-time">
-                소요시간 : {formatTime(product.duration)}
+              소요시간 : {product.durationMin ? formatTime(product.durationMin) : "정보 없음"}
               </div>
-              <div className="service-description">{product.description}</div>
+              <div className="service-description">{product.introText || "설명이 없습니다."}</div>
             </div>
 
             <div className="available-times-section">

@@ -20,92 +20,86 @@ const BookingFlowSteps = () => {
     switch (stepId) {
       case 1:
         return (
-          <div className="step-content">
-            <div className="dropdown-box">
+          <div className="feedback-step-content">
+            <div className="feedback-dropdown-box">
               <span>산책</span>
               <ChevronDown size={16} color="#ccc" />
             </div>
-            <div className="btn-row">
-              <div className="next-btn">다음</div>
+            <div className="feedback-btn-row">
+              <div className="feedback-next-btn">다음</div>
             </div>
           </div>
         );
-
       case 2:
         return (
-          <div className="step-content">
-            {/* 날짜 입력 */}
-            <div className="date-input-box">
+          <div className="feedback-step-content">
+            <div className="feedback-date-input-box">
               <span>연도-월-일</span>
               <Calendar size={16} color="#ed9666" />
             </div>
-            {/* 시간 입력 */}
-            <div className="time-input-box">
+            <div className="feedback-time-input-box">
               <span>-- : --</span>
               <Clock size={16} color="#eb9666" />
             </div>
-            <div className="btn-row">
-              <div className="prev-btn">이전</div>
-              <div className="next-btn">다음</div>
+            <div className="feedback-btn-row">
+              <div className="feedback-prev-btn">이전</div>
+              <div className="feedback-next-btn">다음</div>
             </div>
           </div>
         );
-
       case 3:
-          return (
-            <div className="step-content">
-              <div className="info-box">
-                <PawPrint size={16} color="#eb9666" />
-                <span>반려인 정보</span>
-              </div>
-              <div className="info-box">
-                <Package size={16} color="#eb9666" />
-                <span>서비스 상품 정보</span>
-              </div>
-              <div className="info-box">
-                <CreditCard size={16} color="#eb9666" />
-                <span>결제정보</span>
-              </div>
-              <div className="btn-row">
-                <div className="prev-btn">이전</div>
-                <div className="payment-btn">결제하기</div>
-              </div>
+        return (
+          <div className="feedback-step-content">
+            <div className="feedback-info-box">
+              <PawPrint size={16} color="#eb9666" />
+              <span>반려인 정보</span>
             </div>
-          );
-        
-
+            <div className="feedback-info-box">
+              <Package size={16} color="#eb9666" />
+              <span>서비스 상품 정보</span>
+            </div>
+            <div className="feedback-info-box">
+              <CreditCard size={16} color="#eb9666" />
+              <span>결제정보</span>
+            </div>
+            <div className="feedback-btn-row">
+              <div className="feedback-prev-btn">이전</div>
+              <div className="feedback-payment-btn">결제하기</div>
+            </div>
+          </div>
+        );
       case 4:
         return (
-          <div className="step-content">
-            <div className="complete-msg-box">
+          <div className="feedback-step-content">
+            <div className="feedback-complete-msg-box">
               <br /><br />
-              예약이 정상적으로<br />
-              완료 되었습니다.
+              예약이 정상적으로<br />완료 되었습니다.
             </div>
-            <div className="btn-row">
-              <div className="prev-btn">이전</div>
-              <div className="next-btn">완료</div>
+            <div className="feedback-btn-row">
+              <div className="feedback-prev-btn">이전</div>
+              <div className="feedback-next-btn">완료</div>
             </div>
           </div>
         );
-
       default:
         return null;
     }
   };
 
   return (
-    <div className="flow-steps-container">
-      <div className="steps-wrapper">
+    <div className="feedback-flow-steps-container">
+      <div className="feedback-steps-wrapper">
         {steps.map((step, index) => (
           <React.Fragment key={step.id}>
-            <div className="step-card">
-              <div className="step-header">
-                <div className="step-label">Step {step.id}. {step.title}</div>
+            <div className="feedback-step-card">
+              <div className="feedback-step-header">
+                <div className="feedback-step-label">
+                  Step {step.id}. {step.title}
+                </div>
               </div>
               {renderStepContent(step.id)}
             </div>
-            {index < steps.length - 1 && <div className="arrow">→</div>}
+            {index < steps.length - 1 && <div className="feedback-arrow">→</div>}
           </React.Fragment>
         ))}
       </div>
@@ -116,7 +110,6 @@ const BookingFlowSteps = () => {
 /* ---------------- 메인 섹션 ---------------- */
 function FeedbackFlowSection() {
   const [activeHearts, setActiveHearts] = useState({});
-
   const reviews = [
     { id: 1, name: '김민중', 
              pet: '골든 리트리버', 
@@ -152,6 +145,7 @@ function FeedbackFlowSection() {
              pet: '시바견', 
              text: '산책도 충분히 해주시고, 강아지가 에너지를 잘 발산하고 와서 너무 만족합니다.', 
              profileImg: "https://picsum.photos/200?random=7" },
+
     { id: 8, name: '김도훈', 
              pet: '믹스견', 
              text: '사교성이 부족한 아이인데도 잘 케어해주셔서 점점 나아지는 것 같아요. 감사합니다!', 
@@ -163,16 +157,13 @@ function FeedbackFlowSection() {
              profileImg: "https://picsum.photos/200?random=9" },
 
     { id: 10, name: '홍자영', 
-              pet: '스피츠', 
-              text: '예약부터 픽업까지 과정이 깔끔했어요. 서비스가 정말 믿음직스럽습니다.', 
-              profileImg: "https://picsum.photos/200?random=10" }
+             pet: '스피츠', 
+             text: '예약부터 픽업까지 과정이 깔끔했어요. 서비스가 정말 믿음직스럽습니다.', 
+             profileImg: "https://picsum.photos/200?random=10" }
   ];
 
-  const toggleHeart = (reviewId) => {
-    setActiveHearts(prev => ({
-      ...prev,
-      [reviewId]: !prev[reviewId]
-    }));
+  const toggleHeart = (id) => {
+    setActiveHearts(prev => ({ ...prev, [id]: !prev[id] }));
   };
 
   return (
@@ -182,24 +173,23 @@ function FeedbackFlowSection() {
         <p className="feedback-subtitle">이용 후기 및 예약 절차</p>
       </div>
 
-      <div className="reviews">
-        <h3 className="reviews-highlight">"우리 아이도 여기서 행복했어요"</h3>
-        <p className="reviews-sub">"함께한 보호자들의 진솔한 이야기"</p>
+      <div className="feedback-reviews">
+        <h3 className="feedback-reviews-highlight">"우리 아이도 여기서 행복했어요"</h3>
+        <p className="feedback-reviews-sub">"함께한 보호자들의 진솔한 이야기"</p>
         <Swiper
           modules={[Pagination, Autoplay]}
           spaceBetween={20}
           slidesPerView={4}
-          slidesPerGroup={1}
           pagination={{ clickable: true }}
           autoplay={{ delay: 3000 }}
-          loop={true}
-          grabCursor={true}
+          loop
+          grabCursor
         >
           {reviews.map((review) => (
             <SwiperSlide key={review.id}>
-              <div className="review-card">
+              <div className="feedback-review-card">
                 <div
-                  className={`heart-icon ${activeHearts[review.id] ? 'active' : ''}`}
+                  className={`feedback-heart-icon ${activeHearts[review.id] ? 'active' : ''}`}
                   onClick={() => toggleHeart(review.id)}
                 >
                   {activeHearts[review.id] ? (
@@ -220,28 +210,28 @@ function FeedbackFlowSection() {
                     </svg>
                   )}
                 </div>
-                <div className="review-header">
-                  <div className="profile-image">
+                <div className="feedback-review-header">
+                  <div className="feedback-profile-image">
                     {review.profileImg ? (
                       <img src={review.profileImg} alt={review.name} />
                     ) : (
                       review.name.charAt(0)
                     )}
                   </div>
-                  <div className="profile-info">
+                  <div className="feedback-profile-info">
                     <h3>{review.name}</h3>
                     <p>{review.pet}</p>
                   </div>
                 </div>
-                <p className="review-text">{review.text}</p>
+                <p className="feedback-review-text">{review.text}</p>
               </div>
             </SwiperSlide>
           ))}
         </Swiper>
       </div>
 
-      <div className="flow">
-        <h3 className="flow-title">"쉽고 빠른 예약 절차"</h3>
+      <div className="feedback-flow">
+        <h3 className="feedback-flow-title">"쉽고 빠른 예약 절차"</h3>
         <BookingFlowSteps />
       </div>
     </section>
