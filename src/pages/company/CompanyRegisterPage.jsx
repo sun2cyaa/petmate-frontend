@@ -120,8 +120,8 @@ function CompanyRegisterPage() {
             const [p1 = "", p2 = "", p3 = ""] = tel.split("-");
 
             // 주소 정보
-            const lat = c?.lat ?? c?.latitude;
-            const lng = c?.lng ?? c?.longitude;
+            const latitude = c?.lat ?? c?.latitude;
+            const longitude = c?.lng ?? c?.longitude;
 
             // 개인 정보 처리
             const ssnFirst = c?.ssnFirst || "";
@@ -168,8 +168,8 @@ function CompanyRegisterPage() {
                 roadAddr: c?.roadAddr ?? "",
                 detailAddr: c?.detailAddr ?? "",
                 postcode: c?.postcode ?? "",
-                latitude: lat != null ? String(lat) : "",
-                longitude: lng != null ? String(lng) : "",
+                latitude: latitude != null ? String(latitude) : "",
+                longitude: longitude != null ? String(longitude) : "",
                 mainService: normalizedMainService,
                 phone1: p1,
                 phone2: p2,

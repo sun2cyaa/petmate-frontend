@@ -44,9 +44,9 @@ const getCurrentLocation = () =>
         )
     })
 
-const getAddressFromCoords = async (lat, lng) => {
+const getAddressFromCoords = async (latitude, longitude) => {
     try {
-        const response = await fetch(`/api/address/reverse?latitude=${lat}&longitude=${lng}`)
+        const response = await fetch(`/api/address/reverse?latitude=${latitude}&longitude=${longitude}`)
         if (!response.ok) throw new Error("Reverse geocoding failed")
         const data = await response.json()
         return data.address || "주소를 찾을 수 없습니다"
