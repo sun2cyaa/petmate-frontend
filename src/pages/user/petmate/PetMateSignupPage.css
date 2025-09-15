@@ -1,5 +1,6 @@
 /* src/pages/petmate/BecomePetmatePage.css */
-/* 모든 스타일을 #petmate-container 네임스페이스로 한정 */
+/* 모든 스타일을 #petmate-container 네임스페이스로 강제 */
+
 #petmate-container.petmate-wrap {
   max-width: 820px;
   margin: 0 auto;
@@ -73,6 +74,11 @@
 }
 
 /* 폼 그룹 */
+#petmate-container .form-group {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
 #petmate-container .form-label {
   font-size: 15px;
   font-weight: 500;
@@ -84,17 +90,17 @@
 #petmate-container .petmate-row {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  column-gap: 20px;
-  row-gap: 16px;
+  column-gap: 24px;
+  row-gap: 20px;
 }
 
 /* 입력 필드 */
 #petmate-container .form-input,
 #petmate-container .form-select {
-  width: 100%;
+  width: 90%;
   border: 1.8px solid #e5e7eb;
   border-radius: 12px;
-  padding: 14px 16px;
+  padding: 10px 5px;
   font-size: 16px;
   transition: all 0.25s ease;
 }
