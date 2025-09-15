@@ -50,7 +50,7 @@ export default function SigninPage() {
         <div className="signin-footer">
       <p>
         로그인 시, Petmate의 <br />
-        <a href="/privacy">[서비스 약관]과</a> · <a href="/terms">[개인정보 처리방침]에 동의하게 됩니다.</a>
+        <a href="/privacy">[서비스 약관]과</a><a href="/terms">[개인정보 처리방침]에 동의하게 됩니다.</a>
         </p>
         </div>
 

@@ -6,6 +6,7 @@ import {
   FaCut,
   FaClinicMedical,
   FaSearch,
+  FaEllipsisH,
 } from "react-icons/fa";
 import "./MapPage.css";
 
@@ -13,11 +14,11 @@ function MapPage() {
   const [isKakaoLoaded, setIsKakaoLoaded] = useState(false);
 
   const services = [
-    { id: "hotel", name: "호텔", icon: <FaHotel /> },
     { id: "care", name: "돌봄", icon: <FaHandsHelping /> },
     { id: "walk", name: "산책", icon: <FaDog /> },
     { id: "beauty", name: "미용", icon: <FaCut /> },
     { id: "hospital", name: "병원", icon: <FaClinicMedical /> },
+    { id: "hotel", name: "기타", icon: <FaEllipsisH /> },
   ];
 
   // 카카오 맵 스크립트 로드
