@@ -106,8 +106,10 @@
 }
 .service-type-grid {
   display: grid;
+  height: 120px;
+  margin-bottom: 40px;
   grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 16px;
+  gap: 10px;
 }
 .service-type-btn {
   background: #f8d2bb;
