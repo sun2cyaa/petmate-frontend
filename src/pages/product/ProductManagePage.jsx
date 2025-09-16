@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./ProductPage.css";
-// import "./ProductPageSlotStyles.css";
+import "./ProductPageSlotStyles.css";
 import { useNavigate } from "react-router-dom";
 import {
   deleteProduct,

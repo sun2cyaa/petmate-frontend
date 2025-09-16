@@ -26,6 +26,7 @@ export const getProducts = async (params = {}) => {
         response = await apiRequest.get(url);
       } else {
         url = 'api/products';
+        // url = 'api/products/myproduct';
         console.log("전체 상품 조회 api 호출", url);
         response = await apiRequest.get(url);
       }
@@ -156,7 +157,7 @@ export const getProducts = async (params = {}) => {
       try {
           console.log('업체 목록 조회 API 호출');
 
-          const response = await apiRequest.get('/api/companies');
+          const response = await apiRequest.get('/api/products/companies');
           console.log('업체 목록 조회 응답:', response.data);
           return response.data;
       } catch (er) {
