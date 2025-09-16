@@ -65,3 +65,20 @@ export const getBusinessInfo = async (businessNumber) => {
   });
   return response.data;
 };
+
+// 근처 업체 조회
+export const getNearbyCompanies = async (lat, lng, radius = 5.0, serviceType =
+  null) => {
+      const params = {
+          lat: lat.toString(),
+          lng: lng.toString(),
+          radius: radius.toString()
+      };
+
+      if (serviceType) {
+          params.serviceType = serviceType;
+      }
+
+      const response = await apiRequest.get("/api/company/nearby", { params });
+      return response.data;
+  };
