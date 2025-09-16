@@ -133,17 +133,17 @@ export default function MapModal({ show, onClose, onLocationSelect }) {
 
     navigator.geolocation.getCurrentPosition(
       (pos) => {
-        const lat = pos.coords.latitude;
-        const lng = pos.coords.longitude;
-        const current = new window.kakao.maps.LatLng(lat, lng);
+        const latitude = pos.coords.latitude;
+        const longitude = pos.coords.longitude;
+        const current = new window.kakao.maps.LatLng(latitude, longitude);
 
         mapInstance.setCenter(current);
         markerInstance.setPosition(current);
 
-        geocoder.coord2Address(lng, lat, (result, status) => {
+        geocoder.coord2Address(longitude, latitude, (result, status) => {
           if (status === window.kakao.maps.services.Status.OK) {
             const { address, postcode } = parseAddressFromCoord2Address(result);
-            setSelectedLocation({ address, postcode, latitude: lat, longitude: lng });
+            setSelectedLocation({ address, postcode, latitude: latitude, longitude: longitude });
           }
         });
       },
@@ -165,18 +165,18 @@ export default function MapModal({ show, onClose, onLocationSelect }) {
 
     navigator.geolocation.getCurrentPosition(
       (pos) => {
-        const lat = pos.coords.latitude;
-        const lng = pos.coords.longitude;
-        const current = new window.kakao.maps.LatLng(lat, lng);
+        const latitude = pos.coords.latitude;
+        const longitude = pos.coords.longitude;
+        const current = new window.kakao.maps.LatLng(latitude, longitude);
 
         map.setCenter(current);
         marker.setPosition(current);
 
         const geocoder = new window.kakao.maps.services.Geocoder();
-        geocoder.coord2Address(lng, lat, (result, status) => {
+        geocoder.coord2Address(longitude, latitude, (result, status) => {
           if (status === window.kakao.maps.services.Status.OK) {
             const { address, postcode } = parseAddressFromCoord2Address(result);
-            setSelectedLocation({ address, postcode, latitude: lat, longitude: lng });
+            setSelectedLocation({ address, postcode, latitude: latitude, longitude: longitude });
           }
           setIsLoadingLocation(false);
         });
