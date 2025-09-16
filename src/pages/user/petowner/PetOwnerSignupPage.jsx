@@ -3,9 +3,11 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./PetOwnerSignupPage.css";
 import { apiRequest, fetchMe } from "../../../services/api";
+import { useAuth } from "../../../contexts/AuthContext";
 
 export default function PetOwnerSignupPage() {
   const nav = useNavigate();
+  const { hydrateMe } = useAuth();
 
   const [form, setForm] = useState({
     email: "",
@@ -100,6 +102,11 @@ export default function PetOwnerSignupPage() {
     try {
       setSubmitting(true);
       await apiRequest.post("/user/petowner/apply", fd);
+      // 상태 최신화 + 디버깅 로그
+      console.log(">>> /user/petowner/apply 완료됨");
+      const me = await fetchMe({ silent: false });
+      console.log(">>> /auth/me 응답:", me);
+      await hydrateMe();
       setDoneOpen(true);
     } catch (e2) {
       console.error("pet owner apply error:", e2?.response?.status, e2?.response?.data, e2);

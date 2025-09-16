@@ -65,10 +65,10 @@ function MapPage() {
   }, []);
 
   // 근처 업체 로드 함수 추가
-  const loadNearbyCompanies = async(lat, lng) => {
+  const loadNearbyCompanies = async(latitude, longitude) => {
     try{
       setLoading(true);
-      const data = await getNearbyCompanies(lat, lng, 5.0, selectedService);
+      const data = await getNearbyCompanies(latitude, longitude, 5.0, selectedService);
       setCompanies(data);
       console.log('로드된 업체 목록:', data);
     } catch(e) {
@@ -81,7 +81,7 @@ function MapPage() {
   // 사용자 위치가 변경되거나 선택된 서비스가 변경될 때 업체 재로드
   useEffect(() => {
     if(userLocation) {
-      loadNearbyCompanies(userLocation.lat, userLocation.lng);
+      loadNearbyCompanies(userLocation.latitude, userLocation.longitude);
     }
   }, [userLocation, selectedService]);
 
@@ -90,9 +90,9 @@ function MapPage() {
     if (!isKakaoLoaded) return;
     const container = document.getElementById("map");
 
-    const initMap = (lat, lng) => {
+    const initMap = (latitude, longitude) => {
       const options = {
-        center: new window.kakao.maps.LatLng(lat, lng),
+        center: new window.kakao.maps.LatLng(latitude, longitude),
         level: 3,
       };
       const map = new window.kakao.maps.Map(container, options);
@@ -102,7 +102,7 @@ function MapPage() {
 
       // 사용자 위치 마커
       const userMarker = new window.kakao.maps.Marker({
-        position: new window.kakao.maps.LatLng(lat, lng),
+        position: new window.kakao.maps.LatLng(latitude, longitude),
         // 사용자 위치 마커는 다른 이미지 사용 가능
       });
       userMarker.setMap(map);
@@ -116,23 +116,23 @@ function MapPage() {
     if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(
       (pos) => {
-        const lat = pos.coords.latitude;
-        const lng = pos.coords.longitude;
-        setUserLocation({ lat, lng }); // 사용자 위치 상태에 저장
+        const latitude = pos.coords.latitude;
+        const longitude = pos.coords.longitude;
+        setUserLocation({ latitude, longitude }); // 사용자 위치 상태에 저장
         
-        initMap(lat, lng, "현재 위치");
+        initMap(latitude, longitude, "현재 위치");
 
-        loadNearbyCompanies(lat, lng);
+        loadNearbyCompanies(latitude, longitude);
       },
       () => {
-        setUserLocation({ lat: 37.5665, lng: 126.9780 }); // 기본 위치도 상태에 저장
+        setUserLocation({ latitude: 37.5665, longitude: 126.9780 }); // 기본 위치도 상태에 저장
         initMap(37.5665, 126.9780, "서울시청");
 
         loadNearbyCompanies(37.5665, 126.9780);
       }
     );
   } else {
-    setUserLocation({ lat: 37.5665, lng: 126.9780 });
+    setUserLocation({ latitude: 37.5665, longitude: 126.9780 });
     initMap(37.5665, 126.9780, "서울시청");
   }
   }, [isKakaoLoaded]);
@@ -143,7 +143,7 @@ function MapPage() {
 
     // 기존 업체 마커 추가
     companies.forEach((company) => {
-      if(company.lat && company.lng) {
+      if(company.latitude && company.longitude) {
         // 서비스별 마커 이미지 생성
         const markerImageSrc = getMarkerImageForService(company.repService);
         const markerImage = new window.kakao.maps.MarkerImage(
@@ -157,8 +157,8 @@ function MapPage() {
         // 업체 마커 생성 (커스텀 이미지 적용)
         const companyMarker = new window.kakao.maps.Marker({
           position: new window.kakao.maps.LatLng(
-            parseFloat(company.lat),
-            parseFloat(company.lng)
+            parseFloat(company.latitude),
+            parseFloat(company.longitude)
           ),
           image: markerImage // 커스텀 이미지 적용
         });

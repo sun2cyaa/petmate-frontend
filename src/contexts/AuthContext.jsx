@@ -32,7 +32,7 @@ export function AuthProvider({ children }) {
   }, []);
 
   const login = async (credentials) => {
-    const res = await apiSignin(credentials);         // accessToken 저장 가정
+    const res = await apiSignin(credentials.id, credentials.pw);
     const me = await fetchMe({ silent: true });       // 로그인 직후 1회
     if (me) { setUser({ ...me, role: normalizeRole(me.role) }); setIsLogined(true); }
     return res;
