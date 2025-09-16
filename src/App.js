@@ -70,6 +70,7 @@ function AppRoutes() {
           {/* 업체 */}
           <Route path="/companymanage" element={<CompanyManagePage />} />
           <Route path="/companyregister" element={<CompanyRegisterPage />} />
+          <Route path="/companyregister/:id" element={<CompanyRegisterPage />} />
           <Route path="/companyform" element={<CompanyRegisterPage />} />
           <Route path="/companyform/:id" element={<CompanyRegisterPage />} />
 
