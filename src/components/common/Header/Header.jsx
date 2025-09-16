@@ -1,14 +1,15 @@
 // src/components/common/Header/Header.jsx
 import { Link } from "react-router-dom";
 import "./Header.css";
-import { signout } from "../../../services/authService";
 import { useRef, useState, useEffect } from "react";
+import { useAuth } from "../../../contexts/AuthContext"; // 컨텍스트 직접 사
 import {
   MapPin, Dog, User, Home, LogOut,
   Map, CreditCard, Star, CalendarCheck, Building2, Users, Edit, Heart
 } from "lucide-react";
 
-function Header({ isLogined, setIsLogined, user }) {
+function Header() {
+  const { isLogined, user, logout } = useAuth();
   const [userOpen, setUserOpen] = useState(false);
   const closeTimer = useRef(null);
 
@@ -23,13 +24,7 @@ function Header({ isLogined, setIsLogined, user }) {
   const isPetmate  = role === "3" || role === "4";
 
   const handleLogout = async () => {
-    try {
-      await signout(); // 서버 로그아웃
-    } finally {
-      localStorage.removeItem("accessToken");
-      setIsLogined?.(false);
-      alert("로그아웃 되었습니다.");
-    }
+    await logout(); // 컨텍스트가 토큰·상태 정리까지 수행
   };
 
   const displayName =
