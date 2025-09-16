@@ -209,6 +209,7 @@ export default function PetMateSignupPage() {
                         <label className="form-label">프로필 사진</label>
                         <ImageUploadViewer
                             ref={profileImageRef}
+                            className="profile-upload"
                             imageTypeCode="01"
                             referenceId={form.email}
                             mode="single"
@@ -224,6 +225,7 @@ export default function PetMateSignupPage() {
                         <label className="form-label">자격증 업로드</label>
                         <ImageUploadViewer
                             ref={certImageRef}
+                            className="cert-upload"
                             imageTypeCode="05"
                             referenceId={form.email}
                             mode="multiple"
