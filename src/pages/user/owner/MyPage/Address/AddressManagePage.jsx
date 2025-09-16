@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useContext } from "react"
 import * as addressService from '../../../../../services/addressService'
 import './AddressManagePage.css'
 import {
@@ -19,6 +19,7 @@ import {
 import AddressFormModal from './components/AddressFormModal'
 import AddressDeleteModal from './components/AddressDeleteModal'
 import MapModal from './components/MapModal'
+import { useAuth } from "../../../../../contexts/AuthContext"
 
 const searchAddressAPI = async (query) => {
     try {
@@ -55,7 +56,11 @@ const getAddressFromCoords = async (latitude, longitude) => {
     }
 }
 
-export default function AddressManagePage({ user, onBack }) {
+export default function AddressManagePage({ onBack }) {
+    const { user } = useAuth();
+
+    console.log("user: ", user);    
+
     // 사용자의 주소 목록 로드
     useEffect(() => {
         const loadAddresses = async () => {
