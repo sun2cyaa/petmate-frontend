@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+// import axios from 'axios';
+import { apiRequest } from '../services/api';
 import './ImageUtil.css';
 
 const FILE_API_BASE_URL = 'http://localhost:8090/api/files';
@@ -20,7 +21,7 @@ const getImageUrl = (filePath) => {
 // 단일 이미지 조회
 export const fetchSingleImage = async (filePath) => {
     try {
-        const response = await axios.get(`${FILE_API_BASE_URL}/view`, {
+        const response = await apiRequest.get(`${FILE_API_BASE_URL}/view`, {
             params: { filePath }
         });
         return response.data;
@@ -32,7 +33,7 @@ export const fetchSingleImage = async (filePath) => {
 // 참조 기준 다중 이미지 조회
 export const fetchImagesByReference = async (imageTypeCode, referenceId) => {
     try {
-        const response = await axios.get(`${FILE_API_BASE_URL}/list`, {
+        const response = await apiRequest.get(`${FILE_API_BASE_URL}/list`, {
             params: { imageTypeCode, referenceId }
         });
         return response.data;
@@ -302,7 +303,7 @@ export const ImageUploadViewer = React.forwardRef(({
         try {
             // 단일 모드는 교체(replace), 다중 모드는 추가(multiple)
             const endpoint = mode === 'single' ? '/upload/replace' : '/upload/multiple';
-            const response = await axios.post(`${FILE_API_BASE_URL}${endpoint}`, formData, {
+            const response = await apiRequest.post(`${FILE_API_BASE_URL}${endpoint}`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
@@ -344,7 +345,7 @@ export const ImageUploadViewer = React.forwardRef(({
 
         try {
             // multiple 엔드포인트 사용 (기존 이미지에 추가)
-            const response = await axios.post(`${FILE_API_BASE_URL}/upload/multiple`, formData, {
+            const response = await apiRequest.post(`${FILE_API_BASE_URL}/upload/multiple`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
@@ -376,7 +377,7 @@ export const ImageUploadViewer = React.forwardRef(({
 
         try {
             setLoading(true);
-            const response = await axios.delete(`${FILE_API_BASE_URL}/delete`, {
+            const response = await apiRequest.delete(`${FILE_API_BASE_URL}/delete`, {
                 params: { imageId }
             });
 
@@ -521,7 +522,7 @@ export const ImageUploadViewer = React.forwardRef(({
 // 이미지 삭제 유틸리티
 export const deleteImage = async (filePath) => {
     try {
-        const response = await axios.delete(`${FILE_API_BASE_URL}/delete`, {
+        const response = await apiRequest.delete(`${FILE_API_BASE_URL}/delete`, {
             params: { filePath }
         });
         return response.data;
