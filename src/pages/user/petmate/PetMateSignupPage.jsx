@@ -1,12 +1,14 @@
 // src/pages/petmate/BecomePetmatePage.jsx
 import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { apiRequest } from "../../../services/api";
+import { apiRequest, fetchMe } from "../../../services/api";
+import { useAuth } from "../../../contexts/AuthContext";
 import "./PetMateSignupPage.css";
 import { ImageUploadViewer } from "../../../util/ImageUtil";
 
 export default function PetMateSignupPage() {
     const nav = useNavigate();
+    const { hydrateMe } = useAuth();
     const profileImageRef = useRef(null);
     const certImageRef = useRef(null);
     const [form, setForm] = useState({
@@ -142,7 +144,9 @@ export default function PetMateSignupPage() {
             fd.append("age", String(form.age));
             fd.append("userId", form.userId);
 
-            await apiRequest.post("/user/petmate/apply", fd, { withCredentials: true });
+            const res = await apiRequest.post("/user/petmate/apply", fd);
+            if (!res) return;
+              await hydrateMe();
             setDoneOpen(true);
         } catch (e2) {
             console.error("apply error:", e2?.response?.status, e2?.response?.data, e2);
