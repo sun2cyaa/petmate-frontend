@@ -210,7 +210,7 @@ export default function PetMateSignupPage() {
                         <ImageUploadViewer
                             ref={profileImageRef}
                             imageTypeCode="01"
-                            referenceId={form.userId}
+                            referenceId={form.email}
                             mode="single"
                             files={profileFile}
                             setFiles={setProfileFile}
@@ -225,7 +225,7 @@ export default function PetMateSignupPage() {
                         <ImageUploadViewer
                             ref={certImageRef}
                             imageTypeCode="05"
-                            referenceId={form.userId}
+                            referenceId={form.email}
                             mode="multiple"
                             files={certFiles}
                             setFiles={setCertFiles}

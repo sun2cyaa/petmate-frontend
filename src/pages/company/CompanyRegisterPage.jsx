@@ -715,6 +715,7 @@ function CompanyRegisterPage() {
                                                 value={formInputs.ssnFirst}
                                                 onChange={handleSsnFirstInput}
                                                 readOnly={isIdBlockLocked}
+                                                disabled={isIdBlockLocked}
                                             />
                                         </div>
                                         <div className="company_form_group">
@@ -727,6 +728,7 @@ function CompanyRegisterPage() {
                                                 onChange={(e) => handleInputChange('representativeName', e.target.value)}
                                                 ref={representativeNameRef}
                                                 readOnly={isIdBlockLocked}
+                                                disabled={isIdBlockLocked}
                                             />
                                         </div>
                                     </div>
@@ -748,6 +750,7 @@ function CompanyRegisterPage() {
                                                     onChange={handleBusinessNumberInput}
                                                     maxLength={12}
                                                     readOnly={isIdBlockLocked}
+                                                    disabled={isIdBlockLocked}
                                                 />
                                                 <button type="button" className="search_btn" onClick={handleBizNoSearchBtnClick}>
                                                     번호 검증
@@ -765,6 +768,7 @@ function CompanyRegisterPage() {
                                                 value={formInputs.corporationName}
                                                 onChange={(e) => handleInputChange('corporationName', e.target.value)}
                                                 readOnly={isIdBlockLocked}
+                                                disabled={isIdBlockLocked}
                                             />
                                         </div>
                                         <div className="company_form_group">
@@ -776,6 +780,7 @@ function CompanyRegisterPage() {
                                                 value={formInputs.representativeName}
                                                 onChange={(e) => handleInputChange('representativeName', e.target.value)}
                                                 readOnly={isIdBlockLocked}
+                                                disabled={isIdBlockLocked}
                                             />
                                         </div>
                                     </div>
@@ -951,10 +956,11 @@ function CompanyRegisterPage() {
                             <ImageUploadViewer
                                 ref={companyImageRef}
                                 imageTypeCode="03"
-                                referenceId={companyId}
+                                referenceId={formInputs.businessNumber || formInputs.ssnFirst}
                                 mode="multiple"
                                 files={files}
                                 setFiles={setFiles}
+                                isEditMode={isEditMode}
                             />
 
                         </div>
