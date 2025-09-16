@@ -10,11 +10,7 @@ import {
 } from "react-icons/fa";
 import "./MapPage.css";
 import { getNearbyCompanies } from "../../../services/companyService";
-import cut from "../../../assets/images/map/cut.png";
-import dog from "../../../assets/images/map/dog.png";
-import etc from "../../../assets/images/map/etc.png";
-import hands from "../../../assets/images/map/hands.png";
-import hospitalBackground from "../../../assets/images/map/hospital_background.png";
+import { positionalKeys } from "framer-motion";
 
 function MapPage() {
   const [isKakaoLoaded, setIsKakaoLoaded] = useState(false);
@@ -23,7 +19,6 @@ function MapPage() {
   const [userLocation, setUserLocation] = useState(null); // 사용자 위치 상태 추가
   const [selectedService, setSelectedService] = useState(null); // 선택된 서비스 타입 추가
   const [map, setMap] = useState(null); // 지도 객체 상태 추가
-  const [companyMarkers, setCompanyMarkers] = useState([]); // 업체 마커들 상태 추가
 
   const services = [
     { id: "1", name: "돌봄", icon: <FaHandsHelping /> },
@@ -36,14 +31,14 @@ function MapPage() {
   // 서비스별 마커 이미지 매핑
   const getMarkerImageForService = (serviceCode) => {
     const markerImages = {
-      '1': hands,             
-    '2': dog,
-    '3': cut,
-    '4': hospitalBackground,
-    '9': etc,
+      '1': '/images/markers/care-marker.png',    // 돌봄
+      '2': '/images/markers/walk-marker.png',    // 산책  
+      '3': '/images/markers/beauty-marker.png',  // 미용
+      '4': '/images/markers/hospital-marker.png', // 병원
+      '9': '/images/markers/etc-marker.png'      // 기타
     };
 
-    return markerImages[serviceCode] || etc;
+    return markerImages[serviceCode] || '/images/markers/default-marker.png';
   }
 
   
@@ -101,7 +96,7 @@ function MapPage() {
         level: 3,
       };
       const map = new window.kakao.maps.Map(container, options);
-
+      
       // 지도 객체를 상태로 저장
       setMap(map);
 
@@ -116,26 +111,6 @@ function MapPage() {
         content: `<div style="padding:5px;">현재 위치</div>`,
       });
       infowindow.open(map, userMarker);
-
-      // 지도 드래그 종료 시 해당 위치의 업체들을 로드
-      window.kakao.maps.event.addListener(map, 'dragend', function() {
-        const center = map.getCenter();
-        const newLat = center.getLat();
-        const newLng = center.getLng();
-
-        console.log('지도 중심 변경:', newLat, newLng);
-        loadNearbyCompanies(newLat, newLng);
-      });
-
-      // 지도 줌 변경 시에도 업체 로드
-      window.kakao.maps.event.addListener(map, 'zoom_changed', function() {
-        const center = map.getCenter();
-        const newLat = center.getLat();
-        const newLng = center.getLng();
-
-        console.log('지도 줌 변경:', newLat, newLng);
-        loadNearbyCompanies(newLat, newLng);
-      });
     };
 
     if (navigator.geolocation) {
@@ -164,16 +139,9 @@ function MapPage() {
 
   // 업체 마커 표시
    useEffect(()=> {
-    if (!map) return;
+    if (!map || !companies.length) return;
 
-    // 기존 업체 마커들 제거
-    companyMarkers.forEach(marker => {
-      marker.setMap(null);
-    });
-    setCompanyMarkers([]);
-
-    // 새로운 업체 마커들 추가
-    const newMarkers = [];
+    // 기존 업체 마커 추가
     companies.forEach((company) => {
       if(company.latitude && company.longitude) {
         // 서비스별 마커 이미지 생성
@@ -220,6 +188,7 @@ function MapPage() {
       {/* 상단 검색창 + 서비스 버튼 */}
       <div className="map-top-bar">
         <div className="search-box">
+          <FaSearch className="search-icon" />
           <input type="text" placeholder="지역, 업체명을 검색하세요" />
           <button className="search-btn">검색</button>
         </div>
