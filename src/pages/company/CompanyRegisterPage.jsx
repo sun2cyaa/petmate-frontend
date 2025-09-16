@@ -1,14 +1,16 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import "./CompanyRegisterPage.css";
-import { registerCompany, updateCompany, getCompanyById, checkBusinessNumber, validateBusinessNumber } from "../../services/companyService";
+import { registerCompany, updateCompany, getCompanyById, getBusinessInfo, verifyPersonalIdentity } from "../../services/companyService";
 import MapModal from "../user/owner/MyPage/Address/components/MapModal";
 import { ImageUploadViewer } from "../../util/ImageUtil";
+import { Map, MapPinned } from "lucide-react";
 
 function CompanyRegisterPage() {
     // URL에서 ID 파라미터 가져오기 (수정 모드 감지)
     const { id: companyId } = useParams();
     const isEditMode = Boolean(companyId);
+    const companyImageRef = useRef(null);
     const navigate = useNavigate();
 
     const serviceCategories = ["돌봄", "산책", "미용", "병원", "기타"];
@@ -47,8 +49,6 @@ function CompanyRegisterPage() {
     const [formInputs, setFormInputs] = useState({
         // 개인(일반인) 정보
         ssnFirst: '',
-        ssnSecond: '',
-        personalName: '',
         personalCompanyName: '',
         // 개인/법인사업자 정보  
         businessNumber: '',
@@ -73,7 +73,7 @@ function CompanyRegisterPage() {
     const [isIdBlockLocked, setIsIdBlockLocked] = useState(false); // 식별 정보 잠금
     
     const backupRef = useRef(null);
-    const ssnSecondRef = useRef(null);
+    const representativeNameRef = useRef(null); // 성함 입력창 ref
     const telSecondRef = useRef(null);
     const telThirdRef = useRef(null);
 
@@ -88,7 +88,12 @@ function CompanyRegisterPage() {
         // 카카오 맵 API 스크립트 로드 (좌표 변환용)
         if (!window.kakao) {
             const kakaoScript = document.createElement('script');
-            kakaoScript.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.REACT_APP_KAKAO_MAP_KEY}&libraries=services`;
+            kakaoScript.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.REACT_APP_KAKAO_MAP_KEY}&autoload=false&libraries=services`;
+            kakaoScript.onload = () => {
+                window.kakao.maps.load(() => {
+                    console.log('카카오맵 API 로드 완료');
+                });
+            };
             document.head.appendChild(kakaoScript);
         }
     }, []);
@@ -116,13 +121,11 @@ function CompanyRegisterPage() {
             const [p1 = "", p2 = "", p3 = ""] = tel.split("-");
 
             // 주소 정보
-            const lat = c?.lat ?? c?.latitude;
-            const lng = c?.lng ?? c?.longitude;
+            const latitude = c?.lat ?? c?.latitude;
+            const longitude = c?.lng ?? c?.longitude;
 
             // 개인 정보 처리
             const ssnFirst = c?.ssnFirst || "";
-            const ssnSecond = c?.ssnSecond || "";
-            const personalName = c?.personalName || "";
 
             // 사업자 정보 처리
             const corporationName = c?.name || "";
@@ -158,8 +161,6 @@ function CompanyRegisterPage() {
             setFormInputs({
                 // 개인(일반인) 정보
                 ssnFirst: ssnFirst,
-                ssnSecond: ssnSecond,
-                personalName: personalName,
                 // 사업자 정보
                 businessNumber: formatBusinessNumber(bizRegNo),
                 corporationName: corporationName,
@@ -168,8 +169,8 @@ function CompanyRegisterPage() {
                 roadAddr: c?.roadAddr ?? "",
                 detailAddr: c?.detailAddr ?? "",
                 postcode: c?.postcode ?? "",
-                latitude: lat != null ? String(lat) : "",
-                longitude: lng != null ? String(lng) : "",
+                latitude: latitude != null ? String(latitude) : "",
+                longitude: longitude != null ? String(longitude) : "",
                 mainService: normalizedMainService,
                 phone1: p1,
                 phone2: p2,
@@ -228,15 +229,13 @@ function CompanyRegisterPage() {
     const handleSsnFirstInput = (e) => {
         const numericValue = handleNumericInput(e.target.value, 6);
         handleInputChange('ssnFirst', numericValue);
-        if (numericValue.length === 6 && ssnSecondRef.current !== null) {
-            ssnSecondRef.current.focus();            
+
+        // 6자리 입력 완료 시 성함 입력창으로 포커스 이동
+        if (numericValue.length === 6 && representativeNameRef.current !== null) {
+            representativeNameRef.current.focus();
         }
     };
 
-    const handleSsnSecondInput = (e) => {
-        const numericValue = handleNumericInput(e.target.value, 7);
-        handleInputChange('ssnSecond', numericValue);
-    };
 
     const handleTelFirstInput = (e) => {
         const numericValue = handleNumericInput(e.target.value, 3);
@@ -265,11 +264,15 @@ function CompanyRegisterPage() {
 
         // 개인(일반인) vs 개인/법인사업자별 필수 필드 체크
         if (companyType === "PERSONAL") {
-            // 개인(일반인) - 주민번호만 필요
-            if (!formInputs.ssnFirst || formInputs.ssnFirst.length !== 6 ||
-                !formInputs.ssnSecond || formInputs.ssnSecond.length !== 7 ||
-                !formInputs.personalName.trim()) {
+            // 개인(일반인) - 주민번호와 성함 필요
+            if (!formInputs.representativeName.trim()) {
                 hasErrors = true;
+            }
+            // 수정 모드가 아닐 때만 주민번호 유효성 검사
+            if (!isEditMode) {
+                if (!formInputs.ssnFirst || formInputs.ssnFirst.length !== 6) {
+                    hasErrors = true;
+                }
             }
         } else {
             // 개인/법인사업자 - 사업자등록번호 필수
@@ -298,13 +301,13 @@ function CompanyRegisterPage() {
 
         return hasErrors;
     };
-    
-    // 사업자 정보 조회
+
+    // 사업자번호 중복 체크 (DB 기반)
     const handleBizNoSearchBtnClick = async () => {
-        console.log("국세청 사업자등록번호 검증 실행");
+        console.log("사업자등록번호 중복 체크 실행");
 
         const businessNumber = formInputs.businessNumber.trim();
-        
+
         // 사업자번호 형식 체크
         if (!businessNumber) {
             alert("사업자등록번호를 입력해주세요.");
@@ -313,30 +316,37 @@ function CompanyRegisterPage() {
 
         // 숫자만 추출 (하이픈 제거)
         const cleanBusinessNumber = businessNumber.replace(/[^0-9]/g, '');
-        
+
         if (cleanBusinessNumber.length !== 10) {
             alert("올바른 사업자등록번호를 입력해주세요. (10자리 숫자)");
             return;
         }
 
         try {
-            // 국세청 API를 통한 사업자등록번호 검증
-            const result = await validateBusinessNumber(cleanBusinessNumber);
-            
+            // DB 기반 중복 체크
+            const result = await getBusinessInfo(cleanBusinessNumber);
+
             if (result.isValid) {
-                alert(`✅ ${result.message}\n\n사업자등록번호: ${result.businessNumber}\n\n※ 상호명과 대표자명은 직접 입력해주세요.`);
-                
-                // 포커스를 상호명 입력 필드로 이동 (사용자가 직접 입력하도록)
+                alert(`등록 가능한 사업자등록번호입니다.\n\n사업자등록번호: ${result.businessNumber}\n\n※ 상호명과 대표자명을 직접 입력해주세요.`);
+
+                // 상호명 입력 필드로 포커스 이동
                 const corporationNameInput = document.querySelector('input[placeholder*="홍길동펫샵"]');
                 if (corporationNameInput) {
                     corporationNameInput.focus();
                 }
             } else {
-                alert(`❌ ${result.message}`);
+                alert(`${result.message}`);
             }
         } catch (error) {
-            console.error('사업자등록번호 검증 중 오류:', error);
-            alert('사업자등록번호 검증 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
+            console.error('사업자등록번호 중복 체크 중 오류:', error);
+
+            // 에러 응답에서 메시지 추출
+            let errorMessage = '사업자등록번호 확인 중 오류가 발생했습니다.';
+            if (error.response?.data?.message) {
+                errorMessage = error.response.data.message;
+            }
+
+            alert(`${errorMessage}`);
         }
     }
 
@@ -371,8 +381,6 @@ function CompanyRegisterPage() {
 
                             console.log('검색된 주소:', addr, '우편번호:', postcode, '좌표:', { latitude, longitude });
 
-                            // 지도 모달 열기
-                            setShowMapModal(true);
                         } else {
                             // 좌표 변환 실패시 좌표 없이 저장
                             console.log('좌표 변환 실패, 주소만 저장:', addr, '우편번호:', postcode);
@@ -490,6 +498,15 @@ function CompanyRegisterPage() {
         handleInputChange('latitude', location.latitude.toString());
         handleInputChange('longitude', location.longitude.toString());
         setShowMapModal(false);
+
+        // 최종 확정 값 찍기
+        console.log("[선택 위치 확정]", {
+            address: location.address,
+            postcode: location.postcode ?? "",
+            latitude: location.latitude,
+            longitude: location.longitude,
+        });
+        
     };
 
     const handleCloseMapModal = () => {
@@ -509,16 +526,33 @@ function CompanyRegisterPage() {
 
         if(window.confirm(`업체 ${action}을 하시겠습니까?`)) {
             try {
+                // 개인 업체 등록 시 이름 검증 먼저 수행
+                if (!isEditMode && companyType === "PERSONAL") {
+                    console.log("개인 신원 인증 시작...");
+                    const verificationResult = await verifyPersonalIdentity(formInputs.representativeName);
+
+                    if (!verificationResult.success) {
+                        alert(`신원 인증 실패: ${verificationResult.message}`);
+                        return;
+                    }
+
+                    console.log("개인 신원 인증 성공:", verificationResult.message);
+                }
                 // FormData 생성
                 const formData = new FormData();
                 
+                if (companyImageRef.current && companyImageRef.current.hasFiles) {
+                    await companyImageRef.current.handleUpload();
+                }
+
                 if (isEditMode) {
                     // 수정 모드: CompanyUpdateRequestDto에 맞는 필드만 전송
                     // name 필드: BUSINESS는 상호명, PERSONAL은 개인명
                     if (companyType === "BUSINESS") {
                         formData.append("name", formInputs.corporationName);
                     } else if (companyType === "PERSONAL") {
-                        formData.append("name", formInputs.personalName);
+                        formData.append("name", formInputs.representativeName);
+                        formData.append("representativeName", formInputs.representativeName); // 개인: 이름=대표자명
                     }
                 } else {
                     // 등록 모드: 기존 로직 유지
@@ -528,9 +562,11 @@ function CompanyRegisterPage() {
                     // 개인(일반인) vs 개인/법인사업자별 정보
                     if (companyType === "PERSONAL") {
                         // 개인(일반인) - 주민번호와 성함
-                        formData.append('ssnFirst', formInputs.ssnFirst);
-                        formData.append('ssnSecond', formInputs.ssnSecond);
-                        formData.append('personalName', formInputs.personalName);
+                        formData.append('representativeName', formInputs.representativeName); // 개인: 이름=대표자명
+                        // 수정 모드가 아닐 때만 주민번호 전송
+                        if (!isEditMode) {
+                            formData.append('ssnFirst', formInputs.ssnFirst);
+                        }
                     } else {
                         // 개인/법인사업자 - 사업자번호, 상호명, 대표자명
                         const cleanBizRegNo = formInputs.businessNumber.replace(/[^0-9]/g, '');
@@ -595,7 +631,24 @@ function CompanyRegisterPage() {
                 }
             } catch (error) {
                 console.error(`업체 ${action} 중 오류:`, error);
-                alert(`${action} 중 오류가 발생했습니다. 다시 시도해주세요.`);
+
+                // 백엔드에서 보낸 에러 메시지 추출
+                let errorMessage = `${action} 중 오류가 발생했습니다.`;
+
+                if (error.response?.data?.message) {
+                    // 백엔드에서 구조화된 에러 응답을 보낸 경우
+                    errorMessage = error.response.data.message;
+                } else if (error.response?.data) {
+                    // 백엔드에서 단순 문자열 에러를 보낸 경우
+                    errorMessage = typeof error.response.data === 'string'
+                        ? error.response.data
+                        : JSON.stringify(error.response.data);
+                } else if (error.message) {
+                    // 네트워크 에러 등
+                    errorMessage = error.message;
+                }
+
+                alert(errorMessage);
             }
         }
     }
@@ -653,36 +706,26 @@ function CompanyRegisterPage() {
                                 <>
                                     <div className="company_form_grid">
                                         <div className="company_form_group">
-                                            <span>주민등록번호</span>
-                                            <div className="ssn_input_group">
-                                                <input 
-                                                    type="text"
-                                                    className="form_input"
-                                                    maxLength={6}
-                                                    value={formInputs.ssnFirst}
-                                                    onChange={handleSsnFirstInput}
-                                                    readOnly={isIdBlockLocked}
-                                                />
-                                                -
-                                                <input 
-                                                    type="password"
-                                                    className="form_input"
-                                                    maxLength={7}
-                                                    value={formInputs.ssnSecond}
-                                                    onChange={handleSsnSecondInput}
-                                                    ref={ssnSecondRef}
-                                                    readOnly={isIdBlockLocked}
-                                                />
-                                            </div>
+                                            <span>생년월일</span>
+                                            <input
+                                                type="text"
+                                                className="form_input"
+                                                maxLength={6}
+                                                placeholder="YYMMDD (예: 901225)"
+                                                value={formInputs.ssnFirst}
+                                                onChange={handleSsnFirstInput}
+                                                readOnly={isIdBlockLocked}
+                                            />
                                         </div>
                                         <div className="company_form_group">
                                             <span>성함</span>
-                                            <input 
+                                            <input
                                                 type="text"
                                                 className="form_input"
                                                 placeholder="홍길동"
-                                                value={formInputs.personalName}
-                                                onChange={(e) => handleInputChange('personalName', e.target.value)}
+                                                value={formInputs.representativeName}
+                                                onChange={(e) => handleInputChange('representativeName', e.target.value)}
+                                                ref={representativeNameRef}
                                                 readOnly={isIdBlockLocked}
                                             />
                                         </div>
@@ -697,7 +740,7 @@ function CompanyRegisterPage() {
                                         <div className="company_form_group" style={{ gridColumn: '1 / -1' }}>
                                             <span>사업자등록번호</span>
                                             <div className="input_button_group">
-                                                <input 
+                                                <input
                                                     type="text"
                                                     className="form_input"
                                                     placeholder="123-45-67890"
@@ -709,7 +752,7 @@ function CompanyRegisterPage() {
                                                 <button type="button" className="search_btn" onClick={handleBizNoSearchBtnClick}>
                                                     번호 검증
                                                 </button>
-                                            </div>       
+                                            </div>
                                         </div>
                                     </div>
                                     <div className="company_form_grid">
@@ -754,6 +797,16 @@ function CompanyRegisterPage() {
                                     />
                                     <button type="button" className="search_btn" onClick={handleAddressSearchBtnClick}>
                                         주소 검색
+                                    </button>
+                                </div>
+                                <div className="address_search_buttons">
+                                    <button
+                                        type="button"
+                                        className="map_search_button"
+                                        onClick={() => setShowMapModal(true)}
+                                    >
+                                        <Map size={16} />
+                                        지도에서 찾기
                                     </button>
                                 </div>
                             </div>
@@ -896,9 +949,9 @@ function CompanyRegisterPage() {
                         <div className="company_form_section">
                             <span>업체 사진</span>
                             <ImageUploadViewer
+                                ref={companyImageRef}
                                 imageTypeCode="03"
-                                referenceId={11}
-                                buttonText="업체 사진 업로드"
+                                referenceId={companyId}
                                 mode="multiple"
                                 files={files}
                                 setFiles={setFiles}

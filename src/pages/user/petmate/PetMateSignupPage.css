@@ -1,45 +1,45 @@
 /* src/pages/petmate/BecomePetmatePage.css */
-/* 모든 스타일을 #petmate-container 네임스페이스로 한정 */
+/* 모든 스타일을 #petmate-container 네임스페이스로 강제 */
+
 #petmate-container.petmate-wrap {
-  max-width: 800px;
+  max-width: 820px;
   margin: 0 auto;
-  padding: 2rem;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  padding: 40px;
+  font-family: 'Noto Sans KR', sans-serif;
   line-height: 1.6;
   color: #333;
+  background: linear-gradient(180deg, #fff 0%, #fffaf7 100%);
 }
 
 /* 헤더 */
 #petmate-container .petmate-header {
   text-align: center;
-  margin-bottom: 3rem;
+  margin-bottom: 48px;
 }
 
 #petmate-container .petmate-title {
-  font-size: 2.5rem;
-  font-weight: 700;
-  color: #2563eb;
-  margin-bottom: 0.5rem;
-  background: linear-gradient(135deg, #2563eb, #7c3aed);
-  background-clip: text;
+  font-size: 38px;
+  font-weight: 800;
+  background: linear-gradient(135deg, #EB9666, #E05353);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  margin-bottom: 12px;
 }
 
 #petmate-container .petmate-subtitle {
-  font-size: 1.25rem;
-  color: #6b7280;
-  margin-bottom: 1.5rem;
-  font-weight: 300;
+  font-size: 18px;
+  color: #777;
+  font-weight: 400;
+  margin-bottom: 24px;
 }
 
 #petmate-container .petmate-note {
-  background: linear-gradient(135deg, #dbeafe, #e0e7ff);
-  border: 1px solid #bfdbfe;
+  background: #FFF6F2;
+  border: 1px solid #FFD4C2;
   border-radius: 12px;
-  padding: 1rem 1.5rem;
-  font-size: 0.95rem;
-  color: #1e40af;
+  padding: 14px 22px;
+  font-size: 15px;
+  color: #E05353;
   display: inline-block;
 }
 
@@ -47,149 +47,123 @@
 #petmate-container .petmate-form {
   display: flex;
   flex-direction: column;
-  gap: 2.5rem;
+  gap: 32px;
 }
 
 /* 섹션 */
 #petmate-container .form-section {
-  background: #ffffff;
-  border-radius: 16px;
-  padding: 2rem;
-  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
-  border: 1px solid #f3f4f6;
-  animation: petmate-fadeInUp 0.6s ease-out;
+  background: #fff;
+  border-radius: 18px;
+  padding: 32px;
+  border: 1px solid #f2f2f2;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.05);
+  transition: transform 0.2s ease;
+}
+
+#petmate-container .form-section:hover {
+  transform: translateY(-2px);
 }
 
 #petmate-container .section-title {
-  font-size: 1.5rem;
+  font-size: 21px;
   font-weight: 600;
-  color: #374151;
-  margin-bottom: 1.5rem;
-  padding-bottom: 0.75rem;
-  border-bottom: 2px solid #e5e7eb;
+  color: #E05353;
+  margin-bottom: 24px;
+  border-bottom: 2px solid #FFE1D6;
+  padding-bottom: 12px;
 }
 
 /* 폼 그룹 */
 #petmate-container .form-group {
+  display: flex;
+  flex-direction: column;
   min-width: 0;
 }
-
 #petmate-container .form-label {
-  display: block;
-  font-size: 0.95rem;
+  font-size: 15px;
   font-weight: 500;
-  color: #374151;
-  margin-bottom: 0.5rem;
+  color: #444;
+  margin-bottom: 8px;
+  display: block;
 }
 
-#petmate-container .petmate-row{
+#petmate-container .petmate-row {
   display: grid;
-  grid-template-columns: repeat(3, 1fr); /* 항상 3등분 */
-  column-gap: 24px;  /* 가로 간격 */
-  row-gap: 0;        /* 세로 줄바꿈 제거 */
+  grid-template-columns: repeat(3, 1fr);
+  column-gap: 24px;
+  row-gap: 20px;
 }
 
 /* 입력 필드 */
 #petmate-container .form-input,
 #petmate-container .form-select {
-    box-sizing: border-box; width: 100%;
+  width: 90%;
+  border: 1.8px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 10px 5px;
+  font-size: 16px;
+  transition: all 0.25s ease;
 }
 
-#petmate-container .form-select {
-  appearance: none;        /* 브라우저 기본 select UI 제거 */
-  -webkit-appearance: none;
-  -moz-appearance: none;
-
-  background-color: #fff;
-  border: 2px solid #e5e7eb;
-  border-radius: 10px;
-  padding: 0.75rem 1rem;
-  font-size: 1rem;
-  color: #374151;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-#petmate-container .form-select {
-  background-image: url("data:image/svg+xml;utf8,<svg fill='gray' height='20' viewBox='0 0 24 24' width='20' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
-  background-repeat: no-repeat;
-  background-position: right 0.75rem center;
-  background-size: 1rem;
-  padding-right: 2.5rem; /* 화살표 공간 확보 */
+#petmate-container .form-input::placeholder {
+  color: #aaa;
 }
 
 #petmate-container .form-input:focus,
 #petmate-container .form-select:focus {
   outline: none;
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
-  background-color: #ffffff;
+  border-color: #EB9666;
+  box-shadow: 0 0 0 4px rgba(235,150,102,0.15);
 }
 
-#petmate-container .form-input:hover,
-#petmate-container .form-select:hover {
-  border-color: #d1d5db;
+#petmate-container .form-select {
+  appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg fill='gray' height='18' viewBox='0 0 24 24' width='18' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  background-size: 16px;
+  padding-right: 40px;
 }
 
-/* 드롭 존 */
+/* 드롭존 */
 #petmate-container .drop-zone {
-  border: 3px dashed #d1d5db;
+  border: 2px dashed #FFD4C2;
   border-radius: 16px;
-  padding: 2rem;
+  padding: 32px;
   text-align: center;
   cursor: pointer;
+  background: #FFF9F6;
   transition: all 0.3s ease;
-  background: linear-gradient(135deg, #f9fafb, #ffffff);
-  position: relative;
-  overflow: hidden;
 }
 
 #petmate-container .drop-zone:hover,
 #petmate-container .drop-zone.drag-over {
-  border-color: #3b82f6;
-  background: linear-gradient(135deg, #dbeafe, #f0f9ff);
-  transform: translateY(-2px);
-}
-
-#petmate-container .drop-zone-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.75rem;
+  border-color: #E05353;
+  background: #FFF3F0;
+  transform: scale(1.02);
 }
 
 #petmate-container .drop-icon {
-  font-size: 3rem;
-  opacity: 0.7;
+  font-size: 40px;
+  color: #EB9666;
+  margin-bottom: 8px;
 }
 
 #petmate-container .drop-zone p {
-  font-size: 1.1rem;
+  font-size: 16px;
   font-weight: 500;
-  color: #374151;
-  margin: 0;
-}
-
-#petmate-container .drop-hint {
-  font-size: 0.875rem;
-  color: #6b7280;
+  color: #444;
 }
 
 /* 이미지 프리뷰 */
-#petmate-container .drop-zone.has-image {
-  padding: 0;
-  border-style: solid;
-}
-
 #petmate-container .image-preview {
   position: relative;
   width: 200px;
   height: 200px;
   margin: 0 auto;
-  border-radius: 12px;
+  border-radius: 14px;
   overflow: hidden;
 }
-
 #petmate-container .image-preview img {
   width: 100%;
   height: 100%;
@@ -199,434 +173,166 @@
 #petmate-container .image-overlay {
   position: absolute;
   inset: 0;
-  background: rgba(0,0,0,0.7);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  transition: opacity 0.3s ease;
+  background: rgba(0,0,0,0.55);
   color: #fff;
-  font-weight: 500;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 0.25s ease;
 }
 
 #petmate-container .image-preview:hover .image-overlay {
   opacity: 1;
 }
 
-/* 자격증 드롭존 */
-#petmate-container .cert-drop-zone {
-  min-height: 120px;
-}
-
 /* 자격증 프리뷰 */
 #petmate-container .cert-previews {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: 1rem;
-  margin-top: 1rem;
+  gap: 16px;
+  margin-top: 16px;
 }
 
 #petmate-container .cert-preview {
-  border: 1px solid #e5e7eb;
+  border: 1px solid #eee;
   border-radius: 12px;
   overflow: hidden;
-  background: #ffffff;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-#petmate-container .cert-preview img {
-  width: 100%;
-  height: 120px;
-  object-fit: cover;
+  background: #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
 }
 
 #petmate-container .cert-info {
-  padding: 0.75rem;
+  padding: 10px;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-#petmate-container .cert-name {
-  font-size: 0.8rem;
-  color: #6b7280;
-  font-weight: 500;
-  flex: 1;
-  margin-right: 0.5rem;
-  word-break: break-all;
-}
-
 #petmate-container .remove-cert-btn {
-  background: #ef4444;
+  background: #E05353;
   color: #fff;
   border: none;
   border-radius: 6px;
-  padding: 0.25rem 0.5rem;
-  font-size: 0.75rem;
+  padding: 4px 8px;
+  font-size: 12px;
   cursor: pointer;
-  transition: background 0.2s ease;
-}
-
-#petmate-container .remove-cert-btn:hover {
-  background: #dc2626;
 }
 
 /* 칩 */
 #petmate-container .chip-container {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.75rem;
+  gap: 10px;
 }
 
 #petmate-container .chip {
-  padding: 0.75rem 1.25rem;
-  border: 2px solid #e5e7eb;
-  border-radius: 25px;
-  background: #ffffff;
-  font-size: 0.95rem;
-  font-weight: 500;
+  padding: 10px 20px;
+  border: 1.8px solid #eee;
+  border-radius: 30px;
+  background: #fff;
+  font-size: 14px;
   cursor: pointer;
   transition: all 0.2s ease;
-  color: #6b7280;
-  animation: petmate-fadeIn 0.3s ease-out;
 }
 
 #petmate-container .chip:hover {
-  border-color: #3b82f6;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  border-color: #EB9666;
+  background: #FFF6F2;
+  color: #E05353;
 }
 
 #petmate-container .chip.active {
-  background: linear-gradient(135deg, #3b82f6, #2563eb);
-  border-color: #2563eb;
+  background: linear-gradient(135deg, #EB9666, #E05353);
   color: #fff;
-  box-shadow: 0 4px 12px rgba(59,130,246,0.3);
-}
-
-#petmate-container .chip.small {
-  padding: 0.5rem 1rem;
-  font-size: 0.875rem;
-}
-
-/* 기타 동물 섹션 */
-#petmate-container .other-pets-section {
-  margin-top: 1.5rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid #e5e7eb;
-}
-
-#petmate-container .other-pets-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
-}
-
-#petmate-container .custom-pet-input {
-  display: flex;
-  gap: 0.75rem;
-  margin-bottom: 1rem;
-}
-
-#petmate-container .custom-pet-input .form-input {
-  flex: 1;
-}
-
-#petmate-container .btn-add {
-  padding: 0.75rem 1.5rem;
-  background: linear-gradient(135deg, #10b981, #059669);
-  color: #fff;
-  border: none;
-  border-radius: 10px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-#petmate-container .btn-add:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(16,185,129,0.3);
-}
-
-#petmate-container .selected-custom-pets {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-#petmate-container .custom-pet-tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 0.75rem;
-  background: linear-gradient(135deg, #fbbf24, #f59e0b);
-  color: #fff;
-  border-radius: 20px;
-  font-size: 0.875rem;
-  font-weight: 500;
-}
-
-#petmate-container .remove-btn {
-  background: rgba(255,255,255,0.3);
-  color: #fff;
-  border: none;
-  border-radius: 50%;
-  width: 20px;
-  height: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  font-size: 14px;
-  line-height: 1;
-  transition: background 0.2s ease;
-}
-
-#petmate-container .remove-btn:hover {
-  background: rgba(255,255,255,0.5);
+  border-color: transparent;
+  box-shadow: 0 4px 12px rgba(235,150,102,0.35);
 }
 
 /* 체크박스 */
 #petmate-container .form-check {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 10px;
   cursor: pointer;
-  font-size: 0.95rem;
-  color: #374151;
-  position: relative;
+  font-size: 15px;
 }
 
 #petmate-container .form-check input[type="checkbox"] {
-  opacity: 0;
-  position: absolute;
+  accent-color: #EB9666;
+  width: 18px;
+  height: 18px;
 }
 
-#petmate-container .checkmark {
-  width: 20px;
-  height: 20px;
-  border: 2px solid #d1d5db;
-  border-radius: 6px;
-  background: #ffffff;
-  position: relative;
-  transition: all 0.2s ease;
-  flex-shrink: 0;
-}
-
-#petmate-container .form-check input[type="checkbox"]:checked + .checkmark {
-  background: linear-gradient(135deg, #3b82f6, #2563eb);
-  border-color: #2563eb;
-}
-
-#petmate-container .form-check input[type="checkbox"]:checked + .checkmark::after {
-  content: "✓";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  color: #fff;
-  font-size: 12px;
-  font-weight: bold;
-}
-
-#petmate-container .form-check:hover .checkmark {
-  border-color: #3b82f6;
-}
-
-#petmate-container .agreement {
-  background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
-  border: 1px solid #bae6fd;
-  border-radius: 12px;
-  padding: 1.5rem;
-  margin: 1rem 0;
-}
-
-#petmate-container .agreement-text {
-  line-height: 1.5;
-}
-
-/* 액션 버튼 */
-#petmate-container .form-actions {
-  display: flex;
-  gap: 1rem;
-  justify-content: center;
-  margin-top: 2rem;
-  padding-top: 2rem;
-  border-top: 1px solid #e5e7eb;
-}
-
+/* 버튼 */
 #petmate-container .btn-primary,
 #petmate-container .btn-secondary {
-  padding: 1rem 2rem;
-  border-radius: 12px;
-  font-size: 1rem;
+  padding: 14px 32px;
+  border-radius: 40px;
+  font-size: 16px;
   font-weight: 600;
   cursor: pointer;
   border: none;
-  transition: all 0.2s ease;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  min-width: 180px;
-  justify-content: center;
+  transition: all 0.3s ease;
 }
 
 #petmate-container .btn-primary {
-  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  background: linear-gradient(135deg, #EB9666, #E05353);
   color: #fff;
-  box-shadow: 0 4px 12px rgba(59,130,246,0.3);
+  box-shadow: 0 6px 18px rgba(235,150,102,0.3);
 }
 
-#petmate-container .btn-primary:hover:not(:disabled) {
+#petmate-container .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(59,130,246,0.4);
-}
-
-#petmate-container .btn-primary:disabled {
-  opacity: 0.7;
-  cursor: not-allowed;
-  transform: none;
+  box-shadow: 0 10px 24px rgba(235,150,102,0.4);
 }
 
 #petmate-container .btn-secondary {
-  background: #ffffff;
-  color: #6b7280;
-  border: 2px solid #e5e7eb;
+  background: #fff;
+  color: #E05353;
+  border: 2px solid #E05353;
 }
 
 #petmate-container .btn-secondary:hover {
-  background: #f9fafb;
-  border-color: #d1d5db;
-  transform: translateY(-1px);
-}
-
-/* 로딩 스피너 */
-#petmate-container .loading-spinner {
-  width: 16px;
-  height: 16px;
-  border: 2px solid transparent;
-  border-top: 2px solid currentColor;
-  border-radius: 50%;
-  animation: petmate-spin 1s linear infinite;
+  background: #FFF6F2;
 }
 
 /* 모달 */
 #petmate-container .modal-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.5);
+  background: rgba(0,0,0,0.45);
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
   z-index: 1000;
-  backdrop-filter: blur(4px);
 }
-
 #petmate-container .modal {
-  background: #ffffff;
+  background: #fff;
   border-radius: 20px;
-  padding: 2.5rem;
-  max-width: 500px;
+  padding: 32px;
+  max-width: 480px;
   width: 90%;
   text-align: center;
-  box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
-  animation: petmate-modalSlideIn 0.3s ease-out;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
 }
-
-#petmate-container .modal-icon {
-  font-size: 4rem;
-  margin-bottom: 1rem;
-}
-
 #petmate-container .modal h2 {
-  font-size: 1.875rem;
+  font-size: 26px;
   font-weight: 700;
-  color: #1f2937;
-  margin-bottom: 1rem;
+  color: #E05353;
+  margin-bottom: 16px;
 }
-
 #petmate-container .modal p {
-  color: #6b7280;
-  margin-bottom: 1rem;
-  line-height: 1.6;
+  color: #666;
+  font-size: 15px;
+  margin-bottom: 16px;
 }
 
-#petmate-container .modal-subtitle {
-  font-size: 0.95rem;
-  margin-bottom: 2rem !important;
-}
-
-#petmate-container .modal-actions {
-  display: flex;
-  gap: 1rem;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-
-#petmate-container .modal-actions .btn-primary,
-#petmate-container .modal-actions .btn-secondary {
-  min-width: 160px;
-}
-
-/* 반응형 디자인 */
+/* 반응형 */
 @media (max-width: 768px) {
-  #petmate-container.petmate-wrap { padding: 1rem; }
-  #petmate-container .petmate-title { font-size: 2rem; }
-  #petmate-container .petmate-subtitle { font-size: 1.1rem; }
-  #petmate-container .form-section { padding: 2rem 2.75rem; }
-  #petmate-container .petmate-row{ grid-template-columns: repeat(3, 1fr)}
-  #petmate-container .chip-container { gap: 0.5rem; }   
-  #petmate-container .chip { padding: 0.6rem 1rem; font-size: 0.9rem; }
-  #petmate-container .form-actions { flex-direction: column; align-items: center; }
+  #petmate-container.petmate-wrap { padding: 20px; }
+  #petmate-container .petmate-title { font-size: 32px; }
+  #petmate-container .form-section { padding: 24px; }
   #petmate-container .btn-primary,
-  #petmate-container .btn-secondary { width: 100%; max-width: 280px; }
-  #petmate-container .custom-pet-input { flex-direction: column; }
-  #petmate-container .cert-previews { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
-  #petmate-container .drop-zone { padding: 1.5rem; }
-  #petmate-container .drop-icon { font-size: 2.5rem; }
-}
-
-@media (max-width: 480px) {
-  #petmate-container.petmate-wrap { padding: 0.5rem; }
-  #petmate-container .form-section { padding: 1rem; }
-  #petmate-container .modal { padding: 1.5rem; margin: 1rem; }
-  #petmate-container .modal-actions { flex-direction: column; }
-  #petmate-container .drop-zone p { font-size: 1rem; }
-  #petmate-container .drop-hint { font-size: 0.8rem; }
-}
-
-/* 애니메이션 (네임스페이스 전용 키프레임) */
-@keyframes petmate-fadeInUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-@keyframes petmate-fadeIn { from { opacity: 0; } to { opacity: 1; } }
-@keyframes petmate-spin { to { transform: rotate(360deg); } }
-@keyframes petmate-modalSlideIn {
-  from { opacity: 0; transform: scale(0.9) translateY(-10px); }
-  to { opacity: 1; transform: scale(1) translateY(0); }
-}
-
-/* 포커스 스타일 */
-#petmate-container .form-input:focus,
-#petmate-container .form-select:focus,
-#petmate-container .chip:focus,
-#petmate-container .btn-primary:focus,
-#petmate-container .btn-secondary:focus {
-  outline: 2px solid #3b82f6;
-  outline-offset: 2px;
-}
-
-/* 다크모드 */
-@media (prefers-color-scheme: dark) {
-  #petmate-container.petmate-wrap { color: #f3f4f6; }
-  #petmate-container .form-section { background: #1f2937; border-color: #374151; }
-  #petmate-container .section-title { color: #f9fafb; border-color: #4b5563; }
-  #petmate-container .form-input,
-  #petmate-container .form-select { background: #374151; border-color: #4b5563; color: #f3f4f6; }
-  #petmate-container .form-input:focus,
-  #petmate-container .form-select:focus { background: #374151; }
-  #petmate-container .modal { background: #1f2937; }
-  #petmate-container .modal h2 { color: #f9fafb; }
+  #petmate-container .btn-secondary { width: 100%; }
 }
