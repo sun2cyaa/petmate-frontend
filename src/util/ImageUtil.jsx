@@ -460,7 +460,7 @@ export const ImageUploadViewer = React.forwardRef(({
                         onDrop={handleDrop}
                     >
                         <div className="upload-placeholder">
-                            <div className="upload-icon">📁</div>
+                            <div className="upload-icon">📷</div>
                             <p>{(!images || images.length === 0) ? '이미지를 드래그하거나 클릭하여 선택' : '새 이미지 추가'}</p>
                         </div>
                     </div>
