@@ -1,7 +1,7 @@
 // src/pages/petowner/BecomePetOwnerPage.jsx
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "../petmate/PetMateSignupPage.css";
+import "./PetOwnerSignupPage.css";
 import { apiRequest, fetchMe } from "../../../services/api";
 
 export default function PetOwnerSignupPage() {
@@ -121,67 +121,87 @@ export default function PetOwnerSignupPage() {
         <input type="hidden" name="provider" value={form.provider} />
 
         <section className="form-section">
-          <h3 className="section-title">기본 정보</h3>
+  <h3 className="section-title">기본 정보</h3>
 
-          <div className="form-group">
-            <label className="form-label">이름</label>
-            <input name="name" value={form.name} onChange={onChange} className="form-input" />
-          </div>
+  <div className="petmate-row">
+    <div className="form-group">
+      <label className="form-label">이름</label>
+      <input
+        name="name"
+        value={form.name}
+        onChange={onChange}
+        className="form-input"
+      />
+    </div>
 
-          <div className="form-group">
-            <label className="form-label">프로필 사진</label>
-            <div
-              className={`drop-zone ${profileDragOver ? "drag-over" : ""} ${profilePreview ? "has-image" : ""}`}
-              onDragOver={handleProfileDragOver}
-              onDragLeave={handleProfileDragLeave}
-              onDrop={handleProfileDrop}
-              onClick={() => document.getElementById("petowner-profile-input")?.click()}
-            >
-              {profilePreview ? (
-                <div className="image-preview">
-                  <img
-                    src={profilePreview}
-                    alt="프로필"
-                    referrerPolicy="no-referrer"
-                    onError={() => setProfilePreview(null)}
-                  />
-                  <div className="image-overlay"><span>클릭하거나 드래그하여 변경</span></div>
-                </div>
-              ) : (
-                <div className="drop-zone-content">
-                  <div className="drop-icon">📷</div>
-                  <p>프로필 사진을 드래그하거나 클릭하여 업로드</p>
-                  <span className="drop-hint">JPG, PNG 파일만 지원</span>
-                </div>
-              )}
-              <input id="petowner-profile-input" type="file" accept="image/*" onChange={onProfileFile} hidden />
-            </div>
-          </div>
+    <div className="form-group">
+      <label className="form-label">성별</label>
+      <select
+        name="gender"
+        value={form.gender}
+        onChange={onChange}
+        className="form-select"
+      >
+        <option value="">선택하세요</option>
+        <option value="M">남성</option>
+        <option value="F">여성</option>
+        <option value="N">기타</option>
+      </select>
+    </div>
 
-          <div className="petmate-row">
-            <div className="form-group">
-              <label className="form-label">성별</label>
-              <select name="gender" value={form.gender} onChange={onChange} className="form-select">
-                <option value="">선택하세요</option>
-                <option value="M">남성</option>
-                <option value="F">여성</option>
-                <option value="N">기타</option>
-              </select>
-            </div>
-            <div className="form-group">
-              <label className="form-label">나이</label>
-              <input
-                type="number"
-                name="age"
-                min={14}
-                value={form.age}
-                onChange={onChange}
-                className="form-input"
-              />
-            </div>
-            <div className="form-group">{/* spacer */}</div>
+    <div className="form-group">
+      <label className="form-label">나이</label>
+      <input
+        type="number"
+        name="age"
+        min={14}
+        value={form.age}
+        onChange={onChange}
+        placeholder="예: 28"
+        className="form-input"
+      />
+    </div>
+  </div>
+
+  <div className="form-group">
+    <label className="form-label">프로필 사진</label>
+    <div
+      className={`drop-zone ${profileDragOver ? "drag-over" : ""} ${profilePreview ? "has-image" : ""}`}
+      onDragOver={handleProfileDragOver}
+      onDragLeave={handleProfileDragLeave}
+      onDrop={handleProfileDrop}
+      onClick={() => document.getElementById("petowner-profile-input")?.click()}
+    >
+      {profilePreview ? (
+        <div className="image-preview">
+          <img
+            src={profilePreview}
+            alt="프로필"
+            referrerPolicy="no-referrer"
+            onError={() => setProfilePreview(null)}
+          />
+          <div className="image-overlay">
+            <span>클릭하거나 드래그하여 변경</span>
           </div>
-        </section>
+        </div>
+      ) : (
+        <div className="drop-zone-content">
+          <div className="drop-icon">📷</div>
+          <p>프로필 사진을 드래그하거나 클릭하여 업로드</p>
+          <span className="drop-hint">JPG, PNG 파일만 지원</span>
+        </div>
+      )}
+      <input
+        id="petowner-profile-input"
+        type="file"
+        accept="image/*"
+        onChange={onProfileFile}
+        hidden
+      />
+    </div>
+  </div>
+</section>
+
 
         <section className="form-section">
           <label className="form-check agreement">
