@@ -28,19 +28,17 @@ import PetOwnerSignupPage from "./pages/user/petowner/PetOwnerSignupPage";
 import "./styles/App.css";
 import Header from "./components/common/Header/Header";
 
-import { AuthProvider, useAuth } from "./context/AuthContext";
+import { AuthProvider, useAuth } from "./contexts/AuthContext";
 
 function AppRoutes() {
   const location = useLocation();
-  const { isLogined, user, setIsLogined } = useAuth();
+  const { isLogined, user } = useAuth();
 
   const hideHeader = location.pathname.startsWith("/intro");
 
   return (
     <>
-      {!hideHeader && (
-        <Header isLogined={isLogined} setIsLogined={setIsLogined} user={user} />
-      )}
+      {!hideHeader && <Header />}
 
       <AnimatePresence mode="wait">
         <Routes location={location} key={location.pathname}>
@@ -48,18 +46,18 @@ function AppRoutes() {
 
           {/* 공개 */}
           <Route path="/intro" element={<IntroPage />} />
-          <Route path="/home" element={<HomePage isLogined={isLogined} setIsLogined={setIsLogined} user={user} />} />
+          <Route path="/home" element={<HomePage />} />
 
           {/* 인증 */}
-          <Route path="/signin" element={<SigninPage setIsLogined={setIsLogined} />} />
+          <Route path="/signin" element={<SigninPage />} />
           <Route path="/signup" element={<SignupPage />} />
-          <Route path="/oauth2/redirect" element={<OAuth2Redirect setIsLogined={setIsLogined} />} />
+          <Route path="/oauth2/redirect" element={<OAuth2Redirect />} />
 
           {/* 일반 */}
           <Route path="/map" element={<MapPage />} />
           <Route path="/pets" element={<PetManagePage />} />
           <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/address" element={<AddressManagePage user={user} />} />
+          <Route path="/address" element={<AddressManagePage />} />
           <Route path="/payment" element={<PaymentPage />} />
           <Route path="/payment/success" element={<PaymentSuccessPage />} />
           <Route path="/payment/fail" element={<PaymentFailPage />} />

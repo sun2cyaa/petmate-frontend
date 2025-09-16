@@ -67,11 +67,11 @@ export const getBusinessInfo = async (businessNumber) => {
 };
 
 // 근처 업체 조회
-export const getNearbyCompanies = async (lat, lng, radius = 5.0, serviceType =
+export const getNearbyCompanies = async (latitude, longitude, radius = 5.0, serviceType =
   null) => {
       const params = {
-          lat: lat.toString(),
-          lng: lng.toString(),
+          latitude: latitude.toString(),
+          longitude: longitude.toString(),
           radius: radius.toString()
       };
 
