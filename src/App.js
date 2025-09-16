@@ -1,8 +1,6 @@
 // src/App.jsx
 import { Routes, Route, useLocation, Navigate } from "react-router-dom";
-import { useState, useEffect } from "react";
 import { AnimatePresence } from "framer-motion";
-import { apiRequest } from "./services/api";
 
 import IntroPage from "./pages/common/Intro/IntroPage";
 import HomePage from "./pages/common/Home/HomePage";
@@ -16,44 +14,25 @@ import PaymentFailPage from "./pages/payment/PaymentFailPage";
 import AddressManagePage from "./pages/user/owner/MyPage/Address/AddressManagePage";
 import PetManagePage from "./pages/user/owner/MyPage/PetManagePage";
 import ProfilePage from "./pages/user/owner/MyPage/ProfilePage";
-
 import PetMateSignupPage from "./pages/user/petmate/PetMateSignupPage";
 import BookingManagePage from "./pages/user/petmate/BookingManagePage";
-
-import "./styles/App.css";
-import Header from "./components/common/Header/Header";
-import Test from "./components/test/Test";
 import CompanyManagePage from "./pages/company/CompanyManagePage";
 import CompanyRegisterPage from "./pages/company/CompanyRegisterPage";
 import ProductManagePage from "./pages/product/ProductManagePage";
-import ProductRegisterPage from './pages/product/ProductRegisterPage';
-import ProductEditPage from './pages/product/ProductEditPage';
+import ProductRegisterPage from "./pages/product/ProductRegisterPage";
+import ProductEditPage from "./pages/product/ProductEditPage";
 import Notice from "./components/common/Header/Notice";
 import Event from "./components/common/Header/Event";
+import PetOwnerSignupPage from "./pages/user/petowner/PetOwnerSignupPage";
 
-function App() {
-  const [isLogined, setIsLogined] = useState(false);
-  const [user, setUser] = useState(null);
+import "./styles/App.css";
+import Header from "./components/common/Header/Header";
+
+import { AuthProvider, useAuth } from "./contexts/AuthContext";
+
+function AppRoutes() {
   const location = useLocation();
-
-  useEffect(() => {
-    let mounted = true;
-    apiRequest
-      .get("/auth/me")
-      .then((res) => {
-        if (!mounted) return;
-        setIsLogined(true);
-        setUser(res?.data);
-      })
-      .catch(() => {
-        if (!mounted) return;
-        setIsLogined(false);
-        setUser(null);
-      });
-    return () => {
-      mounted = false;
-    };
-  }, []);
+  const { isLogined, user, setIsLogined } = useAuth();
 
   const hideHeader = location.pathname.startsWith("/intro");
 
@@ -65,34 +44,18 @@ function App() {
 
       <AnimatePresence mode="wait">
         <Routes location={location} key={location.pathname}>
-          {/* 기본 진입 인트로 */}
           <Route path="/" element={<Navigate to="/intro" replace />} />
 
-          {/* 무조건 공개 */}
+          {/* 공개 */}
           <Route path="/intro" element={<IntroPage />} />
-          <Route
-            path="/home"
-            element={
-              <HomePage
-                isLogined={isLogined}
-                setIsLogined={setIsLogined}
-                user={user}
-              />
-            }
-          />
+          <Route path="/home" element={<HomePage isLogined={isLogined} setIsLogined={setIsLogined} user={user} />} />
 
-          {/* 로그인 / 회원가입 */}
-          <Route
-            path="/signin"
-            element={<SigninPage setIsLogined={setIsLogined} />}
-          />
+          {/* 인증 */}
+          <Route path="/signin" element={<SigninPage setIsLogined={setIsLogined} />} />
           <Route path="/signup" element={<SignupPage />} />
-          <Route
-            path="/oauth2/redirect"
-            element={<OAuth2Redirect setIsLogined={setIsLogined} />}
-          />
+          <Route path="/oauth2/redirect" element={<OAuth2Redirect setIsLogined={setIsLogined} />} />
 
-          {/* 나머지 */}
+          {/* 일반 */}
           <Route path="/map" element={<MapPage />} />
           <Route path="/pets" element={<PetManagePage />} />
           <Route path="/profile" element={<ProfilePage />} />
@@ -100,19 +63,29 @@ function App() {
           <Route path="/payment" element={<PaymentPage />} />
           <Route path="/payment/success" element={<PaymentSuccessPage />} />
           <Route path="/payment/fail" element={<PaymentFailPage />} />
+
+          {/* 반려인/펫메이트 */}
+          <Route path="/become-petowner" element={<PetOwnerSignupPage />} />
           <Route path="/become-petmate" element={<PetMateSignupPage />} />
+          <Route path="/booking" element={<BookingManagePage />} />
+
+          {/* 업체 */}
           <Route path="/companymanage" element={<CompanyManagePage />} />
+          <Route path="/companyregister" element={<CompanyRegisterPage />} />
           <Route path="/companyform" element={<CompanyRegisterPage />} />
           <Route path="/companyform/:id" element={<CompanyRegisterPage />} />
-          <Route path="/booking" element={<BookingManagePage />} />
+
+          {/* 상품 */}
           <Route path="/product" element={<ProductManagePage />} />
           <Route path="/product/register" element={<ProductRegisterPage />} />
           <Route path="/product/edit/:productId" element={<ProductEditPage />} />
-          <Route path="/test" element={<Test />} />
+
+          {/* 기타 */}
           <Route path="/notice" element={<Notice />} />
           <Route path="/event" element={<Event />} />
+          <Route path="/test" element={<div>Test</div>} />
 
-          {/* 없는 경로 -> 인트로 */}
+          {/* 없는 경로 */}
           <Route path="*" element={<Navigate to="/intro" replace />} />
         </Routes>
       </AnimatePresence>
@@ -120,4 +93,10 @@ function App() {
   );
 }
 
-export default App;
+export default function App() {
+  return (
+    <AuthProvider>
+      <AppRoutes />
+    </AuthProvider>
+  );
+}
