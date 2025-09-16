@@ -7,6 +7,9 @@ import { bookingService } from "../../../services/booking/bookingService";
 import "../../../styles/user.css";
 import "../../../styles/reservation.css";
 
+// 아이콘 추가
+import { FaCalendarAlt, FaListUl } from "react-icons/fa";
+
 // Day.js 한국어 로케일 설정
 dayjs.locale("ko");
 
@@ -93,7 +96,10 @@ const BookingManagePage = () => {
   return (
     <div className="booking-manage-page">
       <div className="page-header">
-        <h1 className="page-title">예약관리</h1>
+        <h1 className="page-title">
+          <FaCalendarAlt style={{ marginRight: "8px", color: "#eb9666" }} />
+          예약관리
+        </h1>
         <p className="page-subtitle">고객의 예약 요청을 확인하고 관리하세요</p>
       </div>
 
@@ -113,6 +119,7 @@ const BookingManagePage = () => {
               {loading && <span className="loading-indicator">로딩 중...</span>}
             </h2>
             <div className="reservation-count">
+              <FaListUl style={{ marginRight: "6px", color: "#e05353" }} />
               총 {reservations.length}건의 예약
             </div>
           </div>
