@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import "./ProductPage.css";
+import "./ProductPageSlotStyles.css";
 import { useNavigate } from "react-router-dom";
 import {
   createProduct,
   getCompanies,
   getServiceCategories,
 } from "../../services/product/productService";
+import { createProductSlots } from "../../services/product/availabilitySlotService";
 
 const ProductRegisterPage = () => {
   const navigate = useNavigate();
@@ -21,27 +23,36 @@ const ProductRegisterPage = () => {
     description: "",
     price: "",
     duration: "",
+    minPet: "1",
+    maxPet: "1",
     isAllDay: false, // 백엔드의 allDay 필드에 해당
     isActive: true,
   });
 
   const [errors, setErrors] = useState({});
 
-  // 사용 가능한 시간(임시)
-  const timeOptions = [
-    "09:00",
-    "10:00",
-    "11:00",
-    "12:00",
-    "13:00",
-    "14:00",
-    "15:00",
-    "16:00",
-    "17:00",
-    "18:00",
-    "19:00",
-    "20:00",
-  ];
+  const [slotSettings, setSlotSettings] = useState({
+    startDate: '',
+    endDate: '',
+    selectedTimes: [],
+    capacity: 1
+  });
+
+  // 30분 단위 시간 생성
+  const generateTimeSlots = () => {
+    const slots = [];
+    for (let hour = 9; hour <= 18; hour++) {
+      for (let minute = 0; minute < 60; minute += 30) {
+        const startTime = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+        const endHour = minute === 30 ? hour + 1 : hour;
+        const endMinute = minute === 30 ? 0 : 30;
+        const endTime = `${endHour.toString().padStart(2, '0')}:${endMinute.toString().padStart(2, '0')}`;
+
+        slots.push(`${startTime}-${endTime}`);
+      }
+    }
+    return slots;
+  }
 
   useEffect(() => {
     loadInitialData();
@@ -79,35 +90,9 @@ const ProductRegisterPage = () => {
     }
   };
 
-  // const handleTimeToggle = (time) => {
-  //   setFormData((prev) => ({
-  //     ...prev,
-  //     availableTimes: prev.availableTimes.includes(time)
-  //       ? prev.availableTimes.filter((t) => t !== time)
-  //       : [...prev.availableTimes, time].sort(),
-  //   }));
-
-  //   // 에러 메세지 제거
-  //   if (errors.availableTimes) {
-  //     setErrors((prev) => ({ ...prev, availableTimes: "" }));
-  //   }
-  // };
 
   const validateForm = () => {
     const newErrors = {};
-
-    // if (!formData.companyId) newErrors.companyId = "업체를 선택해주세요.";
-    // if (!formData.serviceTypeId)
-    //   newErrors.serviceTypeId = "서비스 유형을 선택해주세요.";
-    // if (!formData.name.trim()) newErrors.name = "상품명을 입력해주세요.";
-    // if (!formData.description.trim())
-    //   newErrors.description = "상품 설명을 입력해주세요.";
-    // if (!formData.price || formData.price <= 0)
-    //   newErrors.price = "올바른 가격을 입력해주세요.";
-    // if (!formData.duration || formData.duration <= 0)
-    //   newErrors.duration = "올바른 소요시간을 입력해주세요.";
-    // if (formData.availableTimes.length === 0)
-    //   newErrors.availableTimes = "최소 하나의 이용 가능 시간을 선택해주세요.";
 
     if (!formData.companyId) newErrors.companyId = "업체를 선택해주세요.";
     if (!formData.serviceTypeId)
@@ -119,6 +104,19 @@ const ProductRegisterPage = () => {
       newErrors.price = "올바른 가격을 입력해주세요.";
     if (!formData.duration || formData.duration <= 0)
       newErrors.duration = "올바른 소요시간을 입력해주세요.";
+    if (!formData.minPet || formData.minPet <= 0)
+      newErrors.minPet = "최소 펫 수를 입력해주세요.";
+    if (!formData.maxPet || formData.maxPet <= 0)
+      newErrors.maxPet = "최대 펫 수를 입력해주세요.";
+    if (parseInt(formData.minPet) > parseInt(formData.maxPet))
+      newErrors.maxPet = "최대 펫 수는 최소 펫 수보다 커야 합니다.";
+
+     // 슬롯 검증 추가
+    if (slotSettings.selectedTimes.length > 0) {
+      if (!slotSettings.startDate) newErrors.startDate = "시작 날짜를 선택해주세요.";
+      if (!slotSettings.endDate) newErrors.endDate = "종료 날짜를 선택해주세요.";
+      if (slotSettings.capacity <= 0) newErrors.capacity = "수용 인원을 입력해주세요.";
+    }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -127,22 +125,41 @@ const ProductRegisterPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!validateForm()) {
-      return;
-    }
+    if (!validateForm()) return;
 
     try {
       setSaving(true);
-      await createProduct({
+
+      // 1. 상품 등록 - 숫자 변환 처리
+      const createdProduct = await createProduct({
         ...formData,
         price: Number(formData.price),
         duration: Number(formData.duration),
+        minPet: Number(formData.minPet),
+        maxPet: Number(formData.maxPet),
+        companyId: Number(formData.companyId)
       });
-      alert("상품이 성공적으로 등록되었습니다.");
+
+      // 2. 슬롯 생성
+      if (slotSettings.selectedTimes.length > 0) {
+        const timeSlots = slotSettings.selectedTimes.map(timeRange => {
+          const [startTime, endTime] = timeRange.split('-');
+          return { startTime, endTime };
+        });
+
+        await createProductSlots(createdProduct.id, formData.companyId, {
+          startDate: slotSettings.startDate,
+          endDate: slotSettings.endDate,
+          timeSlots,
+          capacity: slotSettings.capacity
+        });
+      }
+
+      alert("상품과 시간 슬롯이 성공적으로 등록되었습니다.");
       navigate("/product");
     } catch (error) {
-      console.error("상품 등록 실패 : ", error);
-      alert("상품 등록에 실패하였습니다.");
+      console.error("등록 실패:", error);
+      alert("등록에 실패했습니다.");
     } finally {
       setSaving(false);
     }
@@ -165,11 +182,51 @@ const ProductRegisterPage = () => {
         description: "",
         price: "",
         duration: "",
-        availableTimes: [],
+        minPet: "1",
+        maxPet: "1",
+        isAllDay: false,
         isActive: true,
       });
       setErrors({});
     }
+  };
+
+  // 종일 상품 처리 함수 개선
+  const handleAllDayChange = (e) => {
+    const isAllDay = e.target.checked;
+
+    if (isAllDay) {
+      // 종일 상품 선택 시 자동으로 30일 기간 설정
+      const today = new Date();
+      const nextMonth = new Date(today);
+      nextMonth.setDate(today.getDate() + 30);    
+
+      const startDate = today.toISOString().split('T')[0];
+      const endDate = nextMonth.toISOString().split('T')[0];
+
+      setSlotSettings(prev => ({
+        ...prev,
+        startDate,
+        endDate,
+        selectedTimes: ['09:00-18:00'], // 전체 업무시간으로 설정
+        capacity: 1
+      }));
+
+      alert("종일 상품으로 설정되어 30일 기간이 자동 선택되었습니다.");
+    } else {
+      // 종일 해제 시 초기화
+      setSlotSettings(prev => ({
+        ...prev,
+        startDate: '',
+        endDate: '',
+        selectedTimes: []
+      }));
+    }
+
+    setFormData((prev) => ({
+      ...prev,
+      isAllDay: isAllDay
+    }));
   };
 
   if (loading) {
@@ -298,39 +355,144 @@ const ProductRegisterPage = () => {
               )}
             </div>
           </div>
-          {/* <div className="form-field">
-            <label>이용 가능 시간 *</label>
-            <div className="time-selection">
-              {timeOptions.map((time) => (
-                <button
-                  key={time}
-                  type="button"
-                  onClick={() => handleTimeToggle(time)}
-                  className={`time-option ${
-                    formData.availableTimes.includes(time) ? "selected" : ""
-                  }`}
-                >
-                  {time}
-                </button>
-              ))}
-            </div>
-            {errors.availableTimes && (
-              <span className="error-message">{errors.availableTimes}</span>
-            )}
-            <div style={{ marginTop: "8px", fontSize: "12px", color: "#666" }}>
-              선택된 시간 : {formData.availableTimes.join(",") || "없음"}
-            </div>
-          </div> */}
-          <div className="form-field">
-            <label className="checkbox-label">
+          <div className="form-row">
+            <div className="form-field">
+              <label htmlFor="minPet">최소 펫 수</label>
               <input
-                type="checkbox"
-                name="isAllDay"
-                checked={formData.isAllDay}
+                type="number"
+                id="minPet"
+                name="minPet"
+                value={formData.minPet || ""}
                 onChange={handleInputChange}
+                min="1"
+                max="10"
+                placeholder="최소 펫 수"
+                className={errors.minPet ? "error" : ""}
               />
-              <span className="checkbox-text">종일 상품 (하루종일 이용 가능)</span>
-            </label>
+              {errors.minPet && (
+                <span className="error-message">{errors.minPet}</span>
+              )}
+            </div>
+            <div className="form-field">
+              <label htmlFor="maxPet">최대 펫 수</label>
+              <input
+                type="number"
+                id="maxPet"
+                name="maxPet"
+                value={formData.maxPet || ""}
+                onChange={handleInputChange}
+                min="1"
+                max="10"
+                placeholder="최대 펫 수"
+                className={errors.maxPet ? "error" : ""}
+              />
+              {errors.maxPet && (
+                <span className="error-message">{errors.maxPet}</span>
+              )}
+            </div>
+          </div>
+
+          {/* 개선된 슬롯 설정 섹션 */}
+          <div className="form-section slot-settings-section">
+            <h3 className="section-title">
+              <span className="section-icon">📅</span>
+              예약 슬롯 설정
+            </h3>
+
+            <div className="form-field">
+              <label className="checkbox-label all-day-label">
+                <input
+                  type="checkbox"
+                  name="isAllDay"
+                  checked={formData.isAllDay}
+                  onChange={handleAllDayChange}
+                />
+                <span className="checkbox-text">
+                  🌅 종일 상품 (자동으로 30일 기간 설정)
+                </span>
+              </label>
+            </div>
+
+            <div className={`date-selection-row ${formData.isAllDay ? 'auto-selected' : ''}`}>
+              <div className="form-field">
+                <label>
+                  📅 시작 날짜
+                  {formData.isAllDay && <span className="auto-label">(자동 설정)</span>}
+                </label>
+                <input
+                  type="date"
+                  value={slotSettings.startDate}
+                  onChange={(e) => setSlotSettings(prev => ({...prev, startDate: e.target.value}))}
+                  disabled={formData.isAllDay}
+                  className={formData.isAllDay ? 'auto-selected' : ''}
+                />
+              </div>
+              <div className="form-field">
+                <label>
+                  📅 종료 날짜
+                  {formData.isAllDay && <span className="auto-label">(자동 설정)</span>}
+                </label>
+                <input
+                  type="date"
+                  value={slotSettings.endDate}
+                  onChange={(e) => setSlotSettings(prev => ({...prev, endDate: e.target.value}))}
+                  disabled={formData.isAllDay}
+                  className={formData.isAllDay ? 'auto-selected' : ''}
+                />
+              </div>
+            </div>
+
+            <div className="form-field">
+              <label>
+                ⏰ 이용 가능 시간 *
+                {formData.isAllDay && <span className="auto-label">(종일 자동 설정)</span>}
+              </label>
+              <div className="time-selection">
+                {generateTimeSlots().map(timeSlot => (
+                  <button
+                    key={timeSlot}
+                    type="button"
+                    disabled={formData.isAllDay}
+                    className={`time-option ${
+                      slotSettings.selectedTimes.includes(timeSlot) ? 'selected' : ''
+                    } ${formData.isAllDay ? 'disabled' : ''}`}
+                    onClick={() => {
+                      if (!formData.isAllDay) {
+                        setSlotSettings(prev => ({
+                          ...prev,
+                          selectedTimes: prev.selectedTimes.includes(timeSlot)
+                            ? prev.selectedTimes.filter(t => t !== timeSlot)
+                            : [...prev.selectedTimes, timeSlot]
+                        }));
+                      }
+                    }}
+                  >
+                    {timeSlot}
+                  </button>
+                ))}
+              </div>
+              <div className="selected-times-summary">
+                <span className="summary-icon">✅</span>
+                선택된 시간: {slotSettings.selectedTimes.length > 0 ? slotSettings.selectedTimes.join(", ") : "없음"}
+              </div>
+            </div>
+
+            <div className="form-field capacity-field">
+              <label>
+                🐕 수용 가능 펫 수
+              </label>
+              <div className="capacity-input-wrapper">
+                <input
+                  type="number"
+                  min="1"
+                  max="10"
+                  value={slotSettings.capacity}
+                  onChange={(e) => setSlotSettings(prev => ({...prev, capacity: parseInt(e.target.value)}))}
+                  className="capacity-input"
+                />
+                <span className="capacity-label">마리</span>
+              </div>
+            </div>
           </div>
           <div className="form-field">
             <label className="checkbox-label">

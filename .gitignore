@@ -23,6 +23,7 @@ yarn-debug.log*
 yarn-error.log*
 
 
+CLUADE.MD
 .env
 .env.*
 !.env.example

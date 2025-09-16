@@ -125,6 +125,15 @@
   background: #D6824A;
 }
 
+.map_selected_indicator {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: #10b981;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
 /* 주민등록번호 입력 */
 .company_form_group:has(input[type="password"]) {
   display: flex;
