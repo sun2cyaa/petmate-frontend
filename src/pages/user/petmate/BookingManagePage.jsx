@@ -97,7 +97,7 @@ const BookingManagePage = () => {
     <div className="booking-manage-page">
       <div className="page-header">
         <h1 className="page-title">
-          <FaCalendarAlt style={{ marginRight: "8px", color: "#eb9666" }} />
+          <FaCalendarAlt style={{ marginRight: "8px", color: "#E05353" }} />
           예약관리
         </h1>
         <p className="page-subtitle">고객의 예약 요청을 확인하고 관리하세요</p>

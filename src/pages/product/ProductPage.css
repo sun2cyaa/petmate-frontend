@@ -15,7 +15,7 @@
 .header-title {
   font-size: 32px;
   font-weight: 800;
-  background: linear-gradient(135deg, #EB9666, #E05353);
+  background: linear-gradient(#E05353);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   margin-bottom: 8px;
@@ -85,7 +85,7 @@
 }
 
 .register-btn:hover {
-  background: #d67f4f;
+  background: #E05353;
 }
 
 /* 상품 카드 */

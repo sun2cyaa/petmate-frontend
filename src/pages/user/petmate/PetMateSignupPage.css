@@ -20,7 +20,7 @@
 #petmate-container .petmate-title {
   font-size: 38px;
   font-weight: 800;
-  background: linear-gradient(135deg, #EB9666, #E05353);
+  background: linear-gradient(#E05353);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   margin-bottom: 12px;
@@ -280,6 +280,7 @@
   background: linear-gradient(135deg, #EB9666, #E05353);
   color: #fff;
   box-shadow: 0 6px 18px rgba(235,150,102,0.3);
+  margin: 0 20px 0px 30px;
 }
 
 #petmate-container .btn-primary:hover {
