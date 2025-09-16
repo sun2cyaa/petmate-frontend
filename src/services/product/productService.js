@@ -11,26 +11,24 @@ const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 // 상품 목록 조회하기
 export const getProducts = async (params = {}) => {
-    // if(USE_DUMMY_DATA) {
-    //     await delay(500); // 로딩 시물레이션
-    //     return getDummyProducts(params);
-    // }
-
-    // try {
-    //     const queryString = new URLSearchParams(params).toString();
-    //     const response = await apiRequest.get(`/api/products?${queryString}`);
-    //     return response.data;
-    // } catch (error) {
-    //     console.error("상품 목록 조회 오류:", error);
-    //     throw error;
-    // }
 
     try {
-      const queryString = new URLSearchParams(params).toString();
-      const url = queryString ? `api/products/${queryString}` : 'api/products';
-      console.log("상품 목록 조회 api 호출", url);
+      // 파라미터가 있으면 search 엔드포인트 사용, 없으면 전체 조회
+      const hasParams = Object.keys(params).length > 0 && Object.values(params).some(value => value);
 
-      const response = await apiRequest.get(url);
+      let url, response;
+
+      if (hasParams) {
+        const queryString = new URLSearchParams(params).toString();
+        url = `api/products/search?${queryString}`;
+        console.log("상품 검색 api 호출", url);
+        console.log("검색 파라미터:", params);
+        response = await apiRequest.get(url);
+      } else {
+        url = 'api/products';
+        console.log("전체 상품 조회 api 호출", url);
+        response = await apiRequest.get(url);
+      }
       console.log("상품 목록 조회?" , response.data);
       return response.data;
     } catch(er) {
@@ -40,25 +38,6 @@ export const getProducts = async (params = {}) => {
     }
 };
 
-// // 상품 상세 조회하기
-// export const getProduct = async (productId) => {
-//     if(USE_DUMMY_DATA) {
-//         await delay(300); // 로딩 시물레이션
-//         const product = getDummyProduct(productId);
-//         if(!product) {
-//             throw new Error("상품을 찾을 수 없습니다.");
-//         }
-//         return product;
-//     }
-
-//     try {
-//         const response = await apiRequest.get(`/api/products/${productId}`);
-//         return response.data;
-//     } catch (error) {
-//         console.error("상품 상세 조회 오류:", error);
-//         throw error;
-//     }   
-// };
 
  // 상품 상세 조회
   export const getProduct = async (productId) => {
@@ -75,45 +54,36 @@ export const getProducts = async (params = {}) => {
       }
   };
 
-// // 상품 등록하기
-// export const createProduct = async (productData) => {
-//     if(USE_DUMMY_DATA) {
-//         await delay(300); // 로딩 시물레이션
-//         return createDummyProduct(productData);
-//     }
-
-//     try {
-//         const response = await apiRequest.post('/api/products', productData);
-//         return response.data;
-//     } catch (error) {
-//         console.error("상품 등록 오류:", error);
-//         throw error;
-//     }
-// };
 
  // 상품 등록 (백엔드 구조에 맞게 데이터 변환)
   export const createProduct = async (productData) => {
       try {
+          console.log('=== 상품 등록 API 호출 시작 ===');
           console.log('상품 등록 요청 데이터 (원본):', productData);
+          console.log('minPet 타입과 값:', typeof productData.minPet, productData.minPet);
+          console.log('maxPet 타입과 값:', typeof productData.maxPet, productData.maxPet);
 
           // 프론트엔드 데이터를 백엔드 형식으로 변환
           const backendData = {
               companyId: parseInt(productData.companyId),
-              serviceType: productData.serviceTypeId, // serviceTypeId -> serviceType
+              serviceType: productData.serviceTypeId,
               name: productData.name,
               price: parseInt(productData.price),
-              allDay: productData.isAllDay ? 1 : 0, // boolean -> integer
-              durationMin: parseInt(productData.duration) || null, // duration -> durationMin
-              introText: productData.description || null, // description -> introText
-              minPet: 1, // 기본값
-              maxPet: 1, // 기본값
-              isActive: productData.isActive ? 1 : 0 // boolean -> integer
+              allDay: productData.isAllDay ? 1 : 0,
+              durationMin: parseInt(productData.duration) || null,
+              introText: productData.description || null,
+              minPet: parseInt(productData.minPet) || 1,
+              maxPet: parseInt(productData.maxPet) || 1,
+              isActive: productData.isActive ? 1 : 0
           };
 
           console.log('상품 등록 요청 데이터 (변환 후):', backendData);
+          console.log('변환된 minPet 타입과 값:', typeof backendData.minPet, backendData.minPet);
+          console.log('변환된 maxPet 타입과 값:', typeof backendData.maxPet, backendData.maxPet);
 
           const response = await apiRequest.post('/api/products', backendData);
           console.log('상품 등록 응답:', response.data);
+          console.log('=== 상품 등록 API 호출 완료 ===');
           alert("상품이 성공적으로 등록되었습니다!");
           return response.data;
       } catch (er) {
@@ -123,45 +93,37 @@ export const getProducts = async (params = {}) => {
       }
   };
 
-// // 상품 수정
-// export const updateProduct = async (productId, productData) => {
-//   if (USE_DUMMY_DATA) {
-//     await delay(600);
-//     return updateDummyProduct(productId, productData);
-//   }
-  
-//   try {
-//     const response = await apiRequest.put(`/api/products/${productId}`, productData);
-//     return response.data;
-//   } catch (error) {
-//     console.error('상품 수정 실패:', error);
-//     throw error;
-//   }
-// };
 
  // 상품 수정 (백엔드 구조에 맞게 데이터 변환)
   export const updateProduct = async (productId, productData) => {
       try {
+          console.log('=== 상품 수정 API 호출 시작 ===');
+          console.log('상품 ID:', productId);
           console.log('상품 수정 요청 데이터 (원본):', productData);
+          console.log('수정 minPet 타입과 값:', typeof productData.minPet, productData.minPet);
+          console.log('수정 maxPet 타입과 값:', typeof productData.maxPet, productData.maxPet);
 
           // 프론트엔드 데이터를 백엔드 형식으로 변환
           const backendData = {
               companyId: parseInt(productData.companyId),
-              serviceType: productData.serviceTypeId, // serviceTypeId -> serviceType
+              serviceType: productData.serviceTypeId,
               name: productData.name,
               price: parseInt(productData.price),
-              allDay: productData.isAllDay ? 1 : 0, // boolean -> integer
-              durationMin: parseInt(productData.duration) || null, // duration -> durationMin
-              introText: productData.description || null, // description -> introText
-              minPet: 1, // 기본값
-              maxPet: 1, // 기본값
-              isActive: productData.isActive ? 1 : 0 // boolean -> integer
+              allDay: productData.isAllDay ? 1 : 0,
+              durationMin: parseInt(productData.duration) || null,
+              introText: productData.description || null,
+              minPet: parseInt(productData.minPet) || 1,
+              maxPet: parseInt(productData.maxPet) || 1,
+              isActive: productData.isActive ? 1 : 0
           };
 
           console.log('상품 수정 요청 데이터 (변환 후):', backendData);
+          console.log('변환된 수정 minPet 타입과 값:', typeof backendData.minPet, backendData.minPet);
+          console.log('변환된 수정 maxPet 타입과 값:', typeof backendData.maxPet, backendData.maxPet);
 
           const response = await apiRequest.put(`/api/products/${productId}`, backendData);
           console.log('상품 수정 응답:', response.data);
+          console.log('=== 상품 수정 API 호출 완료 ===');
           alert("상품이 성공적으로 수정되었습니다!");
           return response.data;
       } catch (er) {
@@ -171,21 +133,6 @@ export const getProducts = async (params = {}) => {
       }
   };
 
-// // 상품 삭제
-// export const deleteProduct = async (productId) => {
-//   if (USE_DUMMY_DATA) {
-//     await delay(400);
-//     return deleteDummyProduct(productId);
-//   }
-  
-//   try {
-//     await apiRequest.delete(`/api/products/${productId}`);
-//     return true;
-//   } catch (error) {
-//     console.error('상품 삭제 실패:', error);
-//     throw error;
-//   }
-// };
 
 // 상품 삭제
   export const deleteProduct = async (productId) => {
@@ -203,21 +150,6 @@ export const getProducts = async (params = {}) => {
       }
   };
 
-// // 업체 목록 조회 (드롭다운용) - 소셜로그인 사용자의 회사 정보 포함
-// export const getCompanies = async () => {
-//   if (USE_DUMMY_DATA) {
-//     await delay(200);
-//     return getDummyCompanies();
-//   }
-  
-//   try {
-//     const response = await apiRequest.get('/api/companies');
-//     return response.data;
-//   } catch (error) {
-//     console.error('업체 목록 조회 실패:', error);
-//     throw error;
-//   }
-// };
 
  // 업체 목록 조회
   export const getCompanies = async () => {
@@ -234,21 +166,6 @@ export const getProducts = async (params = {}) => {
       }
   };
 
-// // 서비스 카테고리 목록 조회 (드롭다운용)
-// export const getServiceCategories = async () => {
-//   if (USE_DUMMY_DATA) {
-//     await delay(200);
-//     return getDummyServiceCategories();
-//   }
-  
-//   try {
-//     const response = await apiRequest.get('/api/service-categories');
-//     return response.data;
-//   } catch (error) {
-//     console.error('서비스 카테고리 조회 실패:', error);
-//     throw error;
-//   }
-// };
 
 
   // 서비스 카테고리 목록 조회

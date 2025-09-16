@@ -1,4 +1,4 @@
-/* 예약 카드 & 리스트 스타일 */
+/* 예약 카드 & 리스트 */
 .reservation-list {
   display: flex;
   flex-direction: column;
@@ -6,17 +6,17 @@
 }
 
 .reservation-card {
-  background: #fdf6e3;
-  border: none;
+  background: #fff;
+  border-left: 6px solid #eb9666; /* 대표색 포인트 */
   border-radius: 12px;
   padding: 20px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 3px 6px rgba(0,0,0,0.08);
   transition: all 0.2s;
 }
 
 .reservation-card:hover {
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-  transform: translateY(-1px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.12);
+  transform: translateY(-2px);
 }
 
 /* 카드 헤더 */
@@ -39,7 +39,7 @@
   height: 48px;
   border-radius: 50%;
   overflow: hidden;
-  background-color: #e9ecef;
+  background-color: #f3f4f6;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -73,11 +73,6 @@
   gap: 4px;
 }
 
-.user-location::before {
-  content: "📍";
-  font-size: 12px;
-}
-
 .created-time {
   font-size: 12px;
   color: #999;
@@ -89,28 +84,28 @@
   padding: 6px 12px;
   border-radius: 20px;
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 600;
   text-align: center;
-  min-width: 70px;
-  flex-shrink: 0;
+  min-width: 90px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  justify-content: center;
 }
 
 .status-pending {
-  background-color: #fff3cd;
-  color: #856404;
-  border: 1px solid #ffeaa7;
+  background-color: #fff0e6;
+  color: #eb9666; /* 대표색 */
 }
 
 .status-approved {
-  background-color: #d1e7dd;
-  color: #0f5132;
-  border: 1px solid #a3cfbb;
+  background-color: #e6f8f0;
+  color: #28a745; /* 그린 */
 }
 
 .status-rejected {
-  background-color: #f8d7da;
-  color: #721c24;
-  border: 1px solid #f1aeb5;
+  background-color: #fde2e1;
+  color: #e05353; /* 보조색 */
 }
 
 /* 카드 내용 */
@@ -136,24 +131,25 @@
   color: #666;
   font-weight: 500;
   min-width: 80px;
-  flex-shrink: 0;
 }
 
 .info-row .value {
   font-size: 14px;
   color: #333;
   text-align: right;
-  flex: 1;
   font-weight: 500;
 }
 
 .info-row .value.time {
   color: #666;
   font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
 .info-row .value.price {
-  color: #ff6b35;
+  color: #eb9666; /* 대표색 */
   font-weight: 700;
   font-size: 16px;
 }
@@ -167,7 +163,6 @@
 
 .card-actions button {
   padding: 8px 16px;
-  border: 1px solid;
   border-radius: 6px;
   font-size: 14px;
   font-weight: 500;
@@ -175,68 +170,51 @@
   transition: all 0.2s;
   display: flex;
   align-items: center;
-  gap: 4px;
-  min-height: 36px;
+  gap: 6px;
+}
+
+/* 버튼 색상 */
+.btn-details {
+  background-color: #f8f9fa;
+  color: #444;
+  border: 1px solid #ddd;
+}
+.btn-details:hover {
+  background-color: #eb9666; /* 대표색 */
+  color: #fff;
+  border-color: #eb9666;
 }
 
 .btn-approve {
-  background-color: #28a745;
-  color: white;
-  border-color: #28a745;
+  background-color: #eb9666; /* 대표색 */
+  color: #fff;
+  border: none;
 }
-
 .btn-approve:hover {
-  background-color: #218838;
-  border-color: #1e7e34;
+  background-color: #e05353; /* 보조색 */
 }
 
 .btn-reject {
-  background-color: #dc3545;
-  color: white;
-  border-color: #dc3545;
+  background-color: #e05353; /* 보조색 */
+  color: #fff;
+  border: none;
 }
-
 .btn-reject:hover {
-  background-color: #c82333;
-  border-color: #bd2130;
+  background-color: #c74444;
 }
 
 .btn-message {
   background-color: #f8f9fa;
   color: #666;
-  border-color: #dee2e6;
+  border: 1px solid #ddd;
 }
-
 .btn-message:hover {
-  background-color: #e9ecef;
-  color: #495057;
-  border-color: #adb5bd;
-}
-
-.btn-details {
-  background-color: #eb9666;
-  border: 1px solid #f0d000;
-  border-radius: 6px;
-  padding: 8px 12px;
-  font-size: 13px;
-  font-weight: 500;
-  color: white;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.btn-details:hover {
-  background-color: #d8855c;
+  background-color: #eb9666; /* 대표색 */
+  color: #fff;
   border-color: #eb9666;
 }
 
-/* 승인 완료된 카드의 버튼 스타일 */
-.reservation-card .card-actions .btn-message:only-child {
-  background-color: #e9ecef;
-  color: #6c757d;
-}
-
-/* 반응형 디자인 */
+/* 반응형 */
 @media (max-width: 640px) {
   .reservation-card {
     padding: 16px;
