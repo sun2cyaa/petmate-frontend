@@ -31,6 +31,27 @@ export function AuthProvider({ children }) {
     })();
   }, []);
 
+  // 다른 탭에서의 로그인/로그아웃 상태 변경 감지 (실시간 동기화)
+  useEffect(() => {
+    const handleStorageChange = (e) => {
+      if (e.key === 'accessToken') {
+        if (e.newValue && e.newValue !== e.oldValue) {
+          // 다른 탭에서 로그인됨
+          console.log('🔄 다른 탭에서 로그인 감지, 사용자 정보 동기화 중...');
+          hydrateMe();
+        } else if (!e.newValue && e.oldValue) {
+          // 다른 탭에서 로그아웃됨
+          console.log('🚪 다른 탭에서 로그아웃 감지, 현재 탭도 로그아웃 처리');
+          setUser(null);
+          setIsLogined(false);
+        }
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
+
   const login = async (credentials) => {
     const res = await apiSignin(credentials.id, credentials.pw);
     const me = await fetchMe({ silent: true });       // 로그인 직후 1회
@@ -49,9 +70,13 @@ export function AuthProvider({ children }) {
   };
 
   const logout = async () => {
-    try { await apiSignout(); } finally {
+    try {
+      await apiSignout();
+    } finally {
+      console.log('🚪 로그아웃 처리 중... (다른 탭에도 동기화됨)');
       localStorage.removeItem("accessToken");
-      setUser(null); setIsLogined(false);
+      setUser(null);
+      setIsLogined(false);
     }
   };
 
