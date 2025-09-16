@@ -74,8 +74,8 @@ export default function AddressManagePage({ onBack }) {
                     ...addr,
                     id: addr.id,
                     type: addr.type,
-                    typeName: addr.type === "home" ? "집" : addr.type === "office" ? "회사" : "기타",
-                    icon: addr.type === "home" ? Home : addr.type === "office" ? Building2 : MapPinned,
+                    typeName: addr.type === "집" ? "집" : addr.type === "회사" ? "회사" : "기타",
+                    icon: addr.type === "집" ? Home : addr.type === "회사" ? Building2 : MapPinned,
                     address: addr.address,
                     detail: addr.detail,
                     alias: addr.alias,
@@ -224,8 +224,11 @@ export default function AddressManagePage({ onBack }) {
             // 수정 모드
             try {
                 // 수정모드에서도 coordinates 데이터를 백엔드 형식에 맞게 변환
+                // 영어 타입을 한국어로 변환
+                const convertedType = addressData.type === "home" ? "집" :
+                                     addressData.type === "work" ? "회사" : "기타";
                 const backendData = {
-                    type: addressData.type,
+                    type: convertedType,
                     address: addressData.address,
                     detail: addressData.detail || "",
                     alias: addressData.alias || "",
@@ -244,8 +247,8 @@ export default function AddressManagePage({ onBack }) {
                             ? {
                                 ...addr,
                                 type: updatedAddress.type,
-                                typeName: updatedAddress.type === "home" ? "집" : updatedAddress.type === "office" ? "회사" : "기타",
-                                icon: updatedAddress.type === "home" ? Home : updatedAddress.type === "office" ? Building2 : MapPinned,
+                                typeName: updatedAddress.type === "집" ? "집" : updatedAddress.type === "회사" ? "회사" : "기타",
+                                icon: updatedAddress.type === "집" ? Home : updatedAddress.type === "회사" ? Building2 : MapPinned,
                                 address: updatedAddress.address,
                                 detail: updatedAddress.detail,
                                 alias: updatedAddress.alias,
@@ -265,8 +268,11 @@ export default function AddressManagePage({ onBack }) {
             // 추가 모드
             try {
                 // coordinates 데이터를 백엔드 형식에 맞게 변환
+                // 영어 타입을 한국어로 변환
+                const convertedType = addressData.type === "home" ? "집" :
+                                     addressData.type === "work" ? "회사" : "기타";
                 const backendData = {
-                    type: addressData.type,
+                    type: convertedType,
                     address: addressData.address,
                     detail: addressData.detail || "",
                     alias: addressData.alias || "",
@@ -282,8 +288,8 @@ export default function AddressManagePage({ onBack }) {
                 const newAddress = {
                     id: savedAddress.id,
                     type: savedAddress.type,
-                    typeName: savedAddress.type === "home" ? "집" : savedAddress.type === "office" ? "회사" : "기타",
-                    icon: savedAddress.type === "home" ? Home : savedAddress.type === "office" ? Building2 : MapPinned,
+                    typeName: savedAddress.type === "집" ? "집" : savedAddress.type === "회사" ? "회사" : "기타",
+                    icon: savedAddress.type === "집" ? Home : savedAddress.type === "회사" ? Building2 : MapPinned,
                     address: savedAddress.address,
                     detail: savedAddress.detail,
                     alias: savedAddress.alias,
@@ -327,7 +333,7 @@ export default function AddressManagePage({ onBack }) {
                         <div className="addresses-list">
                             {isLoading ? (
                                 <div style={{ textAlign: 'center', padding: '2rem', color: '#6b7280' }}>
-                                    주소 목록을 불러오는 중...
+                                    로그인을 먼저 진행해주세요.
                                 </div>
                             ) : savedAddresses.length === 0 ? (
                                 <div style={{ textAlign: 'center', padding: '2rem', color: '#6b7280' }}>
