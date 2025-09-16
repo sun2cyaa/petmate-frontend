@@ -28,7 +28,7 @@ import PetOwnerSignupPage from "./pages/user/petowner/PetOwnerSignupPage";
 import "./styles/App.css";
 import Header from "./components/common/Header/Header";
 
-import { AuthProvider, useAuth } from "./contexts/AuthContext";
+import { AuthProvider, useAuth } from "./context/AuthContext";
 
 function AppRoutes() {
   const location = useLocation();
