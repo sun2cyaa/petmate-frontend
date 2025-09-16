@@ -271,6 +271,7 @@ body {
 
 /* 업체 관리 / 펫메이트 드롭다운 메뉴 */
 .header_company_manage_menu,
+.header_product_manage_menu,
 .header_petmate_menu {
   display: none;
   position: absolute;
@@ -283,23 +284,30 @@ body {
   z-index: 1500;
   padding: 6px 0;
 }
+
+/* hover 시 드롭다운 열기 */
 .header_dropdown:hover .header_company_manage_menu,
+.header_dropdown:hover .header_product_manage_menu,
 .header_dropdown:hover .header_petmate_menu {
   display: block;
 }
+
+/* 메뉴 아이템 */
 .header_company_manage_item,
+.header_product_manage_item,
 .header_petmate_item {
   display: block;
-  padding: 10px 14px;
-  font-size: 14px;
-  text-decoration: none;
+  padding: 10px 16px;
   color: #333;
-  transition: background 0.2s ease, color 0.2s ease;
+  text-decoration: none;
+  transition: background 0.2s;
 }
+
 .header_company_manage_item:hover,
+.header_product_manage_item:hover,
 .header_petmate_item:hover {
-  background: #f5f5f5;
-  color: #eb9666;
+  background: #f9f9f9;
+  color: #E05353;
 }
 
 /* 반응형 추가 */
@@ -326,8 +334,10 @@ body {
 
   .nav {
     flex-direction: column;
+    display: flex;
+    align-items: center;
     width: 100%;
-    gap: 10px;
+    gap: 24px;
     margin-top: 8px;
   }
 

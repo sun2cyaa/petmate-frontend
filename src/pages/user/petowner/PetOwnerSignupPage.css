@@ -1,0 +1,276 @@
+/* src/pages/petowner/PetOwnerSignupPage.css */
+/* 모든 스타일을 #petowner-container 네임스페이스로 강제 */
+
+#petowner-container.petmate-wrap {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 40px;
+  font-family: 'Noto Sans KR', sans-serif;
+  line-height: 1.6;
+  color: #333;
+  background: linear-gradient(180deg, #fff 0%, #fffaf7 100%);
+}
+
+/* 헤더 */
+#petowner-container .petmate-header {
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+#petowner-container .petmate-title {
+  font-size: 38px;
+  font-weight: 800;
+  background: linear-gradient(#E05353);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 12px;
+}
+
+#petowner-container .petmate-subtitle {
+  font-size: 18px;
+  color: #777;
+  font-weight: 400;
+  margin-bottom: 24px;
+}
+
+#petowner-container .petmate-note {
+  background: #FFF6F2;
+  border: 1px solid #FFD4C2;
+  border-radius: 12px;
+  padding: 14px 22px;
+  font-size: 15px;
+  color: #E05353;
+  display: inline-block;
+}
+
+/* 폼 */
+#petowner-container .petmate-form {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+/* 섹션 */
+#petowner-container .form-section {
+  background: #fff;
+  border-radius: 18px;
+  padding: 32px;
+  border: 1px solid #f2f2f2;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.05);
+  transition: transform 0.2s ease;
+}
+
+#petowner-container .form-section:hover {
+  transform: translateY(-2px);
+}
+
+#petowner-container .section-title {
+  font-size: 21px;
+  font-weight: 600;
+  color: #E05353;
+  margin-bottom: 24px;
+  border-bottom: 2px solid #FFE1D6;
+  padding-bottom: 12px;
+}
+
+/* 폼 그룹 */
+#petowner-container .form-group {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+#petowner-container .form-label {
+  font-size: 15px;
+  font-weight: 500;
+  color: #444;
+  margin-bottom: 8px;
+  display: block;
+}
+
+#petowner-container .petmate-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  column-gap: 24px;
+  row-gap: 20px;
+}
+
+/* 입력 필드 */
+#petowner-container .form-input,
+#petowner-container .form-select {
+  width: 90%;
+  border: 1.8px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 10px 5px;
+  font-size: 16px;
+  transition: all 0.25s ease;
+}
+
+#petowner-container .form-input::placeholder {
+  color: #aaa;
+}
+
+#petowner-container .form-input:focus,
+#petowner-container .form-select:focus {
+  outline: none;
+  border-color: #EB9666;
+  box-shadow: 0 0 0 4px rgba(235,150,102,0.15);
+}
+
+#petowner-container .form-select {
+  appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg fill='gray' height='18' viewBox='0 0 24 24' width='18' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  background-size: 16px;
+  padding-right: 40px;
+}
+
+/* 드롭존 */
+#petowner-container .drop-zone {
+  border: 2px dashed #FFD4C2;
+  border-radius: 16px;
+  padding: 32px;
+  text-align: center;
+  cursor: pointer;
+  background: #FFF9F6;
+  transition: all 0.3s ease;
+}
+
+#petowner-container .drop-zone:hover,
+#petowner-container .drop-zone.drag-over {
+  border-color: #E05353;
+  background: #FFF3F0;
+  transform: scale(1.02);
+}
+
+#petowner-container .drop-icon {
+  font-size: 40px;
+  color: #EB9666;
+  margin-bottom: 8px;
+}
+
+#petowner-container .drop-zone p {
+  font-size: 16px;
+  font-weight: 500;
+  color: #444;
+}
+
+/* 이미지 프리뷰 */
+#petowner-container .image-preview {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  margin: 0 auto;
+  border-radius: 14px;
+  overflow: hidden;
+}
+#petowner-container .image-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+#petowner-container .image-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+#petowner-container .image-preview:hover .image-overlay {
+  opacity: 1;
+}
+
+/* 체크박스 */
+#petowner-container .form-check {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  font-size: 15px;
+}
+
+#petowner-container .form-check input[type="checkbox"] {
+  accent-color: #EB9666;
+  width: 18px;
+  height: 18px;
+}
+
+/* 버튼 */
+#petowner-container .btn-primary,
+#petowner-container .btn-secondary {
+  padding: 14px 32px;
+  border-radius: 40px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+#petowner-container .btn-primary {
+  background: linear-gradient(135deg, #EB9666, #E05353);
+  color: #fff;
+  box-shadow: 0 6px 18px rgba(235,150,102,0.3);
+  margin: 0 20px 0px 30px;
+}
+
+#petowner-container .btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(235,150,102,0.4);
+}
+
+#petowner-container .btn-secondary {
+  background: #fff;
+  color: #E05353;
+  border: 2px solid #E05353;
+}
+
+#petowner-container .btn-secondary:hover {
+  background: #FFF6F2;
+}
+
+/* 모달 */
+#petowner-container .modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+#petowner-container .modal {
+  background: #fff;
+  border-radius: 20px;
+  padding: 32px;
+  max-width: 480px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+}
+#petowner-container .modal h2 {
+  font-size: 26px;
+  font-weight: 700;
+  color: #E05353;
+  margin-bottom: 16px;
+}
+#petowner-container .modal p {
+  color: #666;
+  font-size: 15px;
+  margin-bottom: 16px;
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+  #petowner-container.petmate-wrap { padding: 20px; }
+  #petowner-container .petmate-title { font-size: 32px; }
+  #petowner-container .form-section { padding: 24px; }
+  #petowner-container .btn-primary,
+  #petowner-container .btn-secondary { width: 100%; }
+}
