@@ -1,7 +1,7 @@
 /* 전체 페이지 레이아웃 */
 .company_register_page {
   min-height: 100vh;
-  background-color: #f8f9fa;
+  background: linear-gradient(180deg, #fff 0%, #fffaf7 100%);
   padding: 0;
   margin: 0;
 }
@@ -16,9 +16,9 @@
 /* 메인 폼 섹션 */
 .company_register_section {
   padding: 32px;
-  border: 1px solid #e5e7eb;
+  border: 1px solid #FFF6F2;
   border-radius: 0.5rem;
-  background-color: white;
+  background-color: #fff;
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
 }
 
@@ -35,7 +35,7 @@
   gap: 24px;
   margin-bottom: 32px;
   padding: 16px;
-  background: #f8f9fa;
+  background: #fff;
   border-radius: 8px;
   border: 1px solid #e9ecef;
 }
@@ -198,7 +198,7 @@
   flex-wrap: wrap;
   gap: 16px;
   padding: 16px;
-  background: #f8f9fa;
+  background: #fff;
   border-radius: 8px;
   border: 1px solid #e9ecef;
   font-size: 14px;
@@ -221,7 +221,7 @@
 
 /* 운영시간 섹션 */
 .company_form_section:has(input[type="time"]) {
-  background: #f8f9fa;
+  background: #fff;
   padding: 20px;
   border-radius: 8px;
   border: 1px solid #e9ecef;
@@ -271,7 +271,7 @@
   border: 1px solid #e1e5e9;
   border-radius: 4px;
   font-size: 14px;
-  width: 120px;
+  width: 150px;
 }
 
 .company_form_section input[type="time"]:disabled {

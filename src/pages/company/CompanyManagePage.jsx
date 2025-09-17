@@ -216,7 +216,7 @@ function CompanyManagePage() {
             <div className="company_manage_main">
                 {/* 헤더 섹션 */}
                 <div className="section-header">
-                    {/* 🔹 Lottie 추가 영역 */}
+                    {/* Lottie 추가 영역 */}
                     <div className="header_left">
                         <div className="lottie-box">
                             <Lottie 
