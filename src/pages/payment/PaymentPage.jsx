@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { loadDanalPaymentsSDK } from "@danalpay/javascript-sdk";
-import "./PaymentPage.css"; // CSS 파일 import
+import "./PaymentPage.css"; 
 import iconIntegrated from "../../assets/images/payment/icon_integrated.png";
 import payKakaopay from "../../assets/images/payment/pay_kakaopay.webp";
 import payNpay from "../../assets/images/payment/pay_npay.webp";
