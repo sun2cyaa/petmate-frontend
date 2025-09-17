@@ -1,7 +1,26 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import iconFail from "../../assets/images/payment/icon_fail.png";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 const PaymentSuccess = () => {
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const [bookingData, setBookingData] = useState(null);
+
+  useEffect(() => {
+    // 예약데이터 불러오기
+    const savedBookingData = sessionStorage.getItem("bookingData");
+    if (savedBookingData) {
+      setBookingData(JSON.parse(savedBookingData));
+    }
+
+    sessionStorage.removeItem("bookingData");
+  }, []);
+
+  const handleGoToBookingComplete = () => {
+    navigate("/booking?completed=true");
+  };
+
   const styles = {
     successContainer: {
       maxWidth: "450px",
@@ -93,6 +112,11 @@ const PaymentSuccess = () => {
               />
             </svg>
           </div>
+        </div>
+        <div style={{ display: "flex", gap: "10px", justifyContent: "center" }}>
+          <button onClick={handleGoToBookingComplete} style={styles.btn}>
+            예약완료 확인하기
+          </button>
         </div>
         <h1 style={styles.title}>결제를 완료했어요</h1>
         <p style={styles.description}>
