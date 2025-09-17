@@ -1,112 +1,124 @@
-.product-manage_wrap {
-  font-family: 'Noto Sans KR', sans-serif;
+.product-register_wrap {
+  font-family: "Noto Sans KR", sans-serif;
   max-width: 960px;
   margin: 0 auto;
   padding: 32px 20px 60px;
-  background: #fff;
+  background: linear-gradient(180deg, #fff 0%, #fffaf7 100%);
 }
 
 /* 헤더 */
-.product-manage_wrap .product-header {
+.register-header {
   margin-bottom: 28px;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid #eb9666;
   padding-bottom: 12px;
+  text-align: center;
 }
 
-.product-manage_wrap .product-header h2 {
+.register-header .header-title {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.register-header .header-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: #fff4f2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #E05353;
+}
+
+.register-header h2 {
   font-size: 24px;
   font-weight: 800;
   color: #E05353;
-  display: flex;
-  align-items: center;
+  margin: 0;
 }
 
-.product-manage_wrap .product-header p {
-  color: #777777;
-  font-weight: 500;
+.register-header p {
+  margin-top: 6px;
   font-size: 14px;
-  margin: 4px 0 0 2px;
-}
-
-/* 아이콘 공통 */
-.product-manage_wrap .icon {
-  margin-right: 6px;
-  color: #EB9666;
+  color: #666;
 }
 
 /* 폼 */
-.product-manage_wrap .product-form {
+.product-form {
   display: flex;
   flex-direction: column;
   gap: 22px;
 }
 
-.product-manage_wrap .form-section {
-  background: #fafafa;
-  border: 1px solid #e5e7eb;
+.form-section {
+  background: #fff;
+  border: 1px solid #eb9666;
   border-radius: 12px;
   padding: 20px;
 }
 
-.product-manage_wrap .form-field {
+.form-field {
   display: flex;
   flex-direction: column;
   margin-bottom: 14px;
 }
 
-.product-manage_wrap .form-field label {
+.form-field label {
   font-weight: 600;
   font-size: 14px;
   margin-bottom: 6px;
   display: flex;
   align-items: center;
   gap: 6px;
+  color: #333;
 }
 
-.product-manage_wrap .form-field input,
-.product-manage_wrap .form-field select,
-.product-manage_wrap .form-field textarea {
+.form-field input,
+.form-field select,
+.form-field textarea {
   border: 1px solid #e5e7eb;
   border-radius: 8px;
   padding: 10px 12px;
   font-size: 14px;
-  transition: border .2s, box-shadow .2s;
+  transition: border 0.2s, box-shadow 0.2s;
 }
 
-.product-manage_wrap .form-field input:focus,
-.product-manage_wrap .form-field select:focus,
-.product-manage_wrap .form-field textarea:focus {
+.form-field input:focus,
+.form-field select:focus,
+.form-field textarea:focus {
   outline: none;
   border-color: #EB9666;
-  box-shadow: 0 0 0 2px #fef1ea;
+  box-shadow: 0 0 0 2px rgba(235, 150, 102, 0.2);
 }
 
-.product-manage_wrap .form-field textarea {
+.form-field textarea {
   resize: vertical;
 }
 
-.product-manage_wrap .form-row {
-  display: flex;
-  gap: 20px;
-}
-
-.product-manage_wrap .form-row .form-field {
-  flex: 1;
-}
-
 /* 에러 */
-.product-manage_wrap .error {
+.error {
   border-color: #ef4444 !important;
 }
 
-.product-manage_wrap .error-message {
+.error-message {
   color: #ef4444;
   font-size: 12px;
   margin-top: 4px;
 }
 
-/* 슬롯 */
-.product-manage_wrap .slot-settings-section .section-title {
+/* row */
+.form-row {
+  display: flex;
+  gap: 20px;
+}
+.form-row .form-field {
+  flex: 1;
+}
+
+/* 슬롯 섹션 */
+.slot-settings-section .section-title {
   font-size: 16px;
   font-weight: 700;
   margin-bottom: 14px;
@@ -116,81 +128,151 @@
   color: #E05353;
 }
 
-.product-manage_wrap .date-selection-row {
+.date-selection-row {
   display: flex;
   gap: 20px;
   margin-bottom: 12px;
 }
 
-.product-manage_wrap .date-selection-row input[type="date"] {
+.date-selection-row input[type="date"] {
   flex: 1;
 }
 
-.product-manage_wrap .time-selection {
+.time-selection {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
   margin-top: 8px;
 }
 
-.product-manage_wrap .time-option {
+.time-option {
   padding: 6px 12px;
   border: 1px solid #e5e7eb;
   border-radius: 20px;
   background: #fff;
   cursor: pointer;
   font-size: 13px;
-  transition: all .15s;
+  transition: all 0.15s;
 }
 
-.product-manage_wrap .time-option:hover {
-  background: #fef1ea;
+.time-option:hover {
+  background: #fff6f2;
+  border-color: #EB9666;
 }
 
-.product-manage_wrap .time-option.selected {
+.time-option.selected {
   background: #EB9666;
   color: #fff;
   border-color: #EB9666;
 }
 
-.product-manage_wrap .time-option.disabled {
+.time-option.disabled {
   opacity: 0.4;
   cursor: not-allowed;
 }
 
+.selected-times-summary {
+  margin-top: 10px;
+  font-size: 13px;
+  color: #555;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* capacity */
+.capacity-input-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.capacity-input {
+  flex: 0 0 100px;
+}
+
+.capacity-label {
+  font-size: 14px;
+  color: #555;
+}
+
+/* 체크박스 */
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  color: #444;
+}
+
+/* 모든 체크박스에 메인컬러로 적용시킴 */
+.product-register_wrap input[type="checkbox"] {
+  accent-color: #EB9666; 
+}
+
+/* 종일상품 메인컬러로 하고, 호버하면 변경되게 */
+.product-register_wrap .all-day-label .checkbox-text {
+  color: #EB9666;
+}
+
+.product-register_wrap input[name="isAllDay"]:checked + .checkbox-text {
+  color: #EB9666;
+  font-weight: 700;
+}
+
+/* 등록과 동시 활성화 << 메인컬러로 하고, 호버하면 변경되게 */
+.product-register_wrap .checkbox-label .checkbox-text {
+  color: #666;
+}
+
+.product-register_wrap input[name="isActive"]:checked + .checkbox-text {
+  color: #EB9666;  
+  font-weight: 700;
+}
+
 /* 버튼 */
-.product-manage_wrap .form-actions {
+.form-actions {
   display: flex;
   justify-content: flex-end;
   gap: 10px;
   margin-top: 12px;
 }
 
-.product-manage_wrap .btn-submit {
-  background: #EB9666;
+.btn-submit {
+  background: linear-gradient(135deg, #EB9666, #E05353);
   color: #fff;
   padding: 10px 18px;
   border-radius: 8px;
   border: none;
   font-weight: 700;
   cursor: pointer;
-  transition: background .2s;
+  transition: background 0.2s;
 }
 
-.product-manage_wrap .btn-submit:hover {
-  background: #E05353;
+.btn-submit:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(224, 83, 83, 0.25);
 }
 
-.product-manage_wrap .btn-cancel {
+.btn-cancel {
   background: #f1f3f5;
   color: #444;
   padding: 10px 16px;
   border-radius: 8px;
   border: none;
   cursor: pointer;
-  transition: background .2s;
+  transition: background 0.2s;
 }
 
-.product-manage_wrap .btn-cancel:hover {
+.btn-cancel:hover {
   background: #e2e6ea;
+}
+
+/* 로딩 */
+.loading-text {
+  text-align: center;
+  padding: 40px;
+  font-size: 15px;
+  color: #555;
 }

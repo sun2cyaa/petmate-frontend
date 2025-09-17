@@ -1,8 +1,7 @@
 // product/ProductEditPage.jsx
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import "./ProductPage.css";
-import "./ProductPageSlotStyles.css";
+import "./ProductManagePage.css";
 import {
   getProduct,
   updateProduct,

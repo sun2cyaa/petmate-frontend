@@ -1,9 +1,13 @@
-// src/pages/petowner/BecomePetOwnerPage.jsx
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./PetOwnerSignupPage.css";
 import { apiRequest, fetchMe } from "../../../services/api";
 import { useAuth } from "../../../contexts/AuthContext";
+import { motion } from "framer-motion";
+import * as Dialog from "@radix-ui/react-dialog";
+import Lottie from "lottie-react";
+import successAnim from "../../../assets/lottie/success.json";
+
 
 export default function PetOwnerSignupPage() {
   const nav = useNavigate();
@@ -228,24 +232,48 @@ export default function PetOwnerSignupPage() {
         </div>
       </form>
 
-      {doneOpen && (
-        <div className="modal-backdrop" onClick={() => setDoneOpen(false)}>
-          <div className="modal" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-icon">🎉</div>
-            <h2>축하합니다!</h2>
-            <p>반려인 등록이 완료되었습니다.</p>
-            <p className="modal-subtitle">펫을 등록하시겠습니까?</p>
-            <div className="modal-actions">
-              <button className="btn-primary" onClick={() => nav("/pets", { replace: true })}>
-                펫 등록하기
-              </button>
-              <button className="btn-secondary" onClick={() => nav("/home", { replace: true })}>
-                건너뛰기
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* ✅ Radix Dialog 모달 */}
+      <Dialog.Root open={doneOpen} onOpenChange={setDoneOpen}>
+        <Dialog.Portal>
+          <Dialog.Overlay className="radix-overlay" />
+          <Dialog.Content className="radix-content">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              transition={{ duration: 0.25 }}
+            >
+              <div className="modal-icon">
+                <Lottie
+                  animationData={successAnim}
+                  loop={false}
+                  speed={1.5}
+                  style={{ width: 200, height: 200, margin: "0 auto" }}
+                />
+              </div>
+              <Dialog.Title className="modal-title">축하합니다!</Dialog.Title>
+              <Dialog.Description className="modal-desc">
+                반려인 등록이 완료되었습니다. <br />
+                펫을 등록하시겠습니까?
+              </Dialog.Description>
+
+              <div className="modal-actions">
+                <button
+                  className="btn-primary"
+                  onClick={() => nav("/pets", { replace: true })}
+                >
+                  펫 등록하기
+                </button>
+                <button
+                  className="btn-secondary"
+                  onClick={() => nav("/home", { replace: true })}
+                >
+                  건너뛰기
+                </button>
+              </div>
+            </motion.div>
+          </Dialog.Content>
+        </Dialog.Portal>
+      </Dialog.Root>
     </article>
   );
 }
