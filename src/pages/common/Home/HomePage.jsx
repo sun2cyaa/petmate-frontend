@@ -497,7 +497,7 @@ const HomePage = ({ isLogined }) => {
               <div className="review-card">
                 <div className="review-header">
                   <img src={review.img} alt={review.name} className="reviewer-img" />
-                  <div>
+                  <div className="review-info">
                     <h4>{review.name}</h4>
                     <span className="review-meta">
                       {review.petType} · {review.date}
