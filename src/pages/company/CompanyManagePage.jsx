@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import "./CompanyManagePage.css";
 import { Plus, MapPin, Phone, Clock, Edit, Trash2 } from "lucide-react";
 import { getMyCompanies, deleteCompany } from "../../services/companyService";
+import Lottie from "lottie-react";
+import companyAnim from "../../assets/lottie/company.json";
 
 function CompanyManagePage() {
     const navigate = useNavigate();
@@ -214,10 +216,22 @@ function CompanyManagePage() {
             <div className="company_manage_main">
                 {/* 헤더 섹션 */}
                 <div className="section-header">
-                    <div className="header_info">
-                        <h2 className="section-title">업체 목록</h2>
-                        <p className="section-subtitle">펫케어 업체 정보를 관리하세요</p>
+                    {/* 🔹 Lottie 추가 영역 */}
+                    <div className="header_left">
+                        <div className="lottie-box">
+                            <Lottie 
+                                animationData={companyAnim} 
+                                loop 
+                                speed={1.2}
+                                style={{ width: 200, height: 200 }}
+                            />
+                        </div>
+                        <div className="header_info">
+                            <h2 className="section-title">업체 목록</h2>
+                            <p className="section-subtitle">펫케어 업체 정보를 관리하세요</p>
+                        </div>
                     </div>
+
                     <button className="add-button" onClick={handleAddCompany}>
                         <Plus size={16} />
                         업체 등록
