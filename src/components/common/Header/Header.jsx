@@ -2,10 +2,11 @@
 import { Link } from "react-router-dom";
 import "./Header.css";
 import { useRef, useState, useEffect } from "react";
-import { useAuth } from "../../../contexts/AuthContext"; // 컨텍스트 직접 사
+import { useAuth } from "../../../contexts/AuthContext";
 import {
   MapPin, Dog, User, Home, LogOut,
-  Map, CreditCard, Star, CalendarCheck, Building2, Users, Edit, Heart, Package
+  Map, CreditCard, Star, CalendarCheck,
+  Building2, Users, Edit, Heart, Package
 } from "lucide-react";
 
 function Header() {
@@ -15,17 +16,18 @@ function Header() {
 
   const normalizeRole = (val) => {
     let r = String(val ?? "1").trim();
-    if ((r.startsWith('"') && r.endsWith('"')) || (r.startsWith("'") && r.endsWith("'"))) r = r.slice(1, -1).trim();
-    return ["1","2","3","4","9"].includes(r) ? r : "1";
+    if ((r.startsWith('"') && r.endsWith('"')) || (r.startsWith("'") && r.endsWith("'"))) {
+      r = r.slice(1, -1).trim();
+    }
+    return ["1", "2", "3", "4", "9"].includes(r) ? r : "1";
   };
 
   const role = normalizeRole(user?.role);
   const isPetOwner = role === "2" || role === "4";
-  // const isPetmate  = role === "3" || role === "4";
-   const isPetmate  = "3";
+  const isPetmate = role === "3" || role === "4";
 
   const handleLogout = async () => {
-    await logout(); // 컨텍스트가 토큰·상태 정리까지 수행
+    await logout();
   };
 
   const displayName =
@@ -35,12 +37,20 @@ function Header() {
     user?.profileImage || user?.picture || user?.avatarUrl || null;
 
   const onUserEnter = () => {
-    if (closeTimer.current) { clearTimeout(closeTimer.current); closeTimer.current = null; }
+    if (closeTimer.current) {
+      clearTimeout(closeTimer.current);
+      closeTimer.current = null;
+    }
     setUserOpen(true);
   };
+
   const onUserLeave = () => {
-    closeTimer.current = setTimeout(() => { setUserOpen(false); closeTimer.current = null; }, 120);
+    closeTimer.current = setTimeout(() => {
+      setUserOpen(false);
+      closeTimer.current = null;
+    }, 120);
   };
+
   const onUserToggleClick = () => setUserOpen((v) => !v);
 
   useEffect(() => {
@@ -100,23 +110,23 @@ function Header() {
                   <Home size={16} className="menu-icon" /> 주소 관리
                 </Link>
 
-                {/* {isPetOwner && ( */}
+                {isPetOwner && (
                   <>
                     <div className="user-menu_divider"></div>
                     <Link to="/petowner/profile" className="user-menu_item">
                       <Edit size={16} className="menu-icon" /> 반려인 정보
                     </Link>
                   </>
-                {/* )} */}
+                )}
 
-                {/* {isPetmate && ( */}
+                {isPetmate && (
                   <>
                     <div className="user-menu_divider"></div>
                     <Link to="/petmate-profile" className="user-menu_item">
                       <Edit size={16} className="menu-icon" /> 펫메이트 정보 수정
                     </Link>
                   </>
-                {/* )} */}
+                )}
 
                 <div className="user-menu_divider"></div>
                 <button className="user-menu_item user-menu_logout" onClick={handleLogout}>
@@ -144,54 +154,53 @@ function Header() {
               <Link to="/booking"><CalendarCheck size={16} className="nav-icon" /> 예약내역</Link>
 
               {/* 업체 관리 */}
-            <div className="header_dropdown">
-              <span className="nav-link"><Building2 size={16} className="nav-icon" /> 업체 관리</span>
-              <div className="header_company_manage_menu">
-                <Link to="/companymanage" className="header_company_manage_item">업체 목록</Link>
-                <Link to="/companyregister" className="header_company_manage_item">업체 등록</Link>
+              <div className="header_dropdown">
+                <span className="nav-link"><Building2 size={16} className="nav-icon" /> 업체 관리</span>
+                <div className="header_company_manage_menu">
+                  <Link to="/companymanage" className="header_company_manage_item">업체 목록</Link>
+                  <Link to="/companyregister" className="header_company_manage_item">업체 등록</Link>
+                </div>
               </div>
-            </div>
 
               {/* 상품 관리 */}
-            <div className="header_dropdown">
-              <span className="nav-link"><Package size={16} className="nav-icon" /> 상품 관리</span>
-              <div className="header_product_manage_menu">
-                <Link to="/product" className="header_product_manage_item">상품 목록</Link>
-                <Link to="/product/register" className="header_product_manage_item">상품 등록</Link>
+              <div className="header_dropdown">
+                <span className="nav-link"><Package size={16} className="nav-icon" /> 상품 관리</span>
+                <div className="header_product_manage_menu">
+                  <Link to="/product" className="header_product_manage_item">상품 목록</Link>
+                  <Link to="/product/register" className="header_product_manage_item">상품 등록</Link>
+                </div>
               </div>
-            </div>
 
-              {/* {isPetmate && ( */}
+              {isPetmate && (
                 <div className="header_dropdown">
                   <span className="nav-link petmate-nav"><Users size={16} className="nav-icon" /> 펫메이트</span>
                   <div className="header_petmate_menu">
                     <Link to="/petmate/booking" className="header_petmate_item">예약관리</Link>
                     <Link to="/petmate/service" className="header_petmate_item">서비스관리</Link>
                     <Link to="/petmate/profile" className="header_petmate_item">펫메이트 정보</Link>
-                    
                   </div>
                 </div>
-              {/* )} */}
+              )}
 
-              {/* {isPetOwner ? ( */}
+              {isPetOwner ? (
                 <Link to="/petowner/profile" className="nav-link petowner-edit">
                   <Heart size={16} className="nav-icon" /> 반려인 정보
                 </Link>
-              {/* ) : ( */}
+              ) : (
                 <Link to="/become-petowner" className="nav-link become-petowner">
                   <Heart size={16} className="nav-icon" /> 반려인 되기
                 </Link>
-              {/* )} */}
+              )}
 
-              {/* {isPetmate ? ( */}
+              {isPetmate ? (
                 <Link to="/petmate-profile" className="nav-link petmate-edit">
                   <Edit size={16} className="nav-icon" /> 펫메이트 정보 수정
                 </Link>
-              {/* ) : ( */}
+              ) : (
                 <Link to="/become-petmate" className="nav-link become-petmate">
                   <Users size={16} className="nav-icon" /> 펫메이트 되기
                 </Link>
-              {/* )} */}
+              )}
             </>
           )}
         </nav>
