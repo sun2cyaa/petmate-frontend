@@ -1,9 +1,17 @@
+/* 전역 스타일 리셋 */
+* {
+  box-sizing: border-box;
+}
+
 .map_wrap {
   display: flex;
   flex-direction: column;
-  width: 100%;
-  height: calc(100vh - 80px);
+  width: 100vw;
+  height: 100vh;
   background: #fff;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
 }
 
 /* 상단 바 */
@@ -62,7 +70,7 @@
 }
 .search-btn:hover {
   background: linear-gradient(135deg, #E05353, #EB9666);
-  box-shadow: 0 4px 12px rgba(224,83,83,0.35); 
+  box-shadow: 0 4px 12px rgba(224,83,83,0.35);
 }
 
 /* 서비스 필터 버튼 */
@@ -102,7 +110,9 @@
 .map_content {
   display: flex;
   flex: 1;
-  min-height: 0; 
+  min-height: 0;
+  position: relative;
+  overflow: hidden;
 }
 
 /* 사이드바 */
@@ -111,6 +121,8 @@
   padding: 20px;
   border-right: 1px solid #eee;
   background: #fff;
+  overflow-y: auto;
+  flex-shrink: 0;
 }
 .sidebar h3 {
   margin-bottom: 16px;
@@ -149,6 +161,11 @@
   box-shadow: 0 6px 14px rgba(235,150,102,0.15);
   transform: translateY(-2px);
 }
+.list-item.selected {
+  background: #fff8f3;
+  border-color: #eb9666;
+  box-shadow: 0 4px 12px rgba(235,150,102,0.25);
+}
 .list-item span {
   font-size: 14px;
   color: #eb9666;
@@ -158,8 +175,16 @@
 /* 지도 */
 .map_area {
   flex: 1;
-  margin-right: 20px;
-  height: 80%;
-  min-height: 500px;
   position: relative;
+  overflow: hidden;
+  padding-bottom: 20px;
 }
+
+/* 카카오맵 컨테이너 */
+#map {
+  width: 100%;
+  height: 90%;
+  border: none;
+  outline: none;
+}
+

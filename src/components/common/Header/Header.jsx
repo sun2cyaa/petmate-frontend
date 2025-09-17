@@ -2,7 +2,7 @@
 import { Link } from "react-router-dom";
 import "./Header.css";
 import { useRef, useState, useEffect } from "react";
-import { useAuth } from "../../../contexts/AuthContext"; // 컨텍스트 직접 사
+import { useAuth } from "../../../contexts/AuthContext";
 import {
   MapPin,
   Dog,
@@ -41,7 +41,7 @@ function Header() {
   const isPetmate = "3";
 
   const handleLogout = async () => {
-    await logout(); // 컨텍스트가 토큰·상태 정리까지 수행
+    await logout();
   };
 
   const displayName =
@@ -57,12 +57,14 @@ function Header() {
     }
     setUserOpen(true);
   };
+
   const onUserLeave = () => {
     closeTimer.current = setTimeout(() => {
       setUserOpen(false);
       closeTimer.current = null;
     }, 120);
   };
+
   const onUserToggleClick = () => setUserOpen((v) => !v);
 
   useEffect(() => {

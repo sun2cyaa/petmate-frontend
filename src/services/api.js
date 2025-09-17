@@ -5,13 +5,14 @@ const API_BASE = process.env.REACT_APP_API_BASE_URL || "http://localhost:8090";
 
 const api = axios.create({
   baseURL: API_BASE,
-  withCredentials: true,   // 쿠키 사용 (refreshToken HttpOnly)
+  withCredentials: true,   // refreshToken HttpOnly 쿠키
   timeout: 10000,
 });
 
 // === 토큰 유틸 ===
 const getAccessToken = () => localStorage.getItem("accessToken") || "";
-const setAccessToken = (t) => (t ? localStorage.setItem("accessToken", t) : localStorage.removeItem("accessToken"));
+const setAccessToken = (t) =>
+  t ? localStorage.setItem("accessToken", t) : localStorage.removeItem("accessToken");
 
 export const getAuthHeaders = () => {
   const t = getAccessToken();
@@ -39,6 +40,25 @@ const tryRefresh = async () => {
     return null;
   }
 };
+
+// 인터셉터로 모든 요청/응답 로그
+api.interceptors.request.use((config) => {
+  console.log("[api] 요청:", config.method?.toUpperCase(), config.url, {
+    headers: config.headers,
+    data: config.data,
+  });
+  return config;
+});
+api.interceptors.response.use(
+  (res) => {
+    console.log("[api] 응답:", res.status, res.config.url, res.data);
+    return res;
+  },
+  (err) => {
+    console.warn("[api] 응답 에러:", err?.response?.status, err?.config?.url, err?.response?.data);
+    return Promise.reject(err);
+  }
+);
 
 // /auth/me
 export const fetchMe = async ({ silent = false } = {}) => {
@@ -69,12 +89,11 @@ export const fetchMe = async ({ silent = false } = {}) => {
   }
 };
 
-// 공통 래퍼들 (인터셉터 없이, 헤더는 호출부에서 넘기거나 자동으로 합침)
+// 공통 래퍼
 export const apiRequest = {
   get: async (url, config = {}) => {
     try {
-      const res = await api.get(url, { ...config, headers: { ...config.headers, ...getAuthHeaders() } });
-      return res;
+      return await api.get(url, { ...config, headers: { ...config.headers, ...getAuthHeaders() } });
     } catch (e) {
       if (e?.response?.status === 401) {
         console.log('🔄 GET 요청 401 에러, 토큰 갱신 시도:', url);
@@ -91,8 +110,7 @@ export const apiRequest = {
   },
   post: async (url, data, config = {}) => {
     try {
-      const res = await api.post(url, data, { ...config, headers: { ...config.headers, ...getAuthHeaders() } });
-      return res;
+      return await api.post(url, data, { ...config, headers: { ...config.headers, ...getAuthHeaders() } });
     } catch (e) {
       if (e?.response?.status === 401) {
         console.log('🔄 POST 요청 401 에러, 토큰 갱신 시도:', url);
@@ -109,8 +127,7 @@ export const apiRequest = {
   },
   put: async (url, data, config = {}) => {
     try {
-      const res = await api.put(url, data, { ...config, headers: { ...config.headers, ...getAuthHeaders() } });
-      return res;
+      return await api.put(url, data, { ...config, headers: { ...config.headers, ...getAuthHeaders() } });
     } catch (e) {
       if (e?.response?.status === 401) {
         console.log('🔄 PUT 요청 401 에러, 토큰 갱신 시도:', url);
@@ -127,8 +144,7 @@ export const apiRequest = {
   },
   delete: async (url, config = {}) => {
     try {
-      const res = await api.delete(url, { ...config, headers: { ...config.headers, ...getAuthHeaders() } });
-      return res;
+      return await api.delete(url, { ...config, headers: { ...config.headers, ...getAuthHeaders() } });
     } catch (e) {
       if (e?.response?.status === 401) {
         console.log('🔄 DELETE 요청 401 에러, 토큰 갱신 시도:', url);
