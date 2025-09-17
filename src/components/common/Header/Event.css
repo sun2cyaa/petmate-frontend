@@ -1,0 +1,31 @@
+.event-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  font-family: 'Noto Sans KR', sans-serif;
+}
+
+.event-title {
+  font-size: 28px;
+  font-weight: 800;
+  color: #E05353;
+  margin-bottom: 24px;
+}
+
+.event-list {
+  display: grid;
+  gap: 24px;
+}
+
+.event-card {
+  padding: 24px;
+  border-radius: 16px;
+  background: linear-gradient(180deg, #fff 0%, #fffaf7 100%);
+  border: 1px solid #eb9666;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.event-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+}
