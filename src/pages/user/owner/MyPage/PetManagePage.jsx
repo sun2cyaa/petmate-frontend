@@ -3,6 +3,8 @@ import { Plus, Edit2, Trash2, Calendar, Heart } from 'lucide-react';
 import './PetManagePage.css';
 import { useAuth } from '../../../../contexts/AuthContext';
 import { apiRequest } from '../../../../services/api';
+import Lottie from "lottie-react";
+import petAnim from "../../../../assets/lottie/pet.json";
 
 // 품종 id → name 변환
 async function resolveBreedName(breedId, species) {
@@ -142,7 +144,7 @@ const PetManagePage = () => {
       }[species] || species
     );
 
-  const getGenderText = (gender) => (gender === 'M' ? '남성' : '여성');
+  const getGenderText = (gender) => (gender === 'M' ? '수컷' : '암컷');
   const formatDate = (s) => new Date(s).toLocaleDateString('ko-KR');
 
   if (!isLogined) {
@@ -165,20 +167,30 @@ const PetManagePage = () => {
     <div className="pet-manage-page">
       <div className="pet-manage-container">
         <div className="pet-manage-header">
-          <div className="pet-manage-header-info">
-            <h1 className="pet-manage-title">내 반려동물 관리</h1>
-            <p className="pet-manage-subtitle">
-              등록된 반려동물: {pets.length}마리
-            </p>
-          </div>
-          <button
-            onClick={() => setShowAddModal(true)}
-            className="pet-manage-add-btn"
-          >
-            <Plus size={20} />
-            반려동물 등록
-          </button>
+      <div className="pet-manage-header-wrapper">
+        {/* Lottie 애니메이션 */}
+    <div className="pet-manage-header-lottie">
+      <Lottie animationData={petAnim} loop={true} style={{ width: 300, height: 300 }} />
+    </div>
+      </div>
+        <div className="pet-manage-header-info">
+          <h1 className="pet-manage-title">내 반려동물 관리</h1>
+          <p className="pet-manage-subtitle">
+            등록된 반려동물: {pets.length}마리
+          </p>
         </div>
+
+    
+
+  {/* 버튼을 헤더 안에 둠 */}
+    <button
+      onClick={() => setShowAddModal(true)}
+      className="pet-manage-add-btn"
+    >
+      <Plus size={20} />
+      반려동물 등록
+    </button>
+    </div>
 
         {pets.length === 0 ? (
           <div className="pet-manage-empty">
@@ -557,8 +569,8 @@ const PetModal = ({ pet, breeds, loading, onSave, onClose }) => {
                 onChange={handleChange}
                 className="pet-form-select"
               >
-                <option value="M">남성</option>
-                <option value="F">여성</option>
+                <option value="M">수컷</option>
+                <option value="F">암컷</option>
               </select>
             </div>
 
