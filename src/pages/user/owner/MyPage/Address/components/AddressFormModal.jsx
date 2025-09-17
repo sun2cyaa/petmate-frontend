@@ -13,7 +13,7 @@ import MapModal from "./MapModal";
 
 const addressTypes = [
   { type: "home", name: "집", icon: Home, color: "" },
-  { type: "office", name: "회사", icon: Building2, color: "" },
+  { type: "work", name: "회사", icon: Building2, color: "" },
   { type: "etc", name: "기타", icon: MapPinned, color: "" },
 ];
 
@@ -47,8 +47,11 @@ export default function AddressFormModal({
 
     if (address && isEditMode) {
       // 수정 모드: 전달받은 주소로 세팅
+      // 한국어 타입을 영어 타입으로 변환
+      const convertedType = address.type === "집" ? "home" :
+                           address.type === "회사" ? "work" : "etc";
       setFormData({
-        type: address.type,
+        type: convertedType,
         address: address.address,
         detail: address.detail,
         alias: address.alias,

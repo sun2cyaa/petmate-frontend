@@ -127,7 +127,7 @@
 
 /* 드롭존 */
 #petmate-container .drop-zone {
-  border: 2px dashed #FFD4C2;
+  border: 2px dashed #eb9666;
   border-radius: 16px;
   padding: 32px;
   text-align: center;
@@ -135,6 +135,39 @@
   background: #FFF9F6;
   transition: all 0.3s ease;
 }
+
+/* 프로필/자격증 업로드 박스 전용 */
+#petmate-container .image-upload-viewer .simple-upload-area {
+  border: 2px dashed #EB9666;   /* 기본 EB9666 */
+  border-radius: 16px;
+  padding: 32px;
+  text-align: center;
+  cursor: pointer;
+  background: #FFF9F6;          /* 은은한 배경 */
+  transition: all 0.3s ease;
+}
+
+/* hover / drag-over 효과 */
+#petmate-container .image-upload-viewer .simple-upload-area:hover,
+#petmate-container .image-upload-viewer .simple-upload-area.drag-over {
+  border-color: #E05353;        /* hover 시 진한 컬러 */
+  background: #FFF3F0;          /* hover 시 조금 더 강조 */
+  transform: scale(1.02);
+}
+
+/* 안쪽 아이콘/텍스트도 테마 컬러 */
+#petmate-container .image-upload-viewer .simple-upload-area .upload-icon {
+  font-size: 40px;
+  color: #EB9666;
+  margin-bottom: 8px;
+}
+
+#petmate-container .image-upload-viewer .simple-upload-area p {
+  font-size: 16px;
+  font-weight: 500;
+  color: #444;
+}
+
 
 #petmate-container .drop-zone:hover,
 #petmate-container .drop-zone.drag-over {
@@ -280,7 +313,7 @@
   background: linear-gradient(135deg, #EB9666, #E05353);
   color: #fff;
   box-shadow: 0 6px 18px rgba(235,150,102,0.3);
-  margin: 0 20px 0px 30px;
+  margin: 0 20px 0px 0px;
 }
 
 #petmate-container .btn-primary:hover {

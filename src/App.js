@@ -29,6 +29,7 @@ import "./styles/App.css";
 import Header from "./components/common/Header/Header";
 
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
+import BookingPage from "./pages/booking/BookingPage";
 
 function AppRoutes() {
   const location = useLocation();
@@ -65,11 +66,15 @@ function AppRoutes() {
           {/* 반려인/펫메이트 */}
           <Route path="/become-petowner" element={<PetOwnerSignupPage />} />
           <Route path="/become-petmate" element={<PetMateSignupPage />} />
-          <Route path="/booking" element={<BookingManagePage />} />
+          <Route path="/petmate/booking" element={<BookingManagePage />} />
+
+          {/* 예약 */}
+          <Route path="/booking" element={<BookingPage />} />
 
           {/* 업체 */}
           <Route path="/companymanage" element={<CompanyManagePage />} />
           <Route path="/companyregister" element={<CompanyRegisterPage />} />
+          <Route path="/companyregister/:id" element={<CompanyRegisterPage />} />
           <Route path="/companyform" element={<CompanyRegisterPage />} />
           <Route path="/companyform/:id" element={<CompanyRegisterPage />} />
 
