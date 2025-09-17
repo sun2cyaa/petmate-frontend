@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import "./ProductManagePage.css";
 import { useNavigate } from "react-router-dom";
+import Lottie from "lottie-react";
+import productAnim from "../../assets/lottie/product.json";
 import {
   Package,
   Edit3,
@@ -198,9 +200,14 @@ const ProductManagePage = () => {
     <div className="product-manage_wrap">
       <div className="header">
         <div className="header-title">
-          <div className="header-icon">
-            <Package size={28} />
-          </div>
+          <div className="header-lottie">
+        <Lottie
+          animationData={productAnim}
+          loop
+          speed={1.2}
+          style={{ width: 200, height: 200 }}
+        />
+      </div>
           <h2>상품 관리</h2>
         </div>
         <p>고객에게 제공할 서비스 상품을 관리하세요</p>
