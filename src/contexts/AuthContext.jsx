@@ -7,83 +7,112 @@ const AuthCtx = createContext(null);
 export const useAuth = () => useContext(AuthCtx);
 
 const normalizeRole = (v) => {
-  let r = String(v ?? "1").trim();
-  if ((r.startsWith('"') && r.endsWith('"')) || (r.startsWith("'") && r.endsWith("'"))) r = r.slice(1, -1).trim();
-  return ["1","2","3","4","9"].includes(r) ? r : "1";
+    let r = String(v ?? "1").trim();
+    if ((r.startsWith('"') && r.endsWith('"')) || (r.startsWith("'") && r.endsWith("'"))) r = r.slice(1, -1).trim();
+    return ["1", "2", "3", "4", "9"].includes(r) ? r : "1";
 };
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);
-  const [isLogined, setIsLogined] = useState(false);
+    const [user, setUser] = useState(null);
+    const [isLogined, setIsLogined] = useState(false);
 
-  // 앱 시작 시 토큰 있으면 1회만 me 호출
-  useEffect(() => {
-    const t = localStorage.getItem("accessToken");
-    
-    if (!t) return;
-    (async () => {
-      try {
-        const me = await fetchMe({ silent: true });
-        if (me) { setUser({ ...me, role: normalizeRole(me.role) }); setIsLogined(true); }
-        else { setUser(null); setIsLogined(false); }
-      } catch {
-        setUser(null); setIsLogined(false);
-      }
-    })();
-  }, []);
+    // 앱 시작 시 토큰 있으면 1회만 me 호출
+    useEffect(() => {
+        const t = localStorage.getItem("accessToken");
+        if (!t) return;
+        (async () => {
+            try {
+                const me = await fetchMe({ silent: true });
+                if (me) {
+                    setUser({
+                        ...me,
+                        role: normalizeRole(me.role)
+                    });
+                    setIsLogined(true);
+                } else {
+                    setUser(null);
+                    setIsLogined(false);
+                }
+            } catch {
+                setUser(null);
+                setIsLogined(false);
+            }
+        })();
+    }, []);
 
-  // 다른 탭에서의 로그인/로그아웃 상태 변경 감지 (실시간 동기화)
-  useEffect(() => {
-    const handleStorageChange = (e) => {
-      if (e.key === 'accessToken') {
-        if (e.newValue && e.newValue !== e.oldValue) {
-          // 다른 탭에서 로그인됨
-          console.log('🔄 다른 탭에서 로그인 감지, 사용자 정보 동기화 중...');
-          hydrateMe();
-        } else if (!e.newValue && e.oldValue) {
-          // 다른 탭에서 로그아웃됨
-          console.log('🚪 다른 탭에서 로그아웃 감지, 현재 탭도 로그아웃 처리');
-          setUser(null);
-          setIsLogined(false);
+    // 다른 탭에서의 로그인/로그아웃 상태 변경 감지 (실시간 동기화)
+    useEffect(() => {
+        const handleStorageChange = (e) => {
+            if (e.key === 'accessToken') {
+                if (e.newValue && e.newValue !== e.oldValue) {
+                    // 다른 탭에서 로그인됨
+                    console.log('🔄 다른 탭에서 로그인 감지, 사용자 정보 동기화 중...');
+                    hydrateMe();
+                } else if (!e.newValue && e.oldValue) {
+                    // 다른 탭에서 로그아웃됨
+                    console.log('🚪 다른 탭에서 로그아웃 감지, 현재 탭도 로그아웃 처리');
+                    setUser(null);
+                    setIsLogined(false);
+                }
+            }
+        };
+
+        window.addEventListener('storage', handleStorageChange);
+        return () => window.removeEventListener('storage', handleStorageChange);
+    }, []);
+
+    const login = async (credentials) => {
+        const res = await apiSignin(credentials.id, credentials.pw);
+        const me = await fetchMe({ silent: true });       // 로그인 직후 1회
+        if (me) {
+            setUser({
+                ...me,
+                role: normalizeRole(me.role)
+            });
+            setIsLogined(true);
         }
-      }
+        return res;
     };
 
-    window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
-  }, []);
+    const hydrateMe = async () => {                     // 소셜 리다이렉트 후 등
+        try {
+            const me = await fetchMe({ silent: true });
+            if (me) {
+                setUser({
+                    ...me,
+                    role: normalizeRole(me.role)
+                });
+                setIsLogined(true);
+            } else {
+                setUser(null);
+                setIsLogined(false);
+            }
+        } catch {
+            setUser(null);
+            setIsLogined(false);
+        }
+    };
 
-  const login = async (credentials) => {
-    const res = await apiSignin(credentials.id, credentials.pw);
-    const me = await fetchMe({ silent: true });       // 로그인 직후 1회
-    if (me) { setUser({ ...me, role: normalizeRole(me.role) }); setIsLogined(true); }
-    return res;
-  };
+    const logout = async () => {
+        try {
+            await apiSignout();
+        } finally {
+            console.log('🚪 로그아웃 처리 중... (다른 탭에도 동기화됨)');
+            localStorage.removeItem("accessToken");
+            setUser(null);
+            setIsLogined(false);
+        }
+    };
 
-  const hydrateMe = async () => {                     // 소셜 리다이렉트 후 등
-    try {
-      const me = await fetchMe({ silent: true });
-      if (me) { setUser({ ...me, role: normalizeRole(me.role) }); setIsLogined(true); }
-      else { setUser(null); setIsLogined(false); }
-    } catch {
-      setUser(null); setIsLogined(false);
-    }
-  };
+    const value = useMemo(() => ({
+        user,
+        isLogined,
+        setIsLogined,
+        setUser,
+        login,
+        logout,
+        hydrateMe
+    }), [user, isLogined]);
 
-  const logout = async () => {
-    try {
-      await apiSignout();
-    } finally {
-      console.log('🚪 로그아웃 처리 중... (다른 탭에도 동기화됨)');
-      localStorage.removeItem("accessToken");
-      setUser(null);
-      setIsLogined(false);
-    }
-  };
-
-  const value = useMemo(() => ({
-    user, isLogined, setIsLogined, setUser, login, logout, hydrateMe
-  }), [user, isLogined]);
-
-  return <AuthCtx.Provider value={value}>{children}</AuthCtx.Provider>;
+    return <AuthCtx.Provider value={value}>{children}</AuthCtx.Provider>;
 }
