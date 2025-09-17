@@ -756,10 +756,19 @@
     border-color: #EB9666 !important;
 }
 
+.image-upload-viewer.profile-upload .simple-upload-area:hover {
+    border-color: #E05353 !important;
+}
+
 /* 자격증 업로드 박스 */
 .image-upload-viewer.cert-upload .simple-upload-area {
     border-color: #EB9666 !important;
 }
+
+.image-upload-viewer.cert-upload .simple-upload-area:hover {
+    border-color: #E05353 !important;
+}
+
 
 
 .simple-upload-area.empty {

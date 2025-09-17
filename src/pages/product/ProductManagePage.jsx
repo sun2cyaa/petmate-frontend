@@ -1,7 +1,14 @@
 import React, { useEffect, useState } from "react";
-import "./ProductPage.css";
-import "./ProductPageSlotStyles.css";
+import "./ProductManagePage.css";
 import { useNavigate } from "react-router-dom";
+import {
+  Package,
+  Edit3,
+  Trash2,
+  Clock3,
+  CalendarDays,
+  Moon,
+} from "lucide-react";
 import {
   deleteProduct,
   getCompanies,
@@ -11,16 +18,22 @@ import {
 import { getAvailableSlots } from "../../services/product/availabilitySlotService";
 
 // 서비스 타입 코드를 이름으로 변환하는 함수
-  const getServiceTypeName = (serviceType) => {
-    switch (serviceType) {
-      case "C": return "돌봄";
-      case "W": return "산책";
-      case "G": return "미용";
-      case "M": return "병원";
-      case "E": return "기타";
-      default: return serviceType || "알 수 없음";
-    }
-  };
+const getServiceTypeName = (serviceType) => {
+  switch (serviceType) {
+    case "C":
+      return "돌봄";
+    case "W":
+      return "산책";
+    case "G":
+      return "미용";
+    case "M":
+      return "병원";
+    case "E":
+      return "기타";
+    default:
+      return serviceType || "알 수 없음";
+  }
+};
 
 const ProductManagePage = () => {
   const navigate = useNavigate();
@@ -67,10 +80,13 @@ const ProductManagePage = () => {
   // 슬롯 정보 조회 함수
   const loadProductSlots = async (productId) => {
     try {
-      const slots = await getAvailableSlots(productId, new Date().toISOString().split('T')[0]);
+      const slots = await getAvailableSlots(
+        productId,
+        new Date().toISOString().split("T")[0]
+      );
       return slots;
     } catch (error) {
-      console.error('슬롯 조회 실패:', error);
+      console.error("슬롯 조회 실패:", error);
       return [];
     }
   };
@@ -87,8 +103,11 @@ const ProductManagePage = () => {
       setProducts(productsData);
 
       // 각 상품의 슬롯 정보 조회
-      const slotsPromises = productsData.map(product =>
-        loadProductSlots(product.id).then(slots => ({ productId: product.id, slots }))
+      const slotsPromises = productsData.map((product) =>
+        loadProductSlots(product.id).then((slots) => ({
+          productId: product.id,
+          slots,
+        }))
       );
 
       const slotsResults = await Promise.all(slotsPromises);
@@ -97,7 +116,6 @@ const ProductManagePage = () => {
         slotsMap[productId] = slots;
       });
       setSlotsData(slotsMap);
-
     } catch (error) {
       console.error("상품 목록 조회에 실패하였습니다.", error);
     }
@@ -121,15 +139,13 @@ const ProductManagePage = () => {
   // 새로운 handleDeleteClick 함수 - 슬롯 정보 포함 확인
   const handleDeleteClick = async (productId) => {
     try {
-      // 1. 해당 상품의 슬롯 정보 확인 (현재 로드된 데이터 사용)
       const slots = slotsData[productId] || [];
-      const product = products.find(p => p.id === productId);
+      const product = products.find((p) => p.id === productId);
 
       let confirmMessage = `정말로 "${product.name}" 상품을 삭제하시겠습니까?`;
 
       if (slots.length > 0) {
-        // 예약된 슬롯 개수 계산 (booked > 0인 것들)
-        const bookedSlots = slots.filter(slot => slot.booked > 0).length;
+        const bookedSlots = slots.filter((slot) => slot.booked > 0).length;
 
         confirmMessage += `\n\n📅 슬롯 정보:`;
         confirmMessage += `\n• 총 등록된 슬롯: ${slots.length}개`;
@@ -146,15 +162,7 @@ const ProductManagePage = () => {
         confirmMessage += `\n\n등록된 슬롯이 없습니다.`;
       }
 
-      console.log('삭제 확인 정보:', {
-        productId,
-        productName: product.name,
-        totalSlots: slots.length,
-        bookedSlots: slots.filter(slot => slot.booked > 0).length
-      });
-
       if (window.confirm(confirmMessage)) {
-        // 기존 삭제 로직 실행
         await deleteProduct(productId);
         alert("상품과 관련 슬롯이 모두 삭제되었습니다.");
         loadProducts(); // 목록 새로고침
@@ -190,7 +198,9 @@ const ProductManagePage = () => {
     <div className="product-manage_wrap">
       <div className="header">
         <div className="header-title">
-          <div className="header-icon"></div>
+          <div className="header-icon">
+            <Package size={28} />
+          </div>
           <h2>상품 관리</h2>
         </div>
         <p>고객에게 제공할 서비스 상품을 관리하세요</p>
@@ -240,13 +250,12 @@ const ProductManagePage = () => {
         </button>
       </div>
 
-
-      {/* 개선된 서비스 섹션 */}
+      {/* 서비스 섹션 */}
       <div className="services-section">
         {products.map((product) => {
           const productSlots = slotsData[product.id] || [];
-          const todaySlots = productSlots.filter(slot =>
-            slot.slotDate === new Date().toISOString().split('T')[0]
+          const todaySlots = productSlots.filter(
+            (slot) => slot.slotDate === new Date().toISOString().split("T")[0]
           );
 
           return (
@@ -259,38 +268,32 @@ const ProductManagePage = () => {
               <div className="service-header">
                 <div className="service-title">
                   <span className="service-badge">
-                    {product.serviceTypeName || getServiceTypeName(product.serviceType)}
+                    {product.serviceTypeName ||
+                      getServiceTypeName(product.serviceType)}
                   </span>
                 </div>
               </div>
 
               <div className="service-info">
-                <div
-                  className="service-name"
-                  style={{
-                    fontWeight: "600",
-                    fontSize: "16px",
-                    marginBottom: "8px",
-                    color: "#333",
-                  }}
-                >
-                  {product.name}
-                </div>
+                <div className="service-name">{product.name}</div>
                 <div className="service-price">
                   <strong>가격: {formatPrice(product.price)}원</strong>
                 </div>
                 <div className="service-time">
-                  소요시간: {product.durationMin ? formatTime(product.durationMin) : "정보 없음"}
+                  소요시간:{" "}
+                  {product.durationMin
+                    ? formatTime(product.durationMin)
+                    : "정보 없음"}
                 </div>
                 <div className="service-description">
                   {product.introText || "설명이 없습니다."}
                 </div>
               </div>
 
-              {/* 개선된 이용 가능 시간 섹션 */}
+              {/* 이용 가능 시간 섹션 */}
               <div className="available-times-section">
                 <h4>
-                  <span className="section-icon">🕒</span>
+                  <Clock3 size={16} className="section-icon" />
                   오늘 이용 가능 시간
                 </h4>
                 {todaySlots.length > 0 ? (
@@ -298,7 +301,7 @@ const ProductManagePage = () => {
                     {todaySlots.map((slot, index) => (
                       <div key={index} className="time-slot">
                         <span className="time-text">
-                          {slot.startDt.split('T')[1].substring(0, 5)}
+                          {slot.startDt.split("T")[1].substring(0, 5)}
                         </span>
                         <span className="capacity-badge">
                           {slot.capacity - slot.booked}자리
@@ -308,22 +311,23 @@ const ProductManagePage = () => {
                   </div>
                 ) : (
                   <div className="no-times-available">
-                    <span className="no-times-icon">😴</span>
+                    <Moon size={16} className="no-times-icon" />
                     오늘은 예약 불가
                   </div>
                 )}
 
                 {productSlots.length > todaySlots.length && (
                   <div className="more-slots-info">
-                    <span className="info-icon">📅</span>
+                    <CalendarDays size={16} className="info-icon" />
                     총 {productSlots.length}개 슬롯 등록됨
                   </div>
                 )}
               </div>
 
               <div className="service-meta">
-                등록일: {new Date(product.createdAt).toLocaleDateString("ko-KR")} |
-                업체: {product.companyName}
+                등록일:{" "}
+                {new Date(product.createdAt).toLocaleDateString("ko-KR")} | 업체:{" "}
+                {product.companyName}
               </div>
 
               <div className="service-actions">
@@ -331,14 +335,14 @@ const ProductManagePage = () => {
                   className="btn-secondary"
                   onClick={() => handleEditClick(product.id)}
                 >
-                  <span className="btn-icon">✏️</span>
+                  <Edit3 size={16} className="btn-icon" />
                   수정
                 </button>
                 <button
                   className="btn-primary"
                   onClick={() => handleDeleteClick(product.id)}
                 >
-                  <span className="btn-icon">🗑️</span>
+                  <Trash2 size={16} className="btn-icon" />
                   삭제
                 </button>
               </div>
@@ -346,6 +350,7 @@ const ProductManagePage = () => {
           );
         })}
       </div>
+
       {products.length === 0 && (
         <div style={{ textAlign: "center", padding: "40px", color: "#666" }}>
           등록된 상품이 없습니다.
