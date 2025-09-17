@@ -1,0 +1,99 @@
+/* 지도 영역 */
+.map_area {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  padding-bottom: 20px;
+}
+
+/* 지도 컨테이너 래퍼 */
+.map-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+/* 카카오맵 컨테이너 */
+#map {
+  width: 100%;
+  height: 90%;
+  border: none;
+  outline: none;
+}
+
+/* 사용 안내 메시지 */
+.map-guide {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  z-index: 1000;
+  pointer-events: none;
+  max-width: 280px;
+  line-height: 1.4;
+}
+
+/* 현재 위치 버튼 */
+.map-container .current-location-btn {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+/* 현재 위치 버튼 - location.png 아이콘 */
+.map-container .current-location-btn::before {
+  content: "";
+  width: 32px;
+  height: 32px;
+  background-image: url('../../../../assets/images/map/location.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  display: block;
+}
+
+/* 현재 위치 버튼 호버 효과 */
+.map-container .current-location-btn:hover:not(:disabled) {
+  background: #f5f5f5;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .map-guide {
+    font-size: 11px;
+    padding: 6px 10px;
+    max-width: 240px;
+  }
+  
+  .current-location-btn {
+    bottom: 15px;
+    right: 15px;
+    width: 44px;
+    height: 44px;
+  }
+
+  .current-location-btn::before {
+    width: 28px;
+    height: 28px;
+  }
+}

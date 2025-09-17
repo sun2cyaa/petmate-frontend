@@ -1,0 +1,107 @@
+/* 사이드바 영역 */
+.sidebar-area {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  border-right: 1px solid #eee;
+  background: #fff;
+  height: 730px;
+}
+
+/* 사이드바 */
+.sidebar {
+  flex: 1;
+  padding: 10px 0 10px 10px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.sidebar .list {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  /* 스크롤바 스타일링 */
+  scrollbar-width: thin;
+  scrollbar-color: #eb9666 #f0f0f0;
+}
+
+.sidebar .list::-webkit-scrollbar {
+  width: 6px;
+}
+
+/* 스크롤바와 카드 사이 여백 추가 */
+.sidebar .list {
+  padding-right: 16px;
+}
+
+.sidebar .list::-webkit-scrollbar-track {
+  background: #f0f0f0;
+  border-radius: 3px;
+}
+
+.sidebar .list::-webkit-scrollbar-thumb {
+  background: #eb9666;
+  border-radius: 3px;
+}
+
+.sidebar .list::-webkit-scrollbar-thumb:hover {
+  background: #d4833f;
+}
+
+.sidebar h3 {
+  margin: 0 10px 10px 0!important;
+  font-size: 16px;
+  font-weight: 700;
+  color: #333;
+  border-bottom: 2px solid #eb9666;
+  padding-bottom: 8px;
+  flex-shrink: 0;
+}
+
+/* 리스트 */
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px 0 8px 0;
+  width: 100%;
+}
+
+.list-item {
+  background: #fff;
+  padding: 14px 18px;
+  border-radius: 12px;
+  border: 1px solid #eee;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.list-item:hover {
+  background: #fffdfc;
+  border-color: #eb9666;
+  box-shadow: 0 6px 14px rgba(235,150,102,0.15);
+  transform: translateY(-2px);
+}
+
+.list-item.selected {
+  background: #fff8f3;
+  border-color: #eb9666;
+  box-shadow: 0 4px 12px rgba(235,150,102,0.25);
+}
+
+.list-item span {
+  font-size: 14px;
+  color: #eb9666;
+  font-weight: bold;
+}
+
