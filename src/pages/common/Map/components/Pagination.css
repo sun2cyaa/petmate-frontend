@@ -1,0 +1,52 @@
+/* 페이징 컨테이너 */
+.pagination-container {
+  border-top: 1px solid #eee;
+  padding: 0 10px;
+  flex-shrink: 0;
+}
+
+/* 페이징 */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 0;
+}
+
+.page-btn {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  background: #fff;
+  color: #333;
+  font-size: 13px;
+  font-weight: 500;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.page-btn:hover:not(:disabled) {
+  background: #fff8f3;
+  border-color: #eb9666;
+  color: #eb9666;
+}
+
+.page-btn.active {
+  background: linear-gradient(135deg, #eb9666, #e05353);
+  border-color: #eb9666;
+  color: white;
+  font-weight: 600;
+}
+
+.page-btn:disabled {
+  background: #f5f5f5;
+  border-color: #e0e0e0;
+  color: #999;
+  cursor: not-allowed;
+}
