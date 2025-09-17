@@ -1,7 +1,14 @@
 import React from "react";
 import iconFail from "../../assets/images/payment/icon_fail.png";
+import { useNavigate } from "react-router-dom";
 
 const PaymentFailPage = () => {
+  const navigate = useNavigate();
+
+  const handleBackToBooking = () => {
+    navigate("/booking");
+  };
+
   const styles = {
     failContainer: {
       maxWidth: "450px",
@@ -119,12 +126,16 @@ const PaymentFailPage = () => {
           </div>
         </div>
         <h1 style={styles.title}>결제에 실패했습니다</h1>
-        <p style={styles.description}>
-          에러 메세지와 함께 에러 코드를 확인해주세요
-        </p>
         <a href="/payment" style={styles.link}>
           결제 다시 시도
         </a>
+        <button
+          onClick={handleBackToBooking}
+          style={{ ...styles.btn, backgroundColor: "#666" }}
+          className="btn"
+        >
+          예약 다시 하기
+        </button>
       </div>
     </>
   );
