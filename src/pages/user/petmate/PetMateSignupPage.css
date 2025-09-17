@@ -155,6 +155,53 @@
   transform: scale(1.02);
 }
 
+/* 업체 사진 업로드 영역 */
+.company_form_section .image_upload_viewer .simple-upload-area {
+  border: 2px dashed #EB9666;
+  border-radius: 16px;
+  padding: 40px 24px;
+  text-align: center;
+  background: #FFF9F6;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.company_form_section .image_upload_viewer .simple-upload-area:hover {
+  border-color: #E05353;
+  background: #FFF3F0;
+  transform: scale(1.02);
+}
+
+/* 업로드 아이콘 느낌 */
+.company_form_section .image_upload_viewer .upload-icon {
+  font-size: 42px;
+  color: #EB9666;
+  margin-bottom: 12px;
+}
+
+.company_form_section .image_upload_viewer .simple-upload-area p {
+  font-size: 15px;
+  font-weight: 500;
+  color: #444;
+  margin: 0;
+}
+
+/* 업로드된 이미지 프리뷰 */
+.company_form_section .image_upload_viewer img {
+  width: 160px;
+  height: 160px;
+  object-fit: cover;
+  border-radius: 12px;
+  margin-top: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  transition: transform 0.25s ease;
+}
+
+.company_form_section .image_upload_viewer img:hover {
+  transform: scale(1.05);
+}
+
+
 /* 안쪽 아이콘/텍스트도 테마 컬러 */
 #petmate-container .image-upload-viewer .simple-upload-area .upload-icon {
   font-size: 40px;
@@ -309,6 +356,26 @@
   transition: all 0.3s ease;
 }
 
+.company_form_btn .submit_btn {
+  background: linear-gradient(135deg, #EB9666, #E05353);
+  color: #fff;
+  border: none;
+  /* padding: 14px 32px; */
+  /* border-radius: 40px; */
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(235,150,102,0.3);
+  transition: all 0.3s ease;
+}
+
+.company_form_btn .submit_btn:hover {
+  transform: translateY(-2px);
+  background: linear-gradient(135deg, #E05353, #EB9666);
+  box-shadow: 0 10px 24px rgba(235,150,102,0.4);
+}
+
+
 #petmate-container .btn-primary {
   background: linear-gradient(135deg, #EB9666, #E05353);
   color: #fff;
@@ -373,7 +440,6 @@
   color: #666;
   margin-top: 8px;
 }
-
 
 /* 반응형 */
 @media (max-width: 768px) {

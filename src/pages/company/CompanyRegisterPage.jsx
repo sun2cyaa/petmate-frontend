@@ -953,6 +953,8 @@ function CompanyRegisterPage() {
                         {/* 업체 사진 */}
                         <div className="company_form_section">
                             <span>업체 사진</span>
+                            <div className="image_upload_viewer">
+                                <div className="simple_upload_area">
                             <ImageUploadViewer
                                 ref={companyImageRef}
                                 imageTypeCode="03"
@@ -962,7 +964,8 @@ function CompanyRegisterPage() {
                                 setFiles={setFiles}
                                 isEditMode={isEditMode}
                             />
-
+                          </div>
+                         </div>
                         </div>
 
                         {/* 업체 소개 */}
