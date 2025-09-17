@@ -1,0 +1,32 @@
+.notice-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  font-family: 'Noto Sans KR', sans-serif;
+}
+
+.notice-title {
+  font-size: 28px;
+  font-weight: 800;
+  color: #E05353;
+  margin-bottom: 24px;
+}
+
+.notice-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.notice-item {
+  padding: 20px;
+  border: 1px solid #eb9666;
+  border-radius: 12px;
+  background: #fff;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.notice-item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+}
