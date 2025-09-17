@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { loadDanalPaymentsSDK } from "@danalpay/javascript-sdk";
-import "./PaymentPage.css"; 
+import "./PaymentPage.css"; // CSS 파일 import
 import iconIntegrated from "../../assets/images/payment/icon_integrated.png";
 import payKakaopay from "../../assets/images/payment/pay_kakaopay.webp";
 import payNpay from "../../assets/images/payment/pay_npay.webp";
@@ -10,14 +10,34 @@ const PaymentPage = () => {
   const [selectedPayMethod, setSelectedPayMethod] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [danalPayments, setDanalPayments] = useState(null);
+  const [bookingData, setBookingData] = useState(null);
 
   // 백엔드 API 기본 URL
   const API_BASE_URL = "http://localhost:8090/api/payment";
 
+  useEffect(() => {
+    // 예약데이터 불러오기
+    const savedBookingData = sessionStorage.getItem("bookingData");
+    if (savedBookingData) {
+      setBookingData(JSON.parse(savedBookingData));
+    }
+  }, []);
+
   // 백엔드 콜백 URL로 변경 (중요!)
+  // const baseParams = {
+  //   orderName: "test_상품",
+  //   amount: 100,
+  //   merchantId: "9810030930",
+  //   orderId: new Date().getTime().toString(),
+  //   userId: "user@naver.com",
+  //   // 백엔드 콜백 URL로 변경
+  //   successUrl: "http://localhost:8090/api/payment/danal/success",
+  //   failUrl: "http://localhost:8090/api/payment/danal/fail",
+  //   userEmail: "user@naver.com",
+  // };
   const baseParams = {
-    orderName: "test_상품",
-    amount: 100,
+    orderName: bookingData?.selectedProduct?.name || "펫케어 서비스",
+    amount: bookingData?.totalAmount || 100,
     merchantId: "9810030930",
     orderId: new Date().getTime().toString(),
     userId: "user@naver.com",
@@ -56,14 +76,20 @@ const PaymentPage = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          reservationId: 1, // 실제 예약 ID로 변경 필요
+          reservationId: bookingData?.reservationId || 1, // 실제 예약 ID로 변경 필요
           provider: "DANAL", // 다날 문자열로 변경
           amount: paymentData.amount,
           currency: "KRW",
           paymentMethod: paymentData.paymentsMethod,
-          customerName: "고객명", // 실제 고객명으로 변경 필요
+          customerName: bookingData?.customerName || "고객명", // 실제 고객명으로 변경 필요
           customerEmail: paymentData.userEmail,
-          customerPhone: "010-0000-0000", // 실제 고객 전화번호로 변경 필요
+          customerPhone: bookingData?.customerPhone || "010-0000-0000", // 실제 고객 전화번호로 변경 필요
+          // 예약 관련 추가 정보
+          storeId: bookingData?.selectedStore?.id,
+          productId: bookingData?.selectedProduct?.id,
+          selectedDate: bookingData?.selectedDate,
+          selectedTimeSlot: bookingData?.selectedTimeSlot,
+          selectedPets: bookingData?.selectedPets,
         }),
       });
 
