@@ -26,6 +26,7 @@ function MapPage() {
   const [selectedService, setSelectedService] = useState(null); // 선택된 서비스 타입 추가
   const [map, setMap] = useState(null); // 지도 객체 상태 추가
   const [companyMarkers, setCompanyMarkers] = useState([]); // 업체 마커들 상태 추가
+  const [companyLabels, setCompanyLabels] = useState([]); // 업체 라벨들 상태 추가
   const [currentInfoWindow, setCurrentInfoWindow] = useState(null); // 현재 열린 InfoWindow 추적
   const [currentMarkerId, setCurrentMarkerId] = useState(null); // 현재 InfoWindow를 연 마커의 company ID 추적
   const [selectedCompany, setSelectedCompany] = useState(null); // 선택된 업체 정보
@@ -33,6 +34,18 @@ function MapPage() {
 
   // 현재 선택된 마커를 전역 변수로 관리 (클로저 문제 해결)
   const currentSelectedMarkerRef = React.useRef(null);
+
+  // 지도 페이지에서만 스크롤 제거
+  useEffect(() => {
+    // 컴포넌트 마운트 시 body 스크롤 숨기기
+    const originalStyle = window.getComputedStyle(document.body).overflow;
+    document.body.style.overflow = 'hidden';
+
+    // 컴포넌트 언마운트 시 원래 스타일로 복원
+    return () => {
+      document.body.style.overflow = originalStyle;
+    };
+  }, []);
 
   const services = [
     { id: null, name: "전체", icon: <FaSearch /> },
@@ -178,6 +191,38 @@ function MapPage() {
       return await createCircleMarker(config.icon, config.color);
     }
   }
+
+  // 업체명 라벨 생성 함수
+  const createCompanyLabel = (company, position) => {
+    const labelContent = `
+      <div style="
+        background: rgba(235, 150, 102, 0.95);
+        color: white;
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 11px;
+        font-weight: 600;
+        white-space: nowrap;
+        text-align: center;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        border: 1px solid rgba(255,255,255,0.2);
+        max-width: 120px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      ">
+        ${company.name}
+      </div>
+    `;
+
+    const customOverlay = new window.kakao.maps.CustomOverlay({
+      content: labelContent,
+      position: position,
+      yAnchor: -0.5, // 마커 아래쪽에 위치하도록 설정
+      xAnchor: 0.5   // 중앙 정렬
+    });
+
+    return customOverlay;
+  };
 
   // 카카오 맵 스크립트 로드
   useEffect(() => {
@@ -338,6 +383,12 @@ function MapPage() {
     });
     setCompanyMarkers([]);
 
+    // 기존 업체 라벨들 제거
+    companyLabels.forEach(label => {
+      label.setMap(null);
+    });
+    setCompanyLabels([]);
+
     // 기존에 열린 InfoWindow가 있다면 닫기
     if (window.currentOpenInfoWindow) {
       window.currentOpenInfoWindow.close();
@@ -350,10 +401,16 @@ function MapPage() {
     // 새로운 업체 마커들 추가 (async 처리)
     const createMarkers = async () => {
       const newMarkers = [];
+      const newLabels = [];
 
       for (const company of companies) {
         if (company.latitude && company.longitude) {
           try {
+            const position = new window.kakao.maps.LatLng(
+              parseFloat(company.latitude),
+              parseFloat(company.longitude)
+            );
+
             // 서비스별 마커 이미지 생성 (async)
             const markerData = await getMarkerImageForService(company.repService, false);
 
@@ -367,14 +424,16 @@ function MapPage() {
 
             // 업체 마커 생성 (커스텀 이미지 적용)
             const companyMarker = new window.kakao.maps.Marker({
-              position: new window.kakao.maps.LatLng(
-                parseFloat(company.latitude),
-                parseFloat(company.longitude)
-              ),
+              position: position,
               image: markerImage, // 커스텀 이미지 적용
               zIndex: 1 // 기본 z-index
             });
             companyMarker.setMap(map);
+
+            // 업체명 라벨 생성
+            const companyLabel = createCompanyLabel(company, position);
+            companyLabel.setMap(map);
+            newLabels.push(companyLabel);
 
             // 업체 정보 윈도우
             const companyInfoWindow = new window.kakao.maps.InfoWindow({
@@ -487,8 +546,9 @@ function MapPage() {
         }
       }
 
-      // 새로운 마커들을 state에 저장
+      // 새로운 마커들과 라벨들을 state에 저장
       setCompanyMarkers(newMarkers);
+      setCompanyLabels(newLabels);
     };
 
     createMarkers();
@@ -558,12 +618,7 @@ function MapPage() {
         {/* 지도 */}
         <div className="map_area">
           {!isKakaoLoaded && <div>지도를 불러오는 중...</div>}
-          <div id="map" style={{
-            width: "100%",
-            height: "100%",
-            border: "none",
-            outline: "none"
-          }}></div>
+          <div id="map"></div>
 
           <CompanyDetailModal
             selectedCompany={selectedCompany}
