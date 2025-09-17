@@ -33,18 +33,18 @@ function Footer() {
           <div className="footer-links-col">
             <h4>Petmate</h4>
             <ul>
-              <li><a className="footer-link" href="#none">이용약관</a></li>
-              <li><a className="footer-link" href="#none">개인정보처리방침</a></li>
-              <li><a className="footer-link" href="#none">저작권보호정책</a></li>
-              <li><a className="footer-link" href="#none">운영관리 방침</a></li>
+              <li><a className="footer-link" href="/policy/terms">이용약관</a></li>
+              <li><a className="footer-link" href="/policy/privacy">개인정보처리방침</a></li>
+              <li><a className="footer-link" href="/policy/copyright">저작권보호정책</a></li>
+              <li><a className="footer-link" href="/policy/operation">운영관리 방침</a></li>
             </ul>
           </div>
           <div className="footer-links-col">
             <h4>고객지원</h4>
             <ul>
-              <li><a className="footer-link" href="#none">FAQ</a></li>
-              <li><a className="footer-link" href="#none">1:1 문의</a></li>
-              <li><a className="footer-link" href="#none">고객센터</a></li>
+              <li><a className="footer-link" href="/support/FAQ">FAQ</a></li>
+              <li><a className="footer-link" href="/support/Inquiry">1:1 문의</a></li>
+              <li><a className="footer-link" href="/support/CustomerCenter">고객센터</a></li>
             </ul>
           </div>
         </div>
