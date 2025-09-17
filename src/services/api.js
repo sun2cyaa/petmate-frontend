@@ -22,18 +22,21 @@ export const getAuthHeaders = () => {
 // 401 처리: refresh 후 한 번만 재시도
 const tryRefresh = async () => {
   try {
-    console.log("[api] tryRefresh 호출");
-    const res = await axios.post(`${API_BASE}/auth/refresh`, null, { withCredentials: true });
-    console.log("[api] refresh 응답:", res.status, res.data);
+    console.log('🔄 JWT 토큰 갱신 시도...');
+    const res = await axios.post(`${API_BASE}/auth/refresh`, null, {
+      withCredentials: true,
+      timeout: 5000
+    });
     const newToken = res?.data?.accessToken;
     if (newToken) {
       setAccessToken(newToken);
-      console.log("[api] 새 accessToken 저장:", newToken.slice(0, 20) + "...");
+      console.log('✅ JWT 토큰 갱신 성공');
       return newToken;
     }
+    console.log('❌ JWT 토큰 갱신 실패: 응답에 accessToken 없음');
     return null;
-  } catch (err) {
-    console.warn("[api] refresh 실패", err?.response?.status, err?.response?.data);
+  } catch (error) {
+    console.log('❌ JWT 토큰 갱신 실패:', error.response?.status || error.message);
     return null;
   }
 };
@@ -71,7 +74,14 @@ export const fetchMe = async ({ silent = false } = {}) => {
       }
       if (!silent) {
         setAccessToken("");
-        if (!window.location.pathname.includes("/signin")) window.location.href = "/signin";
+        // 개발 중 불편함 해소: intro, signin 페이지가 아닌 경우만 리다이렉트
+        const currentPath = window.location.pathname;
+        if (!currentPath.includes("/signin") &&
+            !currentPath.includes("/intro") &&
+            !currentPath.includes("/signup")) {
+          console.warn("JWT 토큰 만료로 로그인 페이지로 이동합니다.");
+          window.location.href = "/signin";
+        }
       }
       return null;
     }
@@ -86,9 +96,14 @@ export const apiRequest = {
       return await api.get(url, { ...config, headers: { ...config.headers, ...getAuthHeaders() } });
     } catch (e) {
       if (e?.response?.status === 401) {
+        console.log('🔄 GET 요청 401 에러, 토큰 갱신 시도:', url);
         const t = await tryRefresh();
-        if (t) return await api.get(url, { ...config, headers: { ...config.headers, Authorization: `Bearer ${t}` } });
+        if (t) {
+          console.log('✅ 토큰 갱신 후 GET 요청 재시도:', url);
+          return await api.get(url, { ...config, headers: { ...config.headers, Authorization: `Bearer ${t}` } });
+        }
         setAccessToken("");
+        console.log('❌ 토큰 갱신 실패, 인증 필요');
       }
       throw e;
     }
@@ -98,9 +113,14 @@ export const apiRequest = {
       return await api.post(url, data, { ...config, headers: { ...config.headers, ...getAuthHeaders() } });
     } catch (e) {
       if (e?.response?.status === 401) {
+        console.log('🔄 POST 요청 401 에러, 토큰 갱신 시도:', url);
         const t = await tryRefresh();
-        if (t) return await api.post(url, data, { ...config, headers: { ...config.headers, Authorization: `Bearer ${t}` } });
+        if (t) {
+          console.log('✅ 토큰 갱신 후 POST 요청 재시도:', url);
+          return await api.post(url, data, { ...config, headers: { ...config.headers, Authorization: `Bearer ${t}` } });
+        }
         setAccessToken("");
+        console.log('❌ 토큰 갱신 실패, 인증 필요');
       }
       throw e;
     }
@@ -110,9 +130,14 @@ export const apiRequest = {
       return await api.put(url, data, { ...config, headers: { ...config.headers, ...getAuthHeaders() } });
     } catch (e) {
       if (e?.response?.status === 401) {
+        console.log('🔄 PUT 요청 401 에러, 토큰 갱신 시도:', url);
         const t = await tryRefresh();
-        if (t) return await api.put(url, data, { ...config, headers: { ...config.headers, Authorization: `Bearer ${t}` } });
+        if (t) {
+          console.log('✅ 토큰 갱신 후 PUT 요청 재시도:', url);
+          return await api.put(url, data, { ...config, headers: { ...config.headers, Authorization: `Bearer ${t}` } });
+        }
         setAccessToken("");
+        console.log('❌ 토큰 갱신 실패, 인증 필요');
       }
       throw e;
     }
@@ -122,9 +147,14 @@ export const apiRequest = {
       return await api.delete(url, { ...config, headers: { ...config.headers, ...getAuthHeaders() } });
     } catch (e) {
       if (e?.response?.status === 401) {
+        console.log('🔄 DELETE 요청 401 에러, 토큰 갱신 시도:', url);
         const t = await tryRefresh();
-        if (t) return await api.delete(url, { ...config, headers: { ...config.headers, Authorization: `Bearer ${t}` } });
+        if (t) {
+          console.log('✅ 토큰 갱신 후 DELETE 요청 재시도:', url);
+          return await api.delete(url, { ...config, headers: { ...config.headers, Authorization: `Bearer ${t}` } });
+        }
         setAccessToken("");
+        console.log('❌ 토큰 갱신 실패, 인증 필요');
       }
       throw e;
     }

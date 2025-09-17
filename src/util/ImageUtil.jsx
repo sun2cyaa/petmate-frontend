@@ -191,7 +191,8 @@ export const ImageUploadViewer = React.forwardRef(({
     emptyPlaceholder = '이미지를 업로드하려면 클릭하거나 드래그하세요',
     disabled = false,
     files,
-    setFiles
+    setFiles,
+    isEditMode = false
 }, ref) => {
     const [images, setImages] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -203,7 +204,7 @@ export const ImageUploadViewer = React.forwardRef(({
         setLoading(true);
         setError('');
         try {
-            if (referenceId) {
+            if (referenceId && isEditMode) {
                 const response = await fetchImagesByReference(imageTypeCode, referenceId);
                 if (response.success) {
                     // setFiles는 File 객체 배열용이므로 초기화
@@ -461,7 +462,7 @@ export const ImageUploadViewer = React.forwardRef(({
                         onDrop={handleDrop}
                     >
                         <div className="upload-placeholder">
-                            <div className="upload-icon">📁</div>
+                            <div className="upload-icon">📷</div>
                             <p>{(!images || images.length === 0) ? '이미지를 드래그하거나 클릭하여 선택' : '새 이미지 추가'}</p>
                         </div>
                     </div>

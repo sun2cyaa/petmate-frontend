@@ -1,0 +1,346 @@
+/* 지도 영역에 relative 포지션 추가 */
+.map_area {
+  position: relative;
+}
+
+/* 업체 상세 모달 - 사이드바 바로 옆에서 나오도록 */
+.company-detail-modal {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 400px;
+  height: 700px;
+  background: #fff;
+  box-shadow: 2px 0 24px rgba(0,0,0,0.15);
+  z-index: 1000;
+  animation: slideInFromLeft 0.3s ease-out;
+  overflow-y: auto;
+  overflow-x: hidden;
+  border: 2px solid #eb9666;
+  border-radius: 8px;
+  margin: 10px;
+  transform: translateX(-100%); /* 처음엔 숨김 */
+  /* 스크롤바 스타일링 */
+  scrollbar-width: thin;
+  scrollbar-color: #eb9666 #f0f0f0;
+}
+
+
+/* 모달이 나타날 때 */
+.company-detail-modal.show {
+  transform: translateX(0); /* 원래 위치로 */
+}
+
+@keyframes slideInFromLeft {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.modal-header {
+  position: sticky;
+  top: 0;
+  background: linear-gradient(135deg, #eb9666, #e05353);
+  color: white;
+  padding: 20px;
+  z-index: 1001;
+  border-bottom: 2px solid #d4833f;
+}
+
+.modal-header .close-btn {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 28px;
+  cursor: pointer;
+  padding: 5px;
+  width: 35px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background-color 0.2s ease;
+}
+
+.modal-header .close-btn:hover {
+  background-color: rgba(255,255,255,0.2);
+}
+
+.modal-header h2 {
+  margin: 0 40px 8px 0;
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.company-rating {
+  font-size: 14px;
+  color: rgba(255,255,255,0.9);
+  font-weight: 500;
+}
+
+.modal-content {
+  padding: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* 웹킷 기반 브라우저용 스크롤바 스타일 */
+.company-detail-modal::-webkit-scrollbar {
+  width: 4px;
+}
+
+.company-detail-modal::-webkit-scrollbar-track {
+  background: transparent;
+  margin: 8px 0;
+}
+
+.company-detail-modal::-webkit-scrollbar-thumb {
+  background: #eb9666;
+  border-radius: 2px;
+  opacity: 0.8;
+}
+
+.company-detail-modal::-webkit-scrollbar-thumb:hover {
+  background: #d4833f;
+  opacity: 1;
+}
+
+.company-image-section {
+  padding: 20px;
+  border-bottom: 1px solid #eee;
+}
+
+.company-image-placeholder {
+  height: 200px;
+  background: #f8f9fa;
+  border: 2px dashed #ddd;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #999;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.company-info {
+  padding: 0;
+}
+
+.info-section {
+  padding: 20px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.info-section:last-child {
+  border-bottom: none;
+}
+
+.info-section h4 {
+  margin: 0 0 16px 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: #333;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #eb9666;
+}
+
+.info-item {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 16px;
+  gap: 12px;
+}
+
+.info-item:last-child {
+  margin-bottom: 0;
+}
+
+.info-item .icon {
+  font-size: 18px;
+  width: 24px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.info-content {
+  flex: 1;
+}
+
+.info-content .label {
+  display: block;
+  font-size: 13px;
+  color: #666;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.info-content .value {
+  display: block;
+  font-size: 14px;
+  color: #333;
+  line-height: 1.5;
+  word-break: break-all;
+}
+
+.service-badge {
+  background: linear-gradient(135deg, #eb9666, #e05353);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 16px;
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-block;
+}
+
+.description {
+  font-size: 14px;
+  line-height: 1.6;
+  color: #555;
+  margin: 0;
+}
+
+.review-item {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 12px;
+}
+
+.review-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  gap: 10px;
+}
+
+.reviewer {
+  font-weight: 600;
+  color: #333;
+  font-size: 14px;
+}
+
+.review-date {
+  font-size: 12px;
+  color: #999;
+}
+
+.review-rating {
+  font-size: 14px;
+}
+
+.review-text {
+  font-size: 14px;
+  line-height: 1.5;
+  color: #555;
+  margin: 0;
+}
+
+.action-buttons {
+  padding: 20px;
+  border-top: 1px solid #eee;
+  background: #fafafa;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.action-buttons button {
+  padding: 12px 16px;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.btn-call {
+  background: #4CAF50;
+  color: white;
+}
+
+.btn-call:hover {
+  background: #45a049;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(76,175,80,0.3);
+}
+
+.btn-directions {
+  background: #2196F3;
+  color: white;
+}
+
+.btn-directions:hover {
+  background: #1976D2;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(33,150,243,0.3);
+}
+
+.btn-share {
+  background: #FF9800;
+  color: white;
+}
+
+.btn-share:hover {
+  background: #F57C00;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(255,152,0,0.3);
+}
+
+.btn-favorite {
+  background: #FF5722;
+  color: white;
+}
+
+.btn-favorite:hover {
+  background: #E64A19;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(255,87,34,0.3);
+}
+
+/* 반응형 */
+@media (max-width: 1200px) {
+  .company-detail-modal {
+    width: 350px;
+  }
+}
+
+@media (max-width: 768px) {
+  .company-detail-modal {
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 2000;
+    height: 100vh;
+    border-left: none;
+    box-shadow: 0 -2px 24px rgba(0,0,0,0.15);
+  }
+  
+  /* 모바일에서는 아래에서 위로 슬라이드 */
+  @keyframes slideInRight {
+    from {
+      opacity: 0;
+      transform: translateY(100%);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}

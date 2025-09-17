@@ -133,6 +133,7 @@ export default function MapModal({ show, onClose, onLocationSelect }) {
 
     navigator.geolocation.getCurrentPosition(
       (pos) => {
+        console.log("현재 위치 가져오기 성공:", pos.coords);
         const latitude = pos.coords.latitude;
         const longitude = pos.coords.longitude;
         const current = new window.kakao.maps.LatLng(latitude, longitude);
@@ -143,7 +144,7 @@ export default function MapModal({ show, onClose, onLocationSelect }) {
         geocoder.coord2Address(longitude, latitude, (result, status) => {
           if (status === window.kakao.maps.services.Status.OK) {
             const { address, postcode } = parseAddressFromCoord2Address(result);
-            setSelectedLocation({ address, postcode, latitude: latitude, longitude: longitude });
+            setSelectedLocation({ address, postcode, latitude, longitude });
           }
         });
       },
