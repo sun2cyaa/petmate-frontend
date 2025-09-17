@@ -1,0 +1,164 @@
+/* 업체 카드 스타일 */
+.company-card {
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid #f0f0f0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  overflow: hidden;
+  margin-bottom: 8px;
+  flex-shrink: 0;
+  width: 100%;
+}
+
+.company-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(235,150,102,0.2);
+  border-color: #eb9666;
+}
+
+/* 첫 번째 카드 추가 여백 */
+.company-card:first-child {
+  margin-top: 4px;
+}
+
+.company-card.selected {
+  border-color: #eb9666;
+  box-shadow: 0 6px 20px rgba(235,150,102,0.3);
+  transform: translateY(-2px);
+}
+
+/* 업체 카드 내 정보 */
+.company-card .company-info {
+  padding: 16px 20px;
+}
+
+.company-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+
+.name-and-service {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+}
+
+.company-name {
+  font-size: 16px;
+  font-weight: 700;
+  color: #333;
+  margin: 0;
+  line-height: 1.2;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.company-number {
+  background: linear-gradient(135deg, #eb9666, #e05353);
+  color: white;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 12px;
+  min-width: 24px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.business-status {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 12px;
+  white-space: nowrap;
+}
+
+.business-status.open {
+  background: #e8f5e8;
+  color: #2e7d32;
+}
+
+.business-status.closed {
+  background: #ffebee;
+  color: #c62828;
+}
+
+.service-badge {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: linear-gradient(135deg, #eb9666, #e05353);
+  color: white;
+  padding: 4px 10px;
+  border-radius: 14px;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.operating-info {
+  margin-bottom: 6px;
+}
+
+.operating-hours {
+  font-size: 11px;
+  color: #666;
+  font-weight: 500;
+}
+
+.review-info {
+  margin-bottom: 6px;
+}
+
+.rating {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.rating-stars {
+  color: #ffc107;
+  font-size: 12px;
+}
+
+.rating-score {
+  font-size: 12px;
+  font-weight: 600;
+  color: #333;
+}
+
+.review-count {
+  font-size: 11px;
+  color: #666;
+}
+
+.address-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.distance {
+  font-size: 12px;
+  font-weight: 600;
+  color: #eb9666;
+  background: rgba(235,150,102,0.1);
+  padding: 2px 6px;
+  border-radius: 8px;
+}
+
+.address {
+  font-size: 11px;
+  color: #666;
+  flex: 1;
+  margin-left: 8px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
