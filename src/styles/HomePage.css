@@ -407,7 +407,7 @@
   border-radius: 2px;
 }
 
-/*  ---- 후기 ---- */
+/* ---- 후기 섹션 전용 ---- */
 .home-reviews-section {
   padding: 20px 10px 50px;
   background: linear-gradient(180deg, #fff 0%, #fff8f3 100%);
@@ -415,16 +415,20 @@
   margin-bottom: 180px;
   padding-bottom: 25px;
 }
+
 .home-reviews-section .reviews-swiper {
   margin-top: 20px;
 }
+
 .home-reviews-section .reviews-swiper .swiper-slide {
   display: flex;
   align-items: stretch;
 }
+
 .home-reviews-section .reviews-swiper .swiper-pagination {
   position: static;
 }
+
 /* 카드 */
 .home-reviews-section .review-card {
   flex: 1;
@@ -437,27 +441,52 @@
   min-height: 220px;
   margin-bottom: 80px;
 }
+
 .home-reviews-section .review-card:hover {
   transform: translateY(-6px);
   box-shadow: 0 10px 25px rgba(0,0,0,0.1);
 }
+
 /* 헤더 */
 .home-reviews-section .review-header {
   display: flex;
   align-items: center;
   gap: 12px;
   margin-bottom: 8px;
+  margin-right: 200px;
 }
+
+.home-reviews-section .review-info {
+  display: flex;
+  flex-direction: column; 
+  justify-content: center; 
+  line-height: 1.4;
+}
+
+.home-reviews-section .review-info h4 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.home-reviews-section .review-info .review-meta {
+  font-size: 13px;
+  color: #888;
+  margin-top: 2px;
+}
+
 .home-reviews-section .reviewer-img {
   width: 50px;
   height: 50px;
   border-radius: 50%;
   object-fit: cover;
 }
+
 .home-reviews-section .review-meta {
   font-size: 13px;
   color: #888;
 }
+
 /* 뱃지 */
 .home-reviews-section .review-badge {
   display: inline-block;
@@ -471,6 +500,7 @@
   max-width: 80px;
   white-space: nowrap;
 }
+
 /* --- CTA ----- */
 .home-cta-section {
   background: linear-gradient(135deg, #eb9666, #f5b58f);
