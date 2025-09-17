@@ -232,7 +232,7 @@ export default function PetOwnerSignupPage() {
         </div>
       </form>
 
-      {/* ✅ Radix Dialog 모달 */}
+      {/* Radix Dialog 모달 */}
       <Dialog.Root open={doneOpen} onOpenChange={setDoneOpen}>
         <Dialog.Portal>
           <Dialog.Overlay className="radix-overlay" />

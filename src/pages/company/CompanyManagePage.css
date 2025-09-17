@@ -1,7 +1,7 @@
 /* 전체 페이지 레이아웃 */
 .company_manage_page {
   min-height: 100vh;
-  background-color: #f8f9fa;
+  background: linear-gradient(180deg, #fff 0%, #fffaf7 100%);
   padding: 0;
   margin: 0;
 }
@@ -15,7 +15,7 @@
 /* 메인 섹션 - 업체등록과 동일한 스타일 */
 .company_manage_section {
   padding: 32px;
-  border: 1px solid #e5e7eb;
+  border: 1px solid #f2f2f2;
   border-radius: 0.5rem;
   background-color: white;
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
@@ -35,20 +35,30 @@
   align-items: center;
   margin-bottom: 32px;
   padding-bottom: 20px;
-  border-bottom: 1px solid #e1e5e9;
+  border-bottom: 1px solid #eb9666;
 }
 
 .header_info h2.section-title {
   margin: 0 0 8px 0;
   font-size: 18px;
   font-weight: 600;
-  color: #1a1a1a;
+  color: #E05353;
 }
 
 .header_info p.section-subtitle {
   margin: 0;
   font-size: 14px;
   color: #6c757d;
+}
+
+.header_left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.lottie-box {
+  flex-shrink: 0;
 }
 
 .add-button {
@@ -87,9 +97,9 @@
 .empty_state {
   text-align: center;
   padding: 60px 20px;
-  background: #f8f9fa;
+  background: #FFF6F2;
   border-radius: 8px;
-  border: 1px solid #e9ecef;
+  border: 1px solid #FFD4C2;
 }
 
 .empty_state p {
@@ -123,6 +133,7 @@
   justify-content: space-between;
   align-items: flex-start;
 }
+
 
 /* 업체 정보 */
 .company_info {
