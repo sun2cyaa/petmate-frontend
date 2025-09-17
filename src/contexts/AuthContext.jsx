@@ -19,6 +19,7 @@ export function AuthProvider({ children }) {
   // 앱 시작 시 토큰 있으면 1회만 me 호출
   useEffect(() => {
     const t = localStorage.getItem("accessToken");
+    
     if (!t) return;
     (async () => {
       try {
