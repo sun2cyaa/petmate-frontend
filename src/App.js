@@ -24,6 +24,15 @@ import ProductEditPage from "./pages/product/ProductEditPage";
 import Notice from "./components/common/Header/Notice";
 import Event from "./components/common/Header/Event";
 import PetOwnerSignupPage from "./pages/user/petowner/PetOwnerSignupPage";
+// 푸터 이용약관들
+import Terms from "./components/common/Footer/policy/Terms";
+import Privacy from "./components/common/Footer/policy/Privacy";
+import CopyrightPolicy from "./components/common/Footer/policy/CopyrightPolicy";
+import OperationPolicy from "./components/common/Footer/policy/OperationPolicy";
+import FAQ from "./components/common/Footer/support/FAQ";
+import Inquiry from "./components/common/Footer/support/Inquiry";
+import CustomerCenter from "./components/common/Footer/support/CustomerCenter";
+
 
 import "./styles/App.css";
 import Header from "./components/common/Header/Header";
@@ -87,6 +96,15 @@ function AppRoutes() {
           <Route path="/notice" element={<Notice />} />
           <Route path="/event" element={<Event />} />
           <Route path="/test" element={<div>Test</div>} />
+          {/* 푸터 이용약관들 */}
+          <Route path="/policy/terms" element={<Terms />} />
+          <Route path="/policy/privacy" element={<Privacy />} />
+          <Route path="/policy/copyright" element={<CopyrightPolicy />} />
+          <Route path="/policy/operation" element={<OperationPolicy />} />
+
+          <Route path="/support/faq" element={<FAQ />} />
+          <Route path="/support/inquiry" element={<Inquiry />} />
+          <Route path="/support/customerCenter" element={<CustomerCenter />} />
 
           {/* 없는 경로 */}
           <Route path="*" element={<Navigate to="/intro" replace />} />
