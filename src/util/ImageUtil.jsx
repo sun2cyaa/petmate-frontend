@@ -4,15 +4,37 @@ import { apiRequest } from '../services/api';
 import './ImageUtil.css';
 
 const FILE_API_BASE_URL = 'http://localhost:8090/api/files';
-const STATIC_FILE_BASE_URL = 'http://localhost:8090/files';
 
-// 이미지 URL 생성 헬퍼 함수
-const getImageUrl = (filePath) => {
-    if (!filePath) return null;
-    // 이미 완전한 URL인 경우 그대로 반환
-    if (filePath.startsWith('http')) return filePath;
-    // 상대 경로인 경우 백엔드 정적 파일 URL과 결합
-    return `${STATIC_FILE_BASE_URL}/${filePath}`;
+// S3 이미지 URL 생성 헬퍼 함수
+const getImageUrl = (imageData) => {
+    if (!imageData) return null;
+
+    // 문자열인 경우 (기존 호환성)
+    if (typeof imageData === 'string') {
+        // 이미 완전한 URL인 경우 그대로 반환
+        if (imageData.startsWith('http')) return imageData;
+        // S3 키인 경우는 사용할 수 없으므로 null 반환 (백엔드에서 imageUrl 제공해야 함)
+        return null;
+    }
+
+    // 객체인 경우 imageUrl 우선 사용, 없으면 filePath 확인
+    if (typeof imageData === 'object') {
+        console.log('🔍 [getImageUrl] imageData:', imageData); // 디버깅용
+
+        if (imageData.imageUrl && imageData.imageUrl.startsWith('http')) {
+            console.log('✅ [getImageUrl] Using imageUrl:', imageData.imageUrl);
+            return imageData.imageUrl;
+        }
+        if (imageData.filePath && imageData.filePath.startsWith('http')) {
+            console.log('✅ [getImageUrl] Using filePath:', imageData.filePath);
+            return imageData.filePath;
+        }
+        // S3 키는 사용할 수 없음
+        console.log('❌ [getImageUrl] No valid URL found, imageData:', imageData);
+        return null;
+    }
+
+    return null;
 };
 
 
@@ -151,7 +173,7 @@ export const ImageSlider = ({
                             onClick={() => onImageClick(image, index)}
                         >
                             <img
-                                src={getImageUrl(image.filePath) || image.url || image}
+                                src={getImageUrl(image) || image.url || image}
                                 alt={image.alt || `슬라이드 ${index + 1}`}
                                 className="slider-image"
                             />
@@ -432,7 +454,7 @@ export const ImageUploadViewer = React.forwardRef(({
                                 <div key={image.imageId || index} className="image-grid-item">
                                     <div className="image-wrapper">
                                         <img
-                                            src={getImageUrl(image.filePath)}
+                                            src={getImageUrl(image)}
                                             alt={image.originalName || `이미지 ${index + 1}`}
                                             className="grid-image"
                                         />
@@ -474,7 +496,7 @@ export const ImageUploadViewer = React.forwardRef(({
                             <div className="uploaded-files">
                                 {files.map((file, index) => {
                                     const isFileObject = file instanceof File;
-                                    const previewUrl = isFileObject ? URL.createObjectURL(file) : (file.filePath ? getImageUrl(file.filePath) : null);
+                                    const previewUrl = isFileObject ? URL.createObjectURL(file) : getImageUrl(file);
                                     const fileName = isFileObject ? file.name : (file.originalName || `파일 ${index + 1}`);
 
                                     return (
