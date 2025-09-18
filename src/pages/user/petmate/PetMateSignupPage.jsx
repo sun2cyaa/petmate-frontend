@@ -189,7 +189,7 @@ function PetMateSignupPage() {
             <ImageUploadViewer
               ref={profileImageRef}
               className="profile-upload"
-              imageTypeCode="01"
+              imageTypeCode="06"
               referenceId={form.email}
               mode="single"
               files={profileFile}
