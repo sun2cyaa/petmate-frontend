@@ -137,6 +137,60 @@
   font-weight: 600;
 }
 
+/* 홈 스타일 */
+.company-section-content {
+  padding: 16px;
+  border-bottom: 1px solid #F0F0F3;
+}
+
+.company-section-content .coupon-section {
+  background-color: #F7F7F9;
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.company-section-content .coupon-header {
+    display: flex;
+    gap: 4px;
+    align-items: end;
+    padding: 3px 0;
+    width: 110px;
+    height: 13px;
+}
+
+.company-section-content .sr-only {
+    overflow: hidden;
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    border: 0;
+    clip: rect(0, 0, 0, 0);
+}
+
+.company-section-content .coupon-section .coupon-title {
+    margin-top: 4px;
+    font-size: 15px;
+    color: #77777a;
+}
+
+.company-section-content .coupon-notice {
+    margin-top: 8px;
+    font-size: 14px;
+    color: #939396;
+}
+
+.company-section-content .modal_home_img3 {
+    width: 15px;
+    height: 15px;
+    margin: 3px 4px 0 0;
+}
+
+.company-info .info-section {
+  padding: 16px 20px;
+}
+
 /* 예약하기 섹션 스타일 */
 .company-detail-modal .reservation-section {
   padding: 20px;
@@ -149,6 +203,8 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
+  
+  
   background: linear-gradient(135deg, #eb9666, #e05353);
   color: #fff;
   text-decoration: none;
@@ -365,49 +421,6 @@
   gap: 6px;
 }
 
-.btn-call {
-  background: #4CAF50;
-  color: white;
-}
-
-.btn-call:hover {
-  background: #45a049;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(76,175,80,0.3);
-}
-
-.btn-directions {
-  background: #2196F3;
-  color: white;
-}
-
-.btn-directions:hover {
-  background: #1976D2;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(33,150,243,0.3);
-}
-
-.btn-share {
-  background: #FF9800;
-  color: white;
-}
-
-.btn-share:hover {
-  background: #F57C00;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(255,152,0,0.3);
-}
-
-.btn-favorite {
-  background: #FF5722;
-  color: white;
-}
-
-.btn-favorite:hover {
-  background: #E64A19;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(255,87,34,0.3);
-}
 
 /* 반응형 */
 @media (max-width: 1200px) {
@@ -440,4 +453,136 @@
       transform: translateY(0);
     }
   }
+}
+
+/* 영업시간 스타일 */
+.business-hours-container {
+  width: 100%;
+}
+
+.today-hours {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.schedule-toggle-btn {
+  background: none;
+  border: none;
+  color: #eb9666;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 0;
+  margin-left: 8px;
+  transition: color 0.2s ease;
+}
+
+.schedule-toggle-btn:hover {
+  color: #d4833f;
+}
+
+.full-schedule {
+  margin-top: 12px;
+  padding: 12px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+}
+
+.schedule-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.schedule-item:last-child {
+  border-bottom: none;
+}
+
+.schedule-item .day {
+  font-weight: 600;
+  color: #333;
+  width: 20px;
+  flex-shrink: 0;
+}
+
+.schedule-item .hours {
+  color: #666;
+  font-size: 13px;
+}
+
+/* 영업 상태 스타일 */
+.business-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.business-status .status-badge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 12px;
+  text-align: center;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.business-status .status-badge.영업중 {
+  background: #e8f5e8;
+  color: #2e7d32;
+}
+
+.business-status .status-badge.영업전 {
+  background: #f59e0b;
+  color: white;
+}
+
+.business-status .status-badge.영업종료 {
+  background: #ffebee;
+  color: #c62828;
+}
+
+.business-status .status-badge.휴무 {
+  background: #6b7280;
+  color: white;
+}
+
+.business-status .status-badge.정보없음 {
+  background: #9ca3af;
+  color: white;
+}
+
+.status-message {
+  font-size: 11px;
+  color: #666;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.today-schedule {
+  margin-bottom: 8px;
+}
+
+.schedule-text {
+  font-size: 13px;
+  color: #999;
+  font-weight: 500;
+}
+
+.schedule-header {
+  font-weight: 600;
+  color: #333;
+  font-size: 14px;
+  margin-bottom: 8px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.today-hours {
+  margin-bottom: 8px;
 }
