@@ -393,13 +393,16 @@ function MapContainer({
         console.error('위치 정보 가져오기 실패:', error);
         
         let errorMessage = '위치 정보를 가져올 수 없습니다.';
+        // eslint-disable-next-line default-case
         switch (error.code) {
           case error.PERMISSION_DENIED:
             errorMessage = '위치 접근이 거부되었습니다. 브라우저 설정을 확인해주세요.';
             break;
+
           case error.POSITION_UNAVAILABLE:
             errorMessage = '위치 정보를 사용할 수 없습니다.';
             break;
+
           case error.TIMEOUT:
             errorMessage = '위치 정보 요청이 시간 초과되었습니다.';
             break;
@@ -569,6 +572,7 @@ function MapContainer({
 
             // 클릭 이벤트
             window.kakao.maps.event.addListener(companyMarker, "click", function () {
+              
               // 동일 마커 재클릭 → 해제
               if (currentSelectedMarkerRef.current === companyMarker) {
                 companyMarker.setImage(companyMarker._normalImage);
@@ -660,7 +664,6 @@ function MapContainer({
 
       <CompanyDetailModal
         selectedCompany={selectedCompany}
-        services={services}
         onClose={handleModalClose}
       />
     </div>

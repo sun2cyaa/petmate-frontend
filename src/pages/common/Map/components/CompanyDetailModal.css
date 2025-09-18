@@ -522,13 +522,14 @@
   min-width: 0;
 }
 
-.business-status .status-badge {
+.business-status > .status-badge {
   font-size: 11px;
   font-weight: 600;
   padding: 3px 8px;
   border-radius: 12px;
   text-align: center;
   white-space: nowrap;
+  min-width: 0!important;
   flex-shrink: 0;
 }
 
@@ -548,8 +549,8 @@
 }
 
 .business-status .status-badge.휴무 {
-  background: #6b7280;
-  color: white;
+  background: #ffebee;
+  color: #c62828;
 }
 
 .business-status .status-badge.정보없음 {
@@ -558,7 +559,7 @@
 }
 
 .status-message {
-  font-size: 11px;
+  font-size: 13px;
   color: #666;
   font-weight: 500;
   white-space: nowrap;
@@ -583,6 +584,7 @@
   border-bottom: 1px solid #e9ecef;
 }
 
-.today-hours {
-  margin-bottom: 8px;
+/* 리뷰 스타일 */
+.review-content {
+  padding: 16px;
 }

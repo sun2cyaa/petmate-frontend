@@ -11,8 +11,11 @@ import {
 import "./MapPage.css";
 import { getNearbyCompanies } from "../../../services/companyService";
 import CompanyListSidebar from "./components/CompanyListSidebar";
+import { getAddressesByDefault } from "../../../services/addressService";
+import { useAuth } from "../../../contexts/AuthContext";
 import SearchBar from "./components/SearchBar";
 import MapContainer from "./components/MapContainer";
+
 
 function MapPage() {
   const [isKakaoLoaded, setIsKakaoLoaded] = useState(false);
@@ -27,6 +30,7 @@ function MapPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredCompanies, setFilteredCompanies] = useState([]);
   const initOnceRef = useRef(false);
+  const { user } = useAuth();
 
   // 지도 페이지에서만 스크롤 제거
   useEffect(() => {
@@ -111,8 +115,8 @@ function MapPage() {
         console.warn('카카오맵 services가 로드되지 않았습니다.');
         searchByCompanyName(searchQuery);
       }
-    } catch (error) {
-      console.error('검색 오류:', error);
+    } catch (e) {
+      console.error('검색 오류:', e);
       searchByCompanyName(searchQuery);
     }
   }, [searchQuery, companies]);
@@ -184,22 +188,54 @@ function MapPage() {
     if (!isKakaoLoaded || initOnceRef.current) return;
     initOnceRef.current = true;
 
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (pos) => {
-          const { latitude, longitude } = pos.coords;
-          setUserLocation({ latitude, longitude });
-        },
-        () => {
+    const initailizeLocation = async () => {
+      try {
+        // 1순위: 로그인 사용자의 기본 주소
+        if (user?.userId) {
+          try {
+            const defaultAddress = await getAddressesByDefault(user.userId);
+            if(defaultAddress?.latitude && defaultAddress?.longitude) {
+              setUserLocation({
+                latitude: defaultAddress.latitude,
+                longitude: defaultAddress.longitude
+              });
+              return;
+            }
+          } catch(e) {
+            console.log('기본주소 로드 실패, GPS 시도:', e);
+          }
+        }
+
+        // 2순위: GPS 위치
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(
+            (pos) => {
+              const { latitude, longitude } = pos.coords;
+              setUserLocation({ latitude, longitude });
+            },
+            () => {
+              // 3순위: 서울시청 기본값
+              const lat = 37.5665, lng = 126.978;
+              setUserLocation({ latitude: lat, longitude: lng });
+            }
+          );
+        } else {
+          // GPS 미지원 시 기본값
           const lat = 37.5665, lng = 126.978;
           setUserLocation({ latitude: lat, longitude: lng });
         }
-      );
-    } else {
-      const lat = 37.5665, lng = 126.978;
-      setUserLocation({ latitude: lat, longitude: lng });
-    }
-  }, [isKakaoLoaded]);
+      } catch(e) {
+        console.error('위치 초기화 오류:', e);
+        // 최종 풀백
+        const lat = 37.5665, lng = 126.978;
+        setUserLocation({ latitude: lat, longitude: lng });
+      }
+    };
+
+    initailizeLocation();
+    }, [isKakaoLoaded, user]);
+
+    
 
   return (
     <div className="map_wrap">
