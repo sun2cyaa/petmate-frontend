@@ -35,7 +35,6 @@
 }
 
 .company-header {
-  display: flex;
   justify-content: space-between;
   align-items: flex-start;
   margin-bottom: 8px;
@@ -43,6 +42,7 @@
 
 .name-and-service {
   display: flex;
+  flex-direction: row;
   align-items: center;
   gap: 12px;
   flex: 1;
@@ -50,7 +50,6 @@
 
 .company-name {
   font-size: 16px;
-  font-weight: 700;
   color: #333;
   margin: 0;
   line-height: 1.2;
@@ -71,12 +70,11 @@
   flex-shrink: 0;
 }
 
-.business-status {
+.company-card .operating-info .business-status {
   font-size: 11px;
   font-weight: 600;
   padding: 3px 8px;
   border-radius: 12px;
-  white-space: nowrap;
 }
 
 .business-status.open {
@@ -102,11 +100,15 @@
   white-space: nowrap;
 }
 
-.operating-info {
+.company-info .operating-info {
+  display: flex;
   margin-bottom: 6px;
+  align-items: center;
+  gap: 8px;
 }
+  
 
-.operating-hours {
+.company-info .operating-hours {
   font-size: 11px;
   color: #666;
   font-weight: 500;

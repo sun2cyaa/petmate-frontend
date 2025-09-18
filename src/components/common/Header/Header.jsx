@@ -27,14 +27,54 @@ function Header() {
     const [defaultAddress, setDefaultAddress] = useState(null);
     const closeTimer = useRef(null);
 
-    const normalizeRole = (val) => {
-        let r = String(val ?? "1").trim();
-        if (
-            (r.startsWith('"') && r.endsWith('"')) ||
-            (r.startsWith("'") && r.endsWith("'"))
-        )
-            r = r.slice(1, -1).trim();
-        return ["1", "2", "3", "4", "9"].includes(r) ? r : "1";
+  const normalizeRole = (val) => {
+    let r = String(val ?? "1").trim();
+    if (
+      (r.startsWith('"') && r.endsWith('"')) ||
+      (r.startsWith("'") && r.endsWith("'"))
+    )
+      r = r.slice(1, -1).trim();
+    return ["1", "2", "3", "4", "9"].includes(r) ? r : "1";
+  };
+
+  const role = normalizeRole(user?.role);
+  const isPetOwner = role === "2" || role === "4";
+  const isPetmate = role === "3" || role === "4";
+  const isBoth = role === "4";
+
+  const handleLogout = async () => {
+    await logout();
+  };
+
+  const displayName =
+    user?.name || user?.nickname || user?.email || user?.userId || "사용자";
+
+  const profileSrc =
+    user?.profileImage || user?.picture || user?.avatarUrl || null;
+
+  const onUserEnter = () => {
+    if (closeTimer.current) {
+      clearTimeout(closeTimer.current);
+      closeTimer.current = null;
+    }
+    setUserOpen(true);
+  };
+
+  const onUserLeave = () => {
+    closeTimer.current = setTimeout(() => {
+      setUserOpen(false);
+      closeTimer.current = null;
+    }, 120);
+  };
+
+  const onUserToggleClick = () => setUserOpen((v) => !v);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const headerEl = document.querySelector("header");
+      if (!headerEl) return;
+      if (window.scrollY > 10) headerEl.classList.add("scrolled");
+      else headerEl.classList.remove("scrolled");
     };
 
     const role = normalizeRole(user?.role);
@@ -168,23 +208,23 @@ return (
                                 <Home size={16} className="menu-icon" /> 주소 관리
                             </Link>
 
-                            {/* {isPetOwner && ( */}
-                            <>
-                                <div className="user-menu_divider"></div>
-                                <Link to="/petowner/profile" className="user-menu_item">
-                                    <Edit size={16} className="menu-icon" /> 반려인 정보
-                                </Link>
-                            </>
-                            {/* )} */}
+                {isPetOwner && (
+                <>
+                  <div className="user-menu_divider"></div>
+                  <Link to="/user/profile?mode=petowner" className="user-menu_item">
+                    <Edit size={16} className="menu-icon" /> 반려인 정보
+                  </Link>
+                </>
+                )}
 
-                            {/* {isPetmate && ( */}
-                            <>
-                                <div className="user-menu_divider"></div>
-                                <Link to="/petmate-profile" className="user-menu_item">
-                                    <Edit size={16} className="menu-icon" /> 펫메이트 정보 수정
-                                </Link>
-                            </>
-                            {/* )} */}
+                {isPetmate && (
+                <>
+                  <div className="user-menu_divider"></div>
+                  <Link to="/user/profile?mode=petmate" className="user-menu_item">
+                    <Edit size={16} className="menu-icon" /> 펫메이트 정보
+                  </Link>
+                </>
+                )}
 
                             <div className="user-menu_divider"></div>
                             <button
@@ -275,34 +315,46 @@ return (
                             </div>
                         </div>
 
-                        {/* {isPetmate && ( */}
-                        <div className="header_dropdown">
-                            <span className="nav-link petmate-nav">
-                                <Users size={16} className="nav-icon" /> 펫메이트
-                            </span>
-                            <div className="header_petmate_menu">
-                                <Link to="/petmate/booking" className="header_petmate_item">
-                                    예약관리
-                                </Link>
-                                <Link to="/petmate/service" className="header_petmate_item">
-                                    서비스관리
-                                </Link>
-                                <Link to="/petmate/profile" className="header_petmate_item">
-                                    펫메이트 정보
-                                </Link>
-                            </div>
-                        </div>
-                        {/* )} */}
+              {/* 반려인 관련 메뉴 */}
+              {isBoth ? (
+                <Link to="/user/profile?mode=petowner" className="nav-link petowner-switch">
+                  <Heart size={16} className="nav-icon" /> 반려인으로 전환
+                </Link>
+              ) : isPetOwner ? (
+                <Link to="/user/profile?mode=petowner" className="nav-link petowner-edit">
+                  <Heart size={16} className="nav-icon" /> 반려인 정보
+                </Link>
+              ) : role === "3" ? (
+                <Link to="/user/profile?mode=petowner" className="nav-link become-petowner">
+                  <Heart size={16} className="nav-icon" /> 반려인 되기
+                </Link>
+              ) : (
+                <Link to="/user/profile?mode=petowner" className="nav-link become-petowner">
+                  <Heart size={16} className="nav-icon" /> 반려인 되기
+                </Link>
+              )}
 
-                        {/* {isPetOwner ? ( */}
-                        <Link to="/petowner/profile" className="nav-link petowner-edit">
-                            <Heart size={16} className="nav-icon" /> 반려인 정보
-                        </Link>
-                        {/* ) : ( */}
-                        <Link to="/become-petowner" className="nav-link become-petowner">
-                            <Heart size={16} className="nav-icon" /> 반려인 되기
-                        </Link>
-                        {/* )} */}
+              {/* 펫메이트 관련 메뉴 */}
+              {isBoth ? (
+                <Link to="/user/profile?mode=petmate" className="nav-link petmate-switch">
+                  <Users size={16} className="nav-icon" /> 펫메이트로 전환
+                </Link>
+              ) : isPetmate ? (
+                <Link to="/user/profile?mode=petmate" className="nav-link petmate-edit">
+                  <Users size={16} className="nav-icon" /> 펫메이트 정보
+                </Link>
+              ) : role === "2" ? (
+                <Link to="/user/profile?mode=petmate" className="nav-link become-petmate">
+                  <Users size={16} className="nav-icon" /> 펫메이트 되기
+                </Link>
+              ) : (
+                <Link to="/user/profile?mode=petmate" className="nav-link become-petmate">
+                  <Users size={16} className="nav-icon" /> 펫메이트 되기
+                </Link>
+              )}
+            </>
+          )}
+        </nav>
 
                         {/* {isPetmate ? ( */}
                         <Link to="/petmate-profile" className="nav-link petmate-edit">
