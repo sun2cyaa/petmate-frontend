@@ -98,12 +98,27 @@ function Header() {
                 setDefaultAddress(addresses.roadAddr);
             } catch (error) {
                 console.error('기본주소 로드 오류:', error)
-            } finally {
-
             }
-        }
+        };
+
+        // 처음 로딩 시에 실행됨.
         loadAddressesDefault();
-    }, [user])
+
+        // 기본 주소 변경 이벤트감지해서 변경해주는
+        const handleAddressChange = () => {
+            loadAddressesDefault();
+
+        };
+
+        window.addEventListener("defaultAddressChanged", handleAddressChange);
+
+        // 언마운트 할때 이벤트 제거
+        return () => {
+            window.removeEventListener("defaultAddressChanged", handleAddressChange);
+
+        };
+
+    }, [isLogined, user]);
 
     return (
         <header>
