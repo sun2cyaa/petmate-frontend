@@ -24,11 +24,21 @@ import Notice from "./components/common/Header/Notice";
 import Event from "./components/common/Header/Event";
 import UserProfilePage from "./pages/user/UserProfilePage";
 
+// 푸터 영역
+import Terms from "./components/common/Footer/policy/Terms";
+import Privacy from "./components/common/Footer/policy/Privacy";
+import CopyrightPolicy from "./components/common/Footer/policy/CopyrightPolicy";
+import OperationPolicy from "./components/common/Footer/policy/OperationPolicy";
+import FAQ from "./components/common/Footer/support/FAQ";
+import Inquiry from "./components/common/Footer/support/Inquiry";
+import CustomerCenter from "./components/common/Footer/support/CustomerCenter";
+
 import "./styles/App.css";
 import Header from "./components/common/Header/Header";
 
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
 import BookingPage from "./pages/booking/BookingPage";
+
 
 function AppRoutes() {
   const location = useLocation();
@@ -92,6 +102,13 @@ function AppRoutes() {
           {/* 기타 */}
           <Route path="/notice" element={<Notice />} />
           <Route path="/event" element={<Event />} />
+          <Route path="/terms" element={<Terms />} />
+          <Route path="/privacy" element={<Privacy />} />
+          <Route path="/copyrightpolicy" element={<CopyrightPolicy />} />
+          <Route path="/operationpolicy" element={<OperationPolicy />} />
+          <Route path="/faq" element={<FAQ />} />
+          <Route path="/inquiry" element={<Inquiry />} />
+          <Route path="/customercenter" element={<CustomerCenter />} />
           <Route path="/test" element={<div>Test</div>} />
 
           {/* 없는 경로 */}
