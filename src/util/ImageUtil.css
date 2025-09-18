@@ -738,11 +738,11 @@
 }
 
 .simple-upload-area {
-    border: 2px dashed #d1d5db;
+    border: 2px dashed #EB9666;
     border-radius: 8px;
     padding: 24px;
     text-align: center;
-    background-color: #f9fafb;
+    background-color: #FFF9F6;
     cursor: pointer;
     transition: all 0.2s;
     min-height: 100px;
@@ -776,8 +776,9 @@
 }
 
 .simple-upload-area:hover {
-    border-color: #3b82f6;
-    background-color: #f0f9ff;
+    border-color: #E05353;
+    background-color: #FFF3F0;
+    transform: scale(1.02); 
 }
 
 .simple-upload-area .upload-placeholder {

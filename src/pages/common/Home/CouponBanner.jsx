@@ -34,7 +34,7 @@ const CouponBanner = ({ isLogined }) => {
       <div className="coupon-actions">
         <button
           className="coupon-btn"
-          onClick={() => (window.location.href = "/signup")}
+          onClick={() => (window.location.href = "/Signin")}
         >
           가입하기
         </button>
