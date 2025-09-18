@@ -1,8 +1,8 @@
 import { apiRequest } from "./api";
 
 // 주소 목록 조회
-export const getAddresses = async () => {
-    const response = await apiRequest.get("/api/address");
+export const getAddresses = async (params) => {
+    const response = await apiRequest.get("/api/address", { params });
     return response.data;
 };
 

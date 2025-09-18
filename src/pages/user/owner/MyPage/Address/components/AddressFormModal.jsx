@@ -29,6 +29,7 @@ export default function AddressFormModal({
   onAddressSearch = () => {},
 }) {
   const isEditMode = !!address;
+  const [isDaumLoaded, setIsDaumLoaded] = useState(false);
   const [showMapModal, setShowMapModal] = useState(false);
   const [mapSelectedLocation, setMapSelectedLocation] = useState(null);
 
@@ -94,9 +95,15 @@ export default function AddressFormModal({
     // 다음 우편번호
     if (!window.daum) {
       const script = document.createElement("script");
-      script.src =
-        "https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js";
+      script.src = "https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js";
+      script.onload = () => setIsDaumLoaded(true);
+      script.onerror = () => {
+        console.error('다음 우편번호 스크립트 로딩 실패');
+        setIsDaumLoaded(false);
+      };
       document.head.appendChild(script);
+    } else {
+      setIsDaumLoaded(true);
     }
 
     // Kakao 지도 API 스크립트 로드 (좌표 검색용)
@@ -114,6 +121,11 @@ export default function AddressFormModal({
 
   // ---------- 다음 우편번호 팝업 ----------
   const handleDaumPostcode = () => {
+    if (!isDaumLoaded || !window.daum || !window.daum.Postcode) {
+      alert('주소 검색 서비스를 준비 중입니다. 잠시 후 다시 시도해주세요.');
+      return;
+    }
+
     new window.daum.Postcode({
       oncomplete: function (data) {
         const addr = data.address; // 최종 주소
@@ -305,9 +317,10 @@ export default function AddressFormModal({
                 type="button"
                 className="address_search_button"
                 onClick={handleDaumPostcode}
+                disabled={!isDaumLoaded}
               >
                 <Search size={16} />
-                주소 검색
+                {isDaumLoaded ? '주소 검색' : '로딩중...'}
               </button>
             </div>
             <div className="address_search_buttons">

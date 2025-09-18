@@ -61,43 +61,59 @@ export default function AddressManagePage({ onBack }) {
 
     console.log("user: ", user);    
 
-    // 사용자의 주소 목록 로드
-    useEffect(() => {
-        const loadAddresses = async () => {
-            if (!user) return
+    // 주소 목록을 불러오는 공통 함수
+    const loadAddresses = async () => {
+        if (!user) return
+
+        try {
+            setIsLoading(true);
+
+            let params = {};
 
             try {
-                setIsLoading(true)
-                const addresses = await addressService.getAddresses()
-                
-                const formattedAddresses = addresses.map(addr => ({
-                    ...addr,
-                    id: addr.id,
-                    type: addr.type,
-                    typeName: addr.type === "집" ? "집" : addr.type === "회사" ? "회사" : "기타",
-                    icon: addr.type === "집" ? Home : addr.type === "회사" ? Building2 : MapPinned,
-                    address: addr.address,
-                    detail: addr.detail,
-                    alias: addr.alias,
-                    isDefault: addr.isDefault,
-                    postcode: addr.postcode,
-                    distance: "거리 계산 중...",
-                    color: ""
-                }))
-
-                console.log('formattedAddresses', formattedAddresses);
-
-                setSavedAddresses(formattedAddresses);
-            } catch (error) {
-                console.error('주소 목록 로드 오류:', error)
-                setSavedAddresses([])
-            } finally {
-                setIsLoading(false)
+                const currentLocation = await getCurrentLocation();
+                params = {
+                    userLat: currentLocation.latitude,
+                    userLng: currentLocation.longitude
+                };
+                console.log('현재 위치:', currentLocation);
+            } catch(e) {
+                console.log('현재 위치 가져오기 실패, 거리 계산 생략:', e);
             }
-        }
+            const addresses = await addressService.getAddresses(params);
+            
+            const formattedAddresses = addresses.map(addr => ({
+                ...addr,
+                id: addr.id,
+                type: addr.type,
+                typeName: addr.type === "집" ? "집" : addr.type === "회사" ? "회사" : "기타",
+                icon: addr.type === "집" ? Home : addr.type === "회사" ? Building2 : MapPinned,
+                address: addr.address,
+                detail: addr.detail,
+                alias: addr.alias,
+                isDefault: addr.isDefault,
+                postcode: addr.postcode,
+                distance: addr.distanceKm ? (addr.distanceKm >= 1 
+                                                ? `${addr.distanceKm.toFixed(1)}km`
+                                                : `${Math.round(addr.distanceKm * 1000)}m`
+                                            ) : "위치 정보 없음",
+                color: ""
+            }));
 
+            setSavedAddresses(formattedAddresses);
+        } catch (e) {
+            console.error('주소 목록 로드 오류:', e)
+            setSavedAddresses([])
+        } finally {
+            setIsLoading(false)
+        }
+    }
+
+    // 사용자의 주소 목록 로드
+    useEffect(() => {
         loadAddresses()
     }, [user])
+
     const [activeTab, setActiveTab] = useState("address")
     const [showAddressModal, setShowAddressModal] = useState(false)
     const [showMapModal, setShowMapModal] = useState(false)
@@ -169,7 +185,7 @@ export default function AddressManagePage({ onBack }) {
             }
 
             const backendData = {
-                type: "etc",
+                type: "기타",
                 address: pastAddress.address,
                 detail: pastAddress.detail || "",
                 alias: `${pastAddress.petMateName} 방문지`,
@@ -179,23 +195,12 @@ export default function AddressManagePage({ onBack }) {
                 longitude: null,
             };
 
-            const savedAddress = await addressService.createAddress(backendData);
+            // 주소 저장 (거리 정보 없이)
+            await addressService.createAddress(backendData);
 
-            const newAddress = {
-                id: savedAddress.id,
-                type: savedAddress.type,
-                typeName: savedAddress.type === "집" ? "집" : savedAddress.type === "회사" ? "회사" : "기타",
-                icon: savedAddress.type === "집" ? Home : savedAddress.type === "회사" ? Building2 : MapPinned,
-                address: savedAddress.address,
-                detail: savedAddress.detail,
-                alias: savedAddress.alias,
-                isDefault: savedAddress.isDefault,
-                postcode: savedAddress.postcode,
-                distance: "거리 계산 중...",
-                color: "",
-            };
+            // 저장 완료 후 전체 주소 목록 새로고침 (거리 계산 포함)
+            await loadAddresses();
 
-            setSavedAddresses((prev) => [...prev, newAddress]);
             alert("주소가 주소록에 추가되었습니다!");
         } catch (error) {
             console.error("주소 추가 오류:", error);
@@ -219,9 +224,10 @@ export default function AddressManagePage({ onBack }) {
     const handleConfirmDelete = async () => {
         try {
             await addressService.deleteAddress(selectedAddressForAction.id);
-            setSavedAddresses((prev) =>
-                prev.filter((addr) => addr.id !== selectedAddressForAction.id)
-            );
+            
+            // 삭제 완료 후 전체 주소 목록 새로고침
+            await loadAddresses();
+            
             setSelectedAddressForAction(null);
             alert("주소가 삭제되었습니다.");
         } catch (error) {
@@ -237,26 +243,18 @@ export default function AddressManagePage({ onBack }) {
             await addressService.setDefaultAddress(addressId)
             console.log("백엔드 응답 OK");
 
-            setSavedAddresses((prev) => {
-                console.log("prev:", prev, "addressId:", addressId);
+            // 기본 주소 설정 완료 후 전체 주소 목록 새로고침
+            await loadAddresses();
 
-                const updated = prev.map((addr) => ({
-                    ...addr,
-                    isDefault: String(addr.id) === String(addressId),
-                }));
-
-                const selected = updated.find((addr) => String(addr.id) === String(addressId));
-                console.log("selected:", selected);
-
-                 if (selected) {
-                    localStorage.setItem("defaultAddress", JSON.stringify(selected));
-                    console.log("localStorage 저장 완료:", selected);
-                    window.dispatchEvent(new Event("storage"));
-                    window.dispatchEvent(new CustomEvent("defaultAddressChanged"));
-                    }
-
-            return updated;
-        });
+            // localStorage 업데이트
+            const updatedAddress = savedAddresses.find((addr) => String(addr.id) === String(addressId));
+            if (updatedAddress) {
+                const defaultAddress = { ...updatedAddress, isDefault: true };
+                localStorage.setItem("defaultAddress", JSON.stringify(defaultAddress));
+                console.log("localStorage 저장 완료:", defaultAddress);
+                window.dispatchEvent(new Event("storage"));
+                window.dispatchEvent(new CustomEvent("defaultAddressChanged"));
+            }
 
             alert("기본 주소가 설정되었습니다.")
         } catch (error) {
@@ -266,90 +264,41 @@ export default function AddressManagePage({ onBack }) {
     }
 
     const handleSaveAddress = async (addressData) => {
-        if (selectedAddressForAction) {
-            // 수정 모드
-            try {
-                const convertedType = addressData.type === "home" ? "집" :
-                                     addressData.type === "work" ? "회사" : "기타";
-                const backendData = {
-                    type: convertedType,
-                    address: addressData.address,
-                    detail: addressData.detail || "",
-                    alias: addressData.alias || "",
-                    isDefault: addressData.isDefault || false,
-                    postcode: addressData.postcode || "",
-                    latitude: addressData.coordinates ? addressData.coordinates.y || addressData.coordinates.lat || addressData.coordinates.latitude: null,
-                    longitude: addressData.coordinates ? addressData.coordinates.x || addressData.coordinates.lng || addressData.coordinates.longitude: null,
-                    ownerId: user?.userId
-                };
-                
-                const updatedAddress = await addressService.updateAddress(selectedAddressForAction.id, backendData)
+        try {
+            const convertedType = addressData.type === "home" ? "집" :
+                                 addressData.type === "work" ? "회사" : "기타";
+            const backendData = {
+                type: convertedType,
+                address: addressData.address,
+                detail: addressData.detail || "",
+                alias: addressData.alias || "",
+                isDefault: addressData.isDefault || false,
+                postcode: addressData.postcode || "",
+                latitude: addressData.coordinates ? addressData.coordinates.y || addressData.coordinates.lat || addressData.coordinates.latitude : null,
+                longitude: addressData.coordinates ? addressData.coordinates.x || addressData.coordinates.lng || addressData.coordinates.longitude : null,
+                ownerId: user?.userId
+            };
 
-                setSavedAddresses((prev) =>
-                    prev.map((addr) =>
-                        addr.id === selectedAddressForAction.id
-                            ? {
-                                ...addr,
-                                type: updatedAddress.type,
-                                typeName: updatedAddress.type === "집" ? "집" : updatedAddress.type === "회사" ? "회사" : "기타",
-                                icon: updatedAddress.type === "집" ? Home : updatedAddress.type === "회사" ? Building2 : MapPinned,
-                                address: updatedAddress.address,
-                                detail: updatedAddress.detail,
-                                alias: updatedAddress.alias,
-                                isDefault: updatedAddress.isDefault,
-                                postcode: updatedAddress.postcode,
-                            }
-                            : addr,
-                    ),
-                )
-                setSelectedAddressForAction(null)
-                alert("주소가 수정되었습니다.")
-            } catch (error) {
-                console.error('주소 수정 오류:', error)
-                alert(error.response?.data?.message || "주소 수정 중 오류가 발생했습니다.")
+            if (selectedAddressForAction) {
+                // 수정 모드 - 거리 정보 없이 수정
+                await addressService.updateAddress(selectedAddressForAction.id, backendData);
+                alert("주소가 수정되었습니다.");
+            } else {
+                // 추가 모드 - 거리 정보 없이 생성
+                await addressService.createAddress(backendData);
+                alert("주소가 추가되었습니다!");
             }
-        } else {
-            // 추가 모드
-            try {
-                const convertedType = addressData.type === "home" ? "집" :
-                                     addressData.type === "work" ? "회사" : "기타";
-                const backendData = {
-                    type: convertedType,
-                    address: addressData.address,
-                    detail: addressData.detail || "",
-                    alias: addressData.alias || "",
-                    isDefault: addressData.isDefault || false,
-                    postcode: addressData.postcode || "",
-                    latitude: addressData.coordinates ? addressData.coordinates.y : null,
-                    longitude: addressData.coordinates ? addressData.coordinates.x : null,
-                    ownerId: user?.userId
-                };
-                
-                const savedAddress = await addressService.createAddress(backendData)
 
-                const newAddress = {
-                    id: savedAddress.id,
-                    type: savedAddress.type,
-                    typeName: savedAddress.type === "집" ? "집" : savedAddress.type === "회사" ? "회사" : "기타",
-                    icon: savedAddress.type === "집" ? Home : savedAddress.type === "회사" ? Building2 : MapPinned,
-                    address: savedAddress.address,
-                    detail: savedAddress.detail,
-                    alias: savedAddress.alias,
-                    isDefault: savedAddress.isDefault,
-                    postcode: savedAddress.postcode,
-                    distance: "거리 계산 중...",
-                    color: "",
-                }
-
-                setSavedAddresses(prev => [...prev, newAddress])
-                alert("주소가 추가되었습니다!")
-            } catch (error) {
-                console.error('주소 저장 오류:', error)
-                alert(error.response?.data?.message || "주소 저장 중 오류가 발생했습니다.")
-            }
+            // 저장/수정 완료 후 전체 주소 목록 새로고침 (거리 계산 포함)
+            await loadAddresses();
+            
+            setSelectedAddressForAction(null);
+            
+        } catch (error) {
+            console.error('주소 저장/수정 오류:', error);
+            alert(error.response?.data?.message || "주소 저장/수정 중 오류가 발생했습니다.");
         }
     }
-
 
     return (
         <div className="address-page">
@@ -368,7 +317,6 @@ export default function AddressManagePage({ onBack }) {
                             주소 추가
                         </button>
                     </div>
-
 
                     <div className="addresses-section">
                         <h3>저장된 주소</h3>
@@ -483,7 +431,6 @@ export default function AddressManagePage({ onBack }) {
                         setSelectedAddress({
                             id: "map-selected",
                             address: location.address,
-
                             x: location.longitude,
                             y: location.latitude
                         })
