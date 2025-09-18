@@ -158,59 +158,105 @@ export default function AddressManagePage({ onBack }) {
         setSearchResults([])
     }
 
-    const handleAddToAddressBook = (pastAddress) => {
-        const existingAddress = savedAddresses.find((addr) => addr.address === pastAddress.address && addr.detail === pastAddress.detail)
-        if (existingAddress) { alert("이미 저장된 주소입니다."); return }
-        const newAddress = {
-            id: Date.now(),
-            type: "etc",
-            typeName: "기타",
-            icon: MapPinned,
-            address: pastAddress.address,
-            detail: pastAddress.detail,
-            alias: `${pastAddress.petMateName} 방문지`,
-            isDefault: false,
-            postcode: "",
-            distance: "거리 계산 중...",
-            color: "",
+    const handleAddToAddressBook = async (pastAddress) => {
+        try {
+            const existingAddress = savedAddresses.find(
+                (addr) => addr.address === pastAddress.address && addr.detail === pastAddress.detail
+            );
+            if (existingAddress) {
+                alert("이미 저장된 주소입니다.");
+                return;
+            }
+
+            const backendData = {
+                type: "etc",
+                address: pastAddress.address,
+                detail: pastAddress.detail || "",
+                alias: `${pastAddress.petMateName} 방문지`,
+                isDefault: false,
+                postcode: "",
+                latitude: null,
+                longitude: null,
+            };
+
+            const savedAddress = await addressService.createAddress(backendData);
+
+            const newAddress = {
+                id: savedAddress.id,
+                type: savedAddress.type,
+                typeName: savedAddress.type === "집" ? "집" : savedAddress.type === "회사" ? "회사" : "기타",
+                icon: savedAddress.type === "집" ? Home : savedAddress.type === "회사" ? Building2 : MapPinned,
+                address: savedAddress.address,
+                detail: savedAddress.detail,
+                alias: savedAddress.alias,
+                isDefault: savedAddress.isDefault,
+                postcode: savedAddress.postcode,
+                distance: "거리 계산 중...",
+                color: "",
+            };
+
+            setSavedAddresses((prev) => [...prev, newAddress]);
+            alert("주소가 주소록에 추가되었습니다!");
+        } catch (error) {
+            console.error("주소 추가 오류:", error);
+            alert(error.response?.data?.message || "주소 추가 중 오류가 발생했습니다.");
         }
-        setSavedAddresses((prev) => [...prev, newAddress])
-        alert("주소가 주소록에 추가되었습니다!")
-    }
+    };
 
-    const handleDeleteClick = (address) => {
-        setSelectedAddressForAction(address)
-        setShowDeleteModal(true)
-    }
-
+    // 주소 수정 버튼 클릭
     const handleEditClick = (address) => {
-        setSelectedAddressForAction(address)
-        setShowAddressModal(true)
-    }
+        setSelectedAddressForAction(address);
+        setShowAddressModal(true);
+    };
 
+    // 주소 삭제 버튼 클릭
+    const handleDeleteClick = (address) => {
+        setSelectedAddressForAction(address);
+        setShowDeleteModal(true);
+    };
+
+    // 주소 삭제 확정
     const handleConfirmDelete = async () => {
         try {
-            await addressService.deleteAddress(selectedAddressForAction.id)
-            setSavedAddresses((prev) => prev.filter((addr) => addr.id !== selectedAddressForAction.id))
-            setSelectedAddressForAction(null)
-            alert("주소가 삭제되었습니다.")
+            await addressService.deleteAddress(selectedAddressForAction.id);
+            setSavedAddresses((prev) =>
+                prev.filter((addr) => addr.id !== selectedAddressForAction.id)
+            );
+            setSelectedAddressForAction(null);
+            alert("주소가 삭제되었습니다.");
         } catch (error) {
-            console.error('주소 삭제 오류:', error)
-            alert(error.response?.data?.message || "주소 삭제 중 오류가 발생했습니다.")
+            console.error("주소 삭제 오류:", error);
+            alert(error.response?.data?.message || "주소 삭제 중 오류가 발생했습니다.");
         }
-    }
+    };
 
     const handleSetDefaultAddress = async (addressId) => {
+         console.log("기본 주소 설정 시도:", addressId);
+
         try {
             await addressService.setDefaultAddress(addressId)
+            console.log("백엔드 응답 OK");
 
-            // 로컬 상태 업데이트 - 모든 주소를 기본이 아니게 만들고, 선택된 주소만 기본으로 설정
-            setSavedAddresses(prev =>
-                prev.map(addr => ({
+            setSavedAddresses((prev) => {
+                console.log("prev:", prev, "addressId:", addressId);
+
+                const updated = prev.map((addr) => ({
                     ...addr,
-                    isDefault: addr.id === addressId
-                }))
-            )
+                    isDefault: String(addr.id) === String(addressId),
+                }));
+
+                const selected = updated.find((addr) => String(addr.id) === String(addressId));
+                console.log("selected:", selected);
+
+                 if (selected) {
+                    localStorage.setItem("defaultAddress", JSON.stringify(selected));
+                    console.log("localStorage 저장 완료:", selected);
+                    window.dispatchEvent(new Event("storage"));
+                    window.dispatchEvent(new CustomEvent("defaultAddressChanged"));
+                    }
+
+            return updated;
+        });
 
             alert("기본 주소가 설정되었습니다.")
         } catch (error) {
@@ -223,8 +269,6 @@ export default function AddressManagePage({ onBack }) {
         if (selectedAddressForAction) {
             // 수정 모드
             try {
-                // 수정모드에서도 coordinates 데이터를 백엔드 형식에 맞게 변환
-                // 영어 타입을 한국어로 변환
                 const convertedType = addressData.type === "home" ? "집" :
                                      addressData.type === "work" ? "회사" : "기타";
                 const backendData = {
@@ -267,8 +311,6 @@ export default function AddressManagePage({ onBack }) {
         } else {
             // 추가 모드
             try {
-                // coordinates 데이터를 백엔드 형식에 맞게 변환
-                // 영어 타입을 한국어로 변환
                 const convertedType = addressData.type === "home" ? "집" :
                                      addressData.type === "work" ? "회사" : "기타";
                 const backendData = {
@@ -441,6 +483,7 @@ export default function AddressManagePage({ onBack }) {
                         setSelectedAddress({
                             id: "map-selected",
                             address: location.address,
+
                             x: location.longitude,
                             y: location.latitude
                         })

@@ -44,6 +44,12 @@ export const deleteAddress = async (id) => {
 
 // 기본 주소 설정
 export const setDefaultAddress = async (id) => {
-    const response = await apiRequest.put(`/api/address/${id}/default`);
+    const response = await apiRequest.put(`/api/address/${id}/default`, {});
+    return response.data;
+};
+
+// 기본주소 조회
+export const getAddressesByDefault = async (id) => {
+    const response = await apiRequest.get(`/api/address/${id}`);
     return response.data;
 };
