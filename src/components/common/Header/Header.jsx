@@ -37,8 +37,8 @@ function Header() {
 
   const role = normalizeRole(user?.role);
   const isPetOwner = role === "2" || role === "4";
-  // const isPetmate  = role === "3" || role === "4";
-  const isPetmate = "3";
+  const isPetmate = role === "3" || role === "4";
+  const isBoth = role === "4";
 
   const handleLogout = async () => {
     await logout();
@@ -141,23 +141,23 @@ function Header() {
                   <Home size={16} className="menu-icon" /> 주소 관리
                 </Link>
 
-                {/* {isPetOwner && ( */}
+                {isPetOwner && (
                 <>
                   <div className="user-menu_divider"></div>
-                  <Link to="/petowner/profile" className="user-menu_item">
+                  <Link to="/user/profile?mode=petowner" className="user-menu_item">
                     <Edit size={16} className="menu-icon" /> 반려인 정보
                   </Link>
                 </>
-                {/* )} */}
+                )}
 
-                {/* {isPetmate && ( */}
+                {isPetmate && (
                 <>
                   <div className="user-menu_divider"></div>
-                  <Link to="/petmate-profile" className="user-menu_item">
-                    <Edit size={16} className="menu-icon" /> 펫메이트 정보 수정
+                  <Link to="/user/profile?mode=petmate" className="user-menu_item">
+                    <Edit size={16} className="menu-icon" /> 펫메이트 정보
                   </Link>
                 </>
-                {/* )} */}
+                )}
 
                 <div className="user-menu_divider"></div>
                 <button
@@ -267,25 +267,43 @@ function Header() {
               </div>
               {/* )} */}
 
-              {/* {isPetOwner ? ( */}
-              <Link to="/petowner/profile" className="nav-link petowner-edit">
-                <Heart size={16} className="nav-icon" /> 반려인 정보
-              </Link>
-              {/* ) : ( */}
-              <Link to="/become-petowner" className="nav-link become-petowner">
-                <Heart size={16} className="nav-icon" /> 반려인 되기
-              </Link>
-              {/* )} */}
+              {/* 반려인 관련 메뉴 */}
+              {isBoth ? (
+                <Link to="/user/profile?mode=petowner" className="nav-link petowner-switch">
+                  <Heart size={16} className="nav-icon" /> 반려인으로 전환
+                </Link>
+              ) : isPetOwner ? (
+                <Link to="/user/profile?mode=petowner" className="nav-link petowner-edit">
+                  <Heart size={16} className="nav-icon" /> 반려인 정보
+                </Link>
+              ) : role === "3" ? (
+                <Link to="/user/profile?mode=petowner" className="nav-link become-petowner">
+                  <Heart size={16} className="nav-icon" /> 반려인 되기
+                </Link>
+              ) : (
+                <Link to="/user/profile?mode=petowner" className="nav-link become-petowner">
+                  <Heart size={16} className="nav-icon" /> 반려인 되기
+                </Link>
+              )}
 
-              {/* {isPetmate ? ( */}
-              <Link to="/petmate-profile" className="nav-link petmate-edit">
-                <Edit size={16} className="nav-icon" /> 펫메이트 정보 수정
-              </Link>
-              {/* ) : ( */}
-              <Link to="/become-petmate" className="nav-link become-petmate">
-                <Users size={16} className="nav-icon" /> 펫메이트 되기
-              </Link>
-              {/* )} */}
+              {/* 펫메이트 관련 메뉴 */}
+              {isBoth ? (
+                <Link to="/user/profile?mode=petmate" className="nav-link petmate-switch">
+                  <Users size={16} className="nav-icon" /> 펫메이트로 전환
+                </Link>
+              ) : isPetmate ? (
+                <Link to="/user/profile?mode=petmate" className="nav-link petmate-edit">
+                  <Users size={16} className="nav-icon" /> 펫메이트 정보
+                </Link>
+              ) : role === "2" ? (
+                <Link to="/user/profile?mode=petmate" className="nav-link become-petmate">
+                  <Users size={16} className="nav-icon" /> 펫메이트 되기
+                </Link>
+              ) : (
+                <Link to="/user/profile?mode=petmate" className="nav-link become-petmate">
+                  <Users size={16} className="nav-icon" /> 펫메이트 되기
+                </Link>
+              )}
             </>
           )}
         </nav>

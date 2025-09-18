@@ -14,7 +14,6 @@ import PaymentFailPage from "./pages/payment/PaymentFailPage";
 import AddressManagePage from "./pages/user/owner/MyPage/Address/AddressManagePage";
 import PetManagePage from "./pages/user/owner/MyPage/PetManagePage";
 import ProfilePage from "./pages/user/owner/MyPage/ProfilePage";
-import PetMateSignupPage from "./pages/user/petmate/PetMateSignupPage";
 import BookingManagePage from "./pages/user/petmate/BookingManagePage";
 import CompanyManagePage from "./pages/company/CompanyManagePage";
 import CompanyRegisterPage from "./pages/company/CompanyRegisterPage";
@@ -23,16 +22,7 @@ import ProductRegisterPage from "./pages/product/ProductRegisterPage";
 import ProductEditPage from "./pages/product/ProductEditPage";
 import Notice from "./components/common/Header/Notice";
 import Event from "./components/common/Header/Event";
-import PetOwnerSignupPage from "./pages/user/petowner/PetOwnerSignupPage";
-// 푸터 이용약관들
-import Terms from "./components/common/Footer/policy/Terms";
-import Privacy from "./components/common/Footer/policy/Privacy";
-import CopyrightPolicy from "./components/common/Footer/policy/CopyrightPolicy";
-import OperationPolicy from "./components/common/Footer/policy/OperationPolicy";
-import FAQ from "./components/common/Footer/support/FAQ";
-import Inquiry from "./components/common/Footer/support/Inquiry";
-import CustomerCenter from "./components/common/Footer/support/CustomerCenter";
-
+import UserProfilePage from "./pages/user/UserProfilePage";
 
 import "./styles/App.css";
 import Header from "./components/common/Header/Header";
@@ -72,9 +62,16 @@ function AppRoutes() {
           <Route path="/payment/success" element={<PaymentSuccessPage />} />
           <Route path="/payment/fail" element={<PaymentFailPage />} />
 
-          {/* 반려인/펫메이트 */}
-          <Route path="/become-petowner" element={<PetOwnerSignupPage />} />
-          <Route path="/become-petmate" element={<PetMateSignupPage />} />
+          {/* 반려인/펫메이트 - 통합 라우트 */}
+          <Route path="/user/profile" element={<UserProfilePage />} />
+
+          {/* 기존 라우트 리다이렉트 */}
+          <Route path="/become-petowner" element={<Navigate to="/user/profile?mode=petowner" replace />} />
+          <Route path="/become-petmate" element={<Navigate to="/user/profile?mode=petmate" replace />} />
+          <Route path="/petowner/profile" element={<Navigate to="/user/profile?mode=petowner" replace />} />
+          <Route path="/petmate-profile" element={<Navigate to="/user/profile?mode=petmate" replace />} />
+
+          {/* 펫메이트 예약 관리 */}
           <Route path="/petmate/booking" element={<BookingManagePage />} />
 
           {/* 예약 */}
@@ -96,15 +93,6 @@ function AppRoutes() {
           <Route path="/notice" element={<Notice />} />
           <Route path="/event" element={<Event />} />
           <Route path="/test" element={<div>Test</div>} />
-          {/* 푸터 이용약관들 */}
-          <Route path="/policy/terms" element={<Terms />} />
-          <Route path="/policy/privacy" element={<Privacy />} />
-          <Route path="/policy/copyright" element={<CopyrightPolicy />} />
-          <Route path="/policy/operation" element={<OperationPolicy />} />
-
-          <Route path="/support/faq" element={<FAQ />} />
-          <Route path="/support/inquiry" element={<Inquiry />} />
-          <Route path="/support/customerCenter" element={<CustomerCenter />} />
 
           {/* 없는 경로 */}
           <Route path="*" element={<Navigate to="/intro" replace />} />
