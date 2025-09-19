@@ -1,12 +1,22 @@
-import React from "react";
+import React, { useEffect } from "react";
 import iconFail from "../../assets/images/payment/icon_fail.png";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 const PaymentFailPage = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+
+  useEffect(() => {
+    // URL 파라미터에서 orderId 가져와서 localStorage에 실패 상태 저장
+    const orderId = searchParams.get("orderId");
+    if (orderId) {
+      localStorage.setItem(`payment_${orderId}`, 'fail');
+    }
+  }, [searchParams]);
 
   const handleBackToBooking = () => {
-    navigate("/booking");
+    // 창 닫기 (부모 창으로 돌아가기)
+    window.close();
   };
 
   const styles = {

@@ -11,7 +11,7 @@ import map_icon4 from "../../../../assets/images/map/map_icon4.png";
 import map_icon5 from "../../../../assets/images/map/map_icon5.png";
 import map_icon6 from "../../../../assets/images/map/map_icon6.png";
 
-function CompanyDetailModal({ selectedCompany, onClose }) {
+function CompanyDetailModal({ selectedCompany, onClose, onBookingClick }) {
   const [activeTab, setActiveTab] = useState('home');
   const [showFullSchedule, setShowFullSchedule] = useState(false);
 
@@ -37,10 +37,10 @@ function CompanyDetailModal({ selectedCompany, onClose }) {
         </div>
 
         <div className="reservation-section">
-          <a href="#none">
+          <button onClick={() => onBookingClick && onBookingClick(selectedCompany)}>
             <img src={reserved_white} alt="예약하기" />
             <span>예약하기</span>
-          </a>
+          </button>
         </div>
 
         {/* 탭 네비게이션 */}

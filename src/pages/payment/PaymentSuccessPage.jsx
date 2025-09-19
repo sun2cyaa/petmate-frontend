@@ -29,6 +29,11 @@ const PaymentSuccess = () => {
 
         console.log("결제 성공 정보:", { orderId, transactionId, amount });
 
+        // localStorage에 결제 성공 상태 저장 (BookingConfirmStep에서 확인용)
+        if (orderId) {
+          localStorage.setItem(`payment_${orderId}`, 'success');
+        }
+
         // 결제 정보 저장
         setPaymentData({
           orderId,
@@ -53,14 +58,8 @@ const PaymentSuccess = () => {
   }, [searchParams]);
 
   const handleGoToBookingComplete = () => {
-    // 결제 정보와 함께 예약 완료 페이지로 이동
-    const params = new URLSearchParams({
-      completed: "true",
-      orderId: paymentData?.orderId || "",
-      amount: paymentData?.amount || "0",
-    });
-
-    navigate(`/booking?${params.toString()}`);
+    // 창 닫기 (부모 창으로 돌아가기)
+    window.close();
   };
 
   const styles = {

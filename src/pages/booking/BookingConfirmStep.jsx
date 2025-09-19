@@ -15,6 +15,8 @@ const BookingConfirmStep = () => {
   });
   const [danalPayments, setDanalPayments] = useState(null);
   const [bookingId, setBookingId] = useState(null);
+  const [paymentStatus, setPaymentStatus] = useState(null); // 'success', 'fail', 'pending'
+  const [paymentWindow, setPaymentWindow] = useState(null);
 
   // 다날 SDK 초기화
   useEffect(() => {
@@ -34,6 +36,38 @@ const BookingConfirmStep = () => {
     const timer = setTimeout(initializeDanalSDK, 100);
     return () => clearTimeout(timer);
   }, []);
+
+  // 결제 완료 확인을 위한 메시지 리스너
+  useEffect(() => {
+    const handleMessage = (event) => {
+      // 다날 결제창에서 오는 메시지 처리
+      if (event.origin === 'http://localhost:3000' || event.origin === window.location.origin) {
+        if (event.data.type === 'PAYMENT_SUCCESS') {
+          console.log("결제 성공 메시지 수신:", event.data);
+          setPaymentStatus('success');
+        } else if (event.data.type === 'PAYMENT_FAIL') {
+          console.log("결제 실패 메시지 수신:", event.data);
+          setPaymentStatus('fail');
+        }
+      }
+    };
+
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, []);
+
+  // 결제 상태에 따른 처리
+  useEffect(() => {
+    if (paymentStatus === 'success') {
+      console.log("결제 성공 확인됨, 완료 단계로 이동");
+      dispatch({ type: "SET_STEP", payload: 4 });
+      setPaymentStatus(null); // 상태 초기화
+    } else if (paymentStatus === 'fail') {
+      console.log("결제 실패 확인됨");
+      alert("결제가 실패했습니다. 다시 시도해주세요.");
+      setPaymentStatus(null); // 상태 초기화
+    }
+  }, [paymentStatus, dispatch]);
 
   const handleTermsChange = (type) => {
     if (type === "all") {
@@ -176,13 +210,52 @@ const BookingConfirmStep = () => {
 
       console.log("다날 결제 요청:", paymentParams);
 
-      // 다날 결제창 호출
-      const paymentResult = await danalPayments.requestPayment(paymentParams);
-      console.log("결제 완료:", paymentResult);
+      // 결제 대기 상태로 설정
+      setPaymentStatus('pending');
 
-      // 결제 성공 시 BookingCompleteStep으로 이동
-      // 다날은 외부 창에서 결제하므로 성공 시 바로 Step 4로 이동
-      dispatch({ type: "SET_STEP", payload: 4 });
+      // 다날 결제창 호출
+      console.log("다날 결제창 호출 중...");
+      await danalPayments.requestPayment(paymentParams);
+
+      // 결제창이 호출되면 결제 상태를 폴링으로 확인
+      console.log("결제창 호출 완료, 결제 완료 대기 중...");
+
+      // 결제 상태 확인을 위한 폴링 시작
+      const orderId = paymentParams.orderId;
+      let pollCount = 0;
+      const maxPolls = 60; // 최대 5분 대기 (5초 * 60)
+
+      const pollPaymentStatus = async () => {
+        try {
+          // localStorage에서 결제 상태 확인 (success/fail 페이지에서 설정)
+          const paymentResult = localStorage.getItem(`payment_${orderId}`);
+
+          if (paymentResult === 'success') {
+            localStorage.removeItem(`payment_${orderId}`);
+            console.log("결제 성공 확인됨");
+            setPaymentStatus('success');
+            return;
+          } else if (paymentResult === 'fail') {
+            localStorage.removeItem(`payment_${orderId}`);
+            console.log("결제 실패 확인됨");
+            setPaymentStatus('fail');
+            return;
+          }
+
+          pollCount++;
+          if (pollCount < maxPolls) {
+            setTimeout(pollPaymentStatus, 5000); // 5초마다 확인
+          } else {
+            console.log("결제 상태 확인 타임아웃");
+            setPaymentStatus('fail');
+          }
+        } catch (error) {
+          console.error("결제 상태 확인 중 오류:", error);
+        }
+      };
+
+      // 5초 후부터 폴링 시작
+      setTimeout(pollPaymentStatus, 5000);
 
     } catch (error) {
       console.error("결제 처리 실패:", error);

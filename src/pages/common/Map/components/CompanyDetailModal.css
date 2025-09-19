@@ -198,13 +198,14 @@
   text-align: center;
 }
 
-.company-detail-modal .reservation-section a {
+.company-detail-modal .reservation-section button {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  
-  
+  border: none;
+  cursor: pointer;
+
   background: linear-gradient(135deg, #eb9666, #e05353);
   color: #fff;
   text-decoration: none;
@@ -217,7 +218,7 @@
   box-shadow: 0 4px 12px rgba(235, 150, 102, 0.3);
 }
 
-.company-detail-modal .reservation-section a:hover {
+.company-detail-modal .reservation-section button:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(235, 150, 102, 0.4);
 }
