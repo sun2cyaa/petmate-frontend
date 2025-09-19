@@ -144,8 +144,22 @@
   color: #888;
 }
 .search-bar {
+  position: relative;
+  transition: all 0.5s ease;
   width: 100%;
 }
+
+.search-bar.fixed {
+  position: fixed;
+  top: 104px;
+  left: 0;
+  right: 0;
+  z-index: 1500;
+  background: #fff;
+  padding: 12px 700px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
 .search-input-wrapper {
   background: #f8d2bb;
   border-radius: 10px;

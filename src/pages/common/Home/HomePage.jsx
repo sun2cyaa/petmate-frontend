@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react"; // 🔥 useEffect 추가
 import { useNavigate } from "react-router-dom";
 import SitterCard from "./../../../components/SitterCard";
 import SectionTitle from "./../../../components/SectionTitle";
@@ -38,6 +38,7 @@ import expo5Img from "../../../assets/images/banners/expo5Img.jpg";
 const HomePage = ({ isLogined }) => {
   const [activeService, setActiveService] = useState("");
   const [searchText, setSearchText] = useState("");
+  const [isFixed, setIsFixed] = useState(false); // 🔥 검색바 고정 상태 추가
   const navigate = useNavigate();
 
   // 행사 배너 데이터
@@ -259,6 +260,25 @@ const HomePage = ({ isLogined }) => {
     { number: "24시간 고객센터", label: "고객지원" },
   ];
 
+  // 🔥 검색바 고정 이벤트
+  useEffect(() => {
+    const searchBar = document.querySelector(".search-bar");
+    if (!searchBar) return;
+
+    const offsetTop = searchBar.offsetTop;
+
+    const handleScroll = () => {
+      if (window.scrollY > offsetTop - 104) {
+        setIsFixed(true);
+      } else {
+        setIsFixed(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   const handleServiceClick = (serviceId) => {
     setActiveService(activeService === serviceId ? "" : serviceId);
   };
@@ -294,7 +314,8 @@ const HomePage = ({ isLogined }) => {
                 </button>
               ))}
             </div>
-            <div className="search-bar">
+            {/* 🔥 고정 여부에 따라 클래스 추가 */}
+            <div className={`search-bar ${isFixed ? "fixed" : ""}`}>
               <div className="search-input-wrapper">
                 <input
                   type="text"

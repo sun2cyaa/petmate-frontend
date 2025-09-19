@@ -114,10 +114,14 @@ body {
   font-size: 15px;
   transition: color 0.2s;
 }
-.nav a:hover { color: #eb9666; }
-.nav-icon {
-  color: #555;
+.nav a:hover { 
+  color: #eb9666; 
 }
+
+.nav-icon {
+  color: #E05353;
+}
+
 .nav a:hover .nav-icon {
   color: #eb9666;
 }
