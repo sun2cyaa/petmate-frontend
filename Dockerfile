@@ -14,8 +14,8 @@ RUN npm install
 # 소스 코드 복사
 COPY . .
 
-# 프로덕션 빌드
-RUN npm run build
+# 프로덕션 빌드 (메모리 증가)
+RUN NODE_OPTIONS="--max-old-space-size=4096" npm run build
 
 # Nginx 서버 단계
 FROM nginx:alpine
