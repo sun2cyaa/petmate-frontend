@@ -82,7 +82,7 @@
   border-radius: 8px;
   padding: 10px 12px;
   font-size: 14px;
-  /* transition: border 0.2s, box-shadow 0.2s; */
+  transition: border 0.2s, box-shadow 0.2s;
 }
 
 .form-field input:focus,
@@ -90,7 +90,7 @@
 .form-field textarea:focus {
   outline: none;
   border-color: #EB9666;
-  /* box-shadow: 0 0 0 2px rgba(235, 150, 102, 0.2); */
+  box-shadow: 0 0 0 2px rgba(235, 150, 102, 0.2);
 }
 
 .form-field textarea {
@@ -152,7 +152,7 @@
   background: #fff;
   cursor: pointer;
   font-size: 13px;
-  /* transition: all 0.15s; */
+  transition: all 0.15s;
 }
 
 .time-option:hover {
@@ -262,7 +262,7 @@
   border-radius: 8px;
   border: none;
   cursor: pointer;
-  /* transition: background 0.2s; */
+  transition: background 0.2s;
 }
 
 .btn-cancel:hover {

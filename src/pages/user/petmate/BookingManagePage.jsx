@@ -3,9 +3,10 @@ import dayjs from "dayjs";
 import "dayjs/locale/ko";
 import CalendarPanel from "../../../components/ui/Calendar/CalendarPanel";
 import ReservationList from "../../../components/ui/Card/ReservationList";
-import { bookingService } from "../../../services/booking/bookingService";
+import { bookingService } from "../../../services/booking/bookingServiceEx";
 import "../../../styles/user.css";
 import "../../../styles/reservation.css";
+import { useAuth } from "./../../../contexts/AuthContext";
 
 // 아이콘 추가
 import { FaCalendarAlt, FaListUl } from "react-icons/fa";
@@ -14,6 +15,7 @@ import { FaCalendarAlt, FaListUl } from "react-icons/fa";
 dayjs.locale("ko");
 
 const BookingManagePage = () => {
+  const { user, isLogined } = useAuth();
   // 현재 날짜로 초기화 (Day.js 사용)
   const [selectedDate, setSelectedDate] = useState(dayjs().toDate());
   const [reservations, setReservations] = useState([]);
@@ -23,27 +25,49 @@ const BookingManagePage = () => {
     completed: 0,
   });
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
+  // 사용자 로그인 상태 확인
   useEffect(() => {
+    if (!isLogined || !user) {
+      setError("로그인이 필요합니다.");
+      return;
+    }
+
+    if (!user.companyId) {
+      setError("업체 정보가 없습니다. 등록하세요");
+      return;
+    }
+
+    setError(null);
     fetchReservations();
     fetchTodayStats();
-  }, [selectedDate]);
+  }, [selectedDate, isLogined, user]);
 
   const fetchReservations = async () => {
+    if (!user?.companyId) return;
+
     setLoading(true);
+    setError(null);
+
     try {
-      const data = await bookingService.getReservations(selectedDate);
+      const data = await bookingService.getReservations(selectedDate, user);
       setReservations(data);
+      console.log(`${data.length}개의 예약을 불러왔습니다.`);
     } catch (error) {
       console.error("예약 데이터 로딩 실패:", error);
+      setError(error.message || "예약데이터를 불러오는데 실패하였습니다.");
+      setReservations([]);
     } finally {
       setLoading(false);
     }
   };
 
   const fetchTodayStats = async () => {
+    if (!user?.companyId) return;
+
     try {
-      const stats = await bookingService.getTodayStats();
+      const stats = await bookingService.getTodayStats(user);
       setTodayStats(stats);
     } catch (error) {
       console.error("오늘의 예약 현황 로딩 실패:", error);
@@ -57,6 +81,7 @@ const BookingManagePage = () => {
 
   const handleReservationUpdate = async (reservationId, action) => {
     try {
+      setError(null);
       await bookingService.updateReservationStatus(reservationId, action);
 
       // 예약 상태 업데이트
@@ -77,6 +102,19 @@ const BookingManagePage = () => {
     }
   };
 
+  if (error) {
+    return (
+      <div className="booking-manage-page">
+        <div className="error-message">
+          <h2>⚠️ 오류 발생</h2>
+          <p>{error}</p>
+          <button onClick={() => window.location.reload()}>
+            페이지 새로고침
+          </button>
+        </div>
+      </div>
+    );
+  }
   // Day.js를 사용한 날짜 포맷팅
   const getFormattedDate = () => {
     const selected = dayjs(selectedDate);
@@ -119,8 +157,8 @@ const BookingManagePage = () => {
               {loading && <span className="loading-indicator">로딩 중...</span>}
             </h2>
             <div className="reservation-count">
-              <FaListUl style={{ marginRight: "6px", color: "#e05353" }} />
-              총 {reservations.length}건의 예약
+              <FaListUl style={{ marginRight: "6px", color: "#e05353" }} />총{" "}
+              {reservations.length}건의 예약
             </div>
           </div>
 

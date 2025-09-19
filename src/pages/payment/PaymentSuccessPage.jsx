@@ -1,24 +1,66 @@
 import React, { useEffect, useState } from "react";
 import iconFail from "../../assets/images/payment/icon_fail.png";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { getBookingById } from "../../services/booking/bookingService";
+import { getPaymentStatus } from "../../services/payment/paymentService";
 
 const PaymentSuccess = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [bookingData, setBookingData] = useState(null);
+  const [paymentData, setPaymentData] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    // 예약데이터 불러오기
-    const savedBookingData = sessionStorage.getItem("bookingData");
-    if (savedBookingData) {
-      setBookingData(JSON.parse(savedBookingData));
-    }
+    const loadPaymentResult = async () => {
+      try {
+        setIsLoading(true);
 
-    sessionStorage.removeItem("bookingData");
-  }, []);
+        // URL 파라미터에서 결제 결과 정보 가져오기
+        const orderId = searchParams.get("orderId");
+        const transactionId = searchParams.get("transactionId");
+        const amount = searchParams.get("amount");
+
+        if (!orderId) {
+          setError("결제 정보를 찾을 수 없습니다.");
+          return;
+        }
+
+        console.log("결제 성공 정보:", { orderId, transactionId, amount });
+
+        // 결제 정보 저장
+        setPaymentData({
+          orderId,
+          transactionId,
+          amount: parseInt(amount) || 0,
+          status: "SUCCESS",
+        });
+
+        // orderId를 통해 예약 정보 조회 (orderId에 bookingId가 포함되어 있다고 가정)
+        // 실제로는 백엔드에서 orderId로 예약 정보를 찾는 API가 필요할 수 있음
+
+        console.log("결제 완료 처리 성공");
+      } catch (error) {
+        console.error("결제 결과 처리 실패:", error);
+        setError("결제 정보를 불러오는데 실패했습니다.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadPaymentResult();
+  }, [searchParams]);
 
   const handleGoToBookingComplete = () => {
-    navigate("/booking?completed=true");
+    // 결제 정보와 함께 예약 완료 페이지로 이동
+    const params = new URLSearchParams({
+      completed: "true",
+      orderId: paymentData?.orderId || "",
+      amount: paymentData?.amount || "0",
+    });
+
+    navigate(`/booking?${params.toString()}`);
   };
 
   const styles = {
@@ -75,6 +117,33 @@ const PaymentSuccess = () => {
     },
   };
 
+  // 로딩 중
+  if (isLoading) {
+    return (
+      <div style={styles.successContainer}>
+        <div style={styles.successIcon}>
+          <div>⏳</div>
+        </div>
+        <h1 style={styles.title}>결제 결과 확인 중...</h1>
+        <p style={styles.description}>잠시만 기다려주세요.</p>
+      </div>
+    );
+  }
+
+  // 에러
+  if (error) {
+    return (
+      <div style={styles.successContainer}>
+        <div style={styles.successIcon}>
+          <div>❌</div>
+        </div>
+        <h1 style={styles.title}>오류 발생</h1>
+        <p style={styles.description}>{error}</p>
+        <button onClick={() => navigate("/home")}>홈으로 돌아가기</button>
+      </div>
+    );
+  }
+
   return (
     <>
       <style>
@@ -120,9 +189,35 @@ const PaymentSuccess = () => {
         </div>
         <h1 style={styles.title}>결제를 완료했어요</h1>
         <p style={styles.description}>
-          실제 결제 연동시 결제 승인 API 요청을 보내주세요. <br />
-          (샌드박스 환경에서는 실제 결제가 진행되지않습니다.)
+          {paymentData?.amount
+            ? `${paymentData.amount.toLocaleString()}원이 `
+            : ""}
+          결제가 완료되었습니다. <br />
+          예약 정보를 확인해주세요.
         </p>
+
+        {paymentData && (
+          <div style={{ marginBottom: "20px", textAlign: "left" }}>
+            <div style={styles.detailRow}>
+              <span style={styles.detailLabel}>주문번호</span>
+              <span style={styles.detailValue}>{paymentData.orderId}</span>
+            </div>
+            {paymentData.transactionId && (
+              <div style={styles.detailRow}>
+                <span style={styles.detailLabel}>거래번호</span>
+                <span style={styles.detailValue}>
+                  {paymentData.transactionId}
+                </span>
+              </div>
+            )}
+            <div style={styles.detailRow}>
+              <span style={styles.detailLabel}>결제금액</span>
+              <span style={styles.detailValue}>
+                {paymentData.amount.toLocaleString()}원
+              </span>
+            </div>
+          </div>
+        )}
         <a href="/" style={styles.link}>
           홈으로 돌아가기
         </a>

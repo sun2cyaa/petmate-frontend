@@ -1,7 +1,11 @@
 // src/services/api.js
 import axios from "axios";
 
+<<<<<<< HEAD
 const API_BASE = "http://localhost:8090" || process.env.REACT_APP_API_BASE_URL;
+=======
+const API_BASE = process.env.REACT_APP_API_BASE_URL || process.env.REACT_APP_SPRING_API_BASE || "http://localhost:8090";
+>>>>>>> 3bea2ee84000cc559091f7f22ace329712527bc6
 
 const api = axios.create({
     baseURL: API_BASE,

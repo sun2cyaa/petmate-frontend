@@ -37,7 +37,6 @@ import "./styles/App.css";
 import Header from "./components/common/Header/Header";
 
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
-import BookingPage from "./pages/booking/BookingPage";
 
 
 function AppRoutes() {
@@ -83,9 +82,7 @@ function AppRoutes() {
 
           {/* 펫메이트 예약 관리 */}
           <Route path="/petmate/booking" element={<BookingManagePage />} />
-
-          {/* 예약 */}
-          <Route path="/booking" element={<BookingPage />} />
+          
 
           {/* 업체 */}
           <Route path="/companymanage" element={<CompanyManagePage />} />

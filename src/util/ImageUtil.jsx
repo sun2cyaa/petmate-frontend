@@ -3,7 +3,11 @@ import React, { useState } from 'react';
 import { apiRequest } from '../services/api';
 import './ImageUtil.css';
 
+<<<<<<< HEAD
 const FILE_API_BASE_URL = 'http://localhost:8090/api/files';
+=======
+const FILE_API_BASE_URL = `${process.env.REACT_APP_SPRING_API_BASE || 'http://localhost:8090'}/api/files`;
+>>>>>>> 3bea2ee84000cc559091f7f22ace329712527bc6
 
 // S3 이미지 URL 생성 헬퍼 함수
 const getImageUrl = (imageData) => {
