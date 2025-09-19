@@ -8,8 +8,8 @@ import {
     fetchSingleImage
 } from '../../util/ImageUtil';
 
-const API_BASE_URL = 'http://localhost:8090/api/test/jpa';
-const FILE_API_BASE_URL = 'http://localhost:8090/api/files';
+const API_BASE_URL = `${process.env.REACT_APP_SPRING_API_BASE || 'http://localhost:8090'}/api/test/jpa`;
+const FILE_API_BASE_URL = `${process.env.REACT_APP_SPRING_API_BASE || 'http://localhost:8090'}/api/files`;
 
 const Test = () => {
     const [tests, setTests] = useState([]);
@@ -526,7 +526,7 @@ const Test = () => {
                                 <div className="image-info">
                                     <p><strong>경로:</strong> {imagePath}</p>
                                     <img 
-                                        src={`http://localhost:8090/${imagePath}`} 
+                                        src={`${process.env.REACT_APP_SPRING_API_BASE || 'http://localhost:8090'}/${imagePath}`} 
                                         alt={`Uploaded ${index + 1}`}
                                         style={{ maxWidth: '200px', maxHeight: '150px', objectFit: 'cover' }}
                                         onError={(e) => {
