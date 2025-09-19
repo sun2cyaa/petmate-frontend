@@ -31,6 +31,21 @@ const PaymentPage = () => {
           window.history.back();
           return;
         }
+
+        // 이전 페이지에서 선택한 결제 방법 가져오기
+        const savedPaymentMethod = localStorage.getItem('selectedPaymentMethod');
+        if (savedPaymentMethod) {
+          // 결제 방법 매핑 (BookingConfirmStep의 방법을 PaymentPage 방법으로 변환)
+          const methodMap = {
+            'card': 'CARD',
+            'transfer': 'TRANSFER',
+            'mobile': 'MOBILE',
+            'integrated': 'INTEGRATED'
+          };
+          setSelectedPayMethod(methodMap[savedPaymentMethod] || 'INTEGRATED');
+          localStorage.removeItem('selectedPaymentMethod'); // 사용 후 삭제
+        }
+
         console.log("예약 정보 로드 : ", bookingId);
         const booking = await getBookingForPayment(bookingId);
 
@@ -70,10 +85,9 @@ const PaymentPage = () => {
   const baseParams = {
     orderName: bookingData?.selectedProduct?.name || "펫케어 서비스",
     amount: bookingData?.totalAmount || 100,
-    merchantId: "9810030930",
+    merchantId: process.env.REACT_APP_DANAL_MERCHANT_ID || "9810030930", // 환경변수로 변경
     orderId: new Date().getTime().toString(),
     userId: "user@naver.com",
-    // 백엔드 콜백 URL로 변경
     successUrl: "http://localhost:8090/api/payment/danal/success",
     failUrl: "http://localhost:8090/api/payment/danal/fail",
     userEmail: "user@naver.com",
@@ -84,7 +98,7 @@ const PaymentPage = () => {
     const initializeDanalSDK = async () => {
       try {
         const payments = await loadDanalPaymentsSDK({
-          clientKey: "CL_TEST_I4d8FWYSSKl-42F7y3o9g_7iexSCyHbL8qthpZxPnpY=",
+          clientKey: process.env.REACT_APP_DANAL_CLIENT_KEY || "CL_TEST_I4d8FWYSSKl-42F7y3o9g_7iexSCyHbL8qthpZxPnpY=",
         });
         setDanalPayments(payments);
         console.log("다날 SDK 초기화 완료");
@@ -249,6 +263,11 @@ const PaymentPage = () => {
       return;
     }
 
+    if (!danalPayments) {
+      alert("결제 시스템이 준비되지 않았습니다. 페이지를 새로고침해주세요.");
+      return;
+    }
+
     setIsLoading(true);
 
     try {
@@ -261,7 +280,9 @@ const PaymentPage = () => {
       console.log("백엔드에 결제 요청 전송:", paymentData);
       const backendResponse = await sendPaymentRequestToBackend(paymentData);
 
-      if (!backendResponse || !backendResponse.success) {
+      console.log("백엔드 응답 상세:", backendResponse);
+
+      if (!backendResponse || (!backendResponse.success && !backendResponse.isSuccess)) {
         throw new Error("백엔드 결제 요청 실패");
       }
 
@@ -316,7 +337,9 @@ const PaymentPage = () => {
       console.log("Mock 결제 - 백엔드에 결제 요청 전송:", paymentData);
       const backendResponse = await sendPaymentRequestToBackend(paymentData);
 
-      if (!backendResponse || !backendResponse.success) {
+      console.log("Mock 결제 - 백엔드 응답:", backendResponse);
+
+      if (!backendResponse || (!backendResponse.success && !backendResponse.isSuccess)) {
         throw new Error("백엔드 결제 요청 실패");
       }
 

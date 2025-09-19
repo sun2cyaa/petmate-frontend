@@ -15,6 +15,7 @@ import AddressManagePage from "./pages/user/owner/MyPage/Address/AddressManagePa
 import PetManagePage from "./pages/user/owner/MyPage/PetManagePage";
 import ProfilePage from "./pages/user/owner/MyPage/ProfilePage";
 import BookingManagePage from "./pages/user/petmate/BookingManagePage";
+import BookingHistoryPage from "./pages/user/owner/BookingHistoryPage";
 import CompanyManagePage from "./pages/company/CompanyManagePage";
 import CompanyRegisterPage from "./pages/company/CompanyRegisterPage";
 import ProductManagePage from "./pages/product/ProductManagePage";
@@ -82,6 +83,11 @@ function AppRoutes() {
 
           {/* 펫메이트 예약 관리 */}
           <Route path="/petmate/booking" element={<BookingManagePage />} />
+          <Route path="/user/petmate/booking-manage" element={<BookingManagePage />} />
+
+          {/* 반려인 예약 내역 */}
+          <Route path="/user/owner/booking-history" element={<BookingHistoryPage />} />
+          <Route path="/my-bookings" element={<BookingHistoryPage />} />
           
 
           {/* 업체 */}

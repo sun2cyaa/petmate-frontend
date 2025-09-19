@@ -1,11 +1,14 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState } from "react";
 import BookingContext from "./BookingContext";
 import { createBooking } from "../../services/booking/bookingService";
 import { formatDateForAPI, combineDateTime } from "../../services/booking/timeSlotService";
-import { loadDanalPaymentsSDK } from "@danalpay/javascript-sdk";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../contexts/AuthContext";
 
 const BookingConfirmStep = () => {
   const { state, dispatch } = useContext(BookingContext);
+  const navigate = useNavigate();
+  const { user } = useAuth();
   const [paymentMethod, setPaymentMethod] = useState("card");
   const [agreedTerms, setAgreedTerms] = useState({
     all: false,
@@ -13,61 +16,7 @@ const BookingConfirmStep = () => {
     privacy: false,
     payment: false,
   });
-  const [danalPayments, setDanalPayments] = useState(null);
-  const [bookingId, setBookingId] = useState(null);
-  const [paymentStatus, setPaymentStatus] = useState(null); // 'success', 'fail', 'pending'
-  const [paymentWindow, setPaymentWindow] = useState(null);
 
-  // 다날 SDK 초기화
-  useEffect(() => {
-    const initializeDanalSDK = async () => {
-      try {
-        console.log("다날 SDK 초기화 시작...");
-        const payments = await loadDanalPaymentsSDK({
-          clientKey: "CL_TEST_I4d8FWYSSKl-42F7y3o9g_7iexSCyHbL8qthpZxPnpY=",
-        });
-        setDanalPayments(payments);
-        console.log("다날 SDK 초기화 완료");
-      } catch (error) {
-        console.error("다날 SDK 초기화 실패:", error);
-      }
-    };
-
-    const timer = setTimeout(initializeDanalSDK, 100);
-    return () => clearTimeout(timer);
-  }, []);
-
-  // 결제 완료 확인을 위한 메시지 리스너
-  useEffect(() => {
-    const handleMessage = (event) => {
-      // 다날 결제창에서 오는 메시지 처리
-      if (event.origin === 'http://localhost:3000' || event.origin === window.location.origin) {
-        if (event.data.type === 'PAYMENT_SUCCESS') {
-          console.log("결제 성공 메시지 수신:", event.data);
-          setPaymentStatus('success');
-        } else if (event.data.type === 'PAYMENT_FAIL') {
-          console.log("결제 실패 메시지 수신:", event.data);
-          setPaymentStatus('fail');
-        }
-      }
-    };
-
-    window.addEventListener('message', handleMessage);
-    return () => window.removeEventListener('message', handleMessage);
-  }, []);
-
-  // 결제 상태에 따른 처리
-  useEffect(() => {
-    if (paymentStatus === 'success') {
-      console.log("결제 성공 확인됨, 완료 단계로 이동");
-      dispatch({ type: "SET_STEP", payload: 4 });
-      setPaymentStatus(null); // 상태 초기화
-    } else if (paymentStatus === 'fail') {
-      console.log("결제 실패 확인됨");
-      alert("결제가 실패했습니다. 다시 시도해주세요.");
-      setPaymentStatus(null); // 상태 초기화
-    }
-  }, [paymentStatus, dispatch]);
 
   const handleTermsChange = (type) => {
     if (type === "all") {
@@ -95,9 +44,18 @@ const BookingConfirmStep = () => {
     return { subtotal, tax, total };
   };
 
+  const isPaymentEnabled = () => {
+    return (
+      agreedTerms.service &&
+      agreedTerms.privacy &&
+      agreedTerms.payment &&
+      paymentMethod
+    );
+  };
+
   const handlePayment = async () => {
-    if (!isPaymentEnabled() || !danalPayments) {
-      if (!danalPayments) alert("결제 시스템이 준비되지 않았습니다.");
+    if (!isPaymentEnabled()) {
+      alert("모든 필수 약관에 동의해주세요.");
       return;
     }
 
@@ -115,25 +73,54 @@ const BookingConfirmStep = () => {
     try {
       dispatch({ type: "SET_LOADING", field: "booking", value: true });
 
-      // 1. 예약 생성
-      const formattedDate = formatDateForAPI(state.selectedDate);
-      const startDateTime = combineDateTime(formattedDate, state.selectedTimeSlot?.startTime);
-      const endDateTime = combineDateTime(formattedDate, state.selectedTimeSlot?.endTime);
+      // 1. 예약 생성 - 강제로 오늘 날짜/현재 시간 사용
+      const now = new Date();
+      const todayDate = formatDateForAPI(now); // 오늘 날짜 YYYY-MM-DD
 
-      console.log("날짜/시간 변환:", {
-        selectedDate: state.selectedDate,
-        formattedDate,
-        timeSlot: state.selectedTimeSlot,
+      // 현재 시간 기반으로 시작/종료 시간 설정
+      const currentHour = now.getHours();
+      const currentMinute = String(now.getMinutes()).padStart(2, '0');
+      const startTime = `${String(currentHour).padStart(2, '0')}:${currentMinute}`;
+
+      // 종료 시간은 시작 시간 + 1시간
+      const endHour = currentHour + 1;
+      const endTime = `${String(endHour).padStart(2, '0')}:${currentMinute}`;
+
+      const startDateTime = combineDateTime(todayDate, startTime);
+      const endDateTime = combineDateTime(todayDate, endTime);
+
+      console.log("강제 현재 시간 설정:", {
+        현재시간: now.toISOString(),
+        오늘날짜: todayDate,
+        시작시간: startTime,
+        종료시간: endTime,
         startDateTime,
         endDateTime
+      });
+
+      console.log("날짜/시간 변환 상세:", {
+        selectedDate: state.selectedDate,
+        selectedDateType: typeof state.selectedDate,
+        todayDate,
+        timeSlot: state.selectedTimeSlot,
+        startDateTime,
+        endDateTime,
+        currentDate: new Date().toISOString(),
+        todayFormatted: formatDateForAPI(new Date())
       });
 
       if (!startDateTime || !endDateTime) {
         throw new Error("예약 날짜 또는 시간이 올바르지 않습니다.");
       }
 
+      // 사용자 ID 추출 (BookingHistoryPage와 동일한 로직)
+      const userId = user?.id || user?.userId || user?.memberId;
+      if (!userId) {
+        throw new Error("로그인된 사용자 정보를 찾을 수 없습니다.");
+      }
+
       const bookingData = {
-        ownerUserId: 1, // 임시 - 실제로는 로그인된 사용자 ID
+        ownerUserId: userId,
         companyId: state.selectedStore.companyId || state.selectedStore.id,
         productId: state.selectedProduct.id,
         startDt: startDateTime,
@@ -144,7 +131,15 @@ const BookingConfirmStep = () => {
         status: "0", // 예약대기
       };
 
-      console.log("예약 생성 데이터:", bookingData);
+      console.log("예약 생성 데이터 상세 -> ", {
+        ...bookingData,
+        백엔드전송형식: {
+          startDt: startDateTime,
+          endDt: endDateTime,
+          startDt_formatted: new Date(startDateTime).toISOString(),
+          endDt_formatted: new Date(endDateTime).toISOString()
+        }
+      });
 
       if (!bookingData.companyId || !bookingData.productId) {
         throw new Error("필수 예약 정보가 누락되었습니다.");
@@ -157,116 +152,13 @@ const BookingConfirmStep = () => {
         throw new Error("예약 생성에 실패했습니다.");
       }
 
-      setBookingId(createdBooking.id);
-
-      // 2. 다날 결제 진행 (mock 백엔드로 콜백)
-      const baseParams = {
-        orderName: state.selectedProduct?.name || "펫케어 서비스",
-        amount: total,
-        merchantId: "9810030930",
-        orderId: `booking_${createdBooking.id}_${new Date().getTime()}`,
-        userId: "user@naver.com",
-        successUrl: `http://localhost:8090/api/payment/danal/success`,
-        failUrl: `http://localhost:8090/api/payment/danal/fail`,
-        userEmail: "user@naver.com",
-      };
-
-      let paymentParams;
-      switch (paymentMethod) {
-        case "card":
-          paymentParams = {
-            ...baseParams,
-            paymentsMethod: "CARD",
-          };
-          break;
-        case "transfer":
-          paymentParams = {
-            ...baseParams,
-            paymentsMethod: "TRANSFER",
-          };
-          break;
-        case "mobile":
-          paymentParams = {
-            ...baseParams,
-            paymentsMethod: "MOBILE",
-            itemCode: "1270000000",
-            itemType: "1",
-          };
-          break;
-        default:
-          paymentParams = {
-            ...baseParams,
-            paymentsMethod: "INTEGRATED",
-            methods: {
-              mobile: { itemCode: "1270000000", itemType: "1" },
-              virtualAccount: { notiUrl: "https://notiUrl.com" },
-              card: {},
-              naverPay: {},
-              kakaoPay: {},
-              payco: {},
-            },
-          };
-      }
-
-      console.log("다날 결제 요청:", paymentParams);
-
-      // 결제 대기 상태로 설정
-      setPaymentStatus('pending');
-
-      // 다날 결제창 호출
-      console.log("다날 결제창 호출 중...");
-      await danalPayments.requestPayment(paymentParams);
-
-      // 결제창이 호출되면 결제 상태를 폴링으로 확인
-      console.log("결제창 호출 완료, 결제 완료 대기 중...");
-
-      // 결제 상태 확인을 위한 폴링 시작
-      const orderId = paymentParams.orderId;
-      let pollCount = 0;
-      const maxPolls = 60; // 최대 5분 대기 (5초 * 60)
-
-      const pollPaymentStatus = async () => {
-        try {
-          // localStorage에서 결제 상태 확인 (success/fail 페이지에서 설정)
-          const paymentResult = localStorage.getItem(`payment_${orderId}`);
-
-          if (paymentResult === 'success') {
-            localStorage.removeItem(`payment_${orderId}`);
-            console.log("결제 성공 확인됨");
-            setPaymentStatus('success');
-            return;
-          } else if (paymentResult === 'fail') {
-            localStorage.removeItem(`payment_${orderId}`);
-            console.log("결제 실패 확인됨");
-            setPaymentStatus('fail');
-            return;
-          }
-
-          pollCount++;
-          if (pollCount < maxPolls) {
-            setTimeout(pollPaymentStatus, 5000); // 5초마다 확인
-          } else {
-            console.log("결제 상태 확인 타임아웃");
-            setPaymentStatus('fail');
-          }
-        } catch (error) {
-          console.error("결제 상태 확인 중 오류:", error);
-        }
-      };
-
-      // 5초 후부터 폴링 시작
-      setTimeout(pollPaymentStatus, 5000);
+      // 2. 선택된 결제 방법을 저장하고 결제 페이지로 이동
+      localStorage.setItem('selectedPaymentMethod', paymentMethod);
+      navigate(`/payment?bookingId=${createdBooking.id}`);
 
     } catch (error) {
-      console.error("결제 처리 실패:", error);
-
-      if (error.code === "USER_CANCEL") {
-        alert("결제가 취소되었습니다.");
-      } else if (error.code === "WINDOW_CLOSED") {
-        alert("결제창이 닫혔습니다.");
-      } else {
-        alert(`결제 처리 중 오류가 발생했습니다: ${error.message || error}`);
-      }
+      console.error("예약 생성 실패:", error);
+      alert(`예약 생성 중 오류가 발생했습니다: ${error.message || error}`);
     } finally {
       dispatch({ type: "SET_LOADING", field: "booking", value: false });
     }
@@ -274,15 +166,6 @@ const BookingConfirmStep = () => {
 
   const handlePrev = () => {
     dispatch({ type: "SET_STEP", payload: 2 });
-  };
-
-  const isPaymentEnabled = () => {
-    return (
-      agreedTerms.service &&
-      agreedTerms.privacy &&
-      agreedTerms.payment &&
-      paymentMethod
-    );
   };
 
   const { subtotal, tax, total } = calculateTotal();
@@ -605,18 +488,18 @@ const BookingConfirmStep = () => {
           style={{
             flex: "2",
             padding: "16px",
-            background: isPaymentEnabled() && !state.loading.booking && danalPayments
+            background: isPaymentEnabled() && !state.loading.booking
               ? "linear-gradient(135deg, #eb9666, #e05353)"
               : "#e5e7eb",
-            color: isPaymentEnabled() && !state.loading.booking && danalPayments ? "white" : "#9ca3af",
+            color: isPaymentEnabled() && !state.loading.booking ? "white" : "#9ca3af",
             border: "none",
             borderRadius: "8px",
             fontSize: "16px",
             fontWeight: "bold",
-            cursor: isPaymentEnabled() && !state.loading.booking && danalPayments ? "pointer" : "not-allowed",
+            cursor: isPaymentEnabled() && !state.loading.booking ? "pointer" : "not-allowed",
           }}
           onClick={handlePayment}
-          disabled={!isPaymentEnabled() || state.loading.booking || !danalPayments}
+          disabled={!isPaymentEnabled() || state.loading.booking}
         >
           {state.loading.booking
             ? "예약 생성 중..."

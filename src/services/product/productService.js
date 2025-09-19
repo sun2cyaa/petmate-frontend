@@ -11,8 +11,11 @@ const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 // 상품 목록 조회하기
 export const getProducts = async (params = {}) => {
-
     try {
+      // 토큰 확인 로그 추가(토큰 이상함...)
+      const token = localStorage.getItem("accessToken");
+      console.log("저장된 토큰:", token ? "있지? (길이: " + token.length + ")" : "없음");
+
       // 파라미터가 있으면 search 엔드포인트 사용, 없으면 전체 조회
       const hasParams = Object.keys(params).length > 0 && Object.values(params).some(value => value);
 
@@ -21,20 +24,45 @@ export const getProducts = async (params = {}) => {
       if (hasParams) {
         const queryString = new URLSearchParams(params).toString();
         url = `api/products/search?${queryString}`;
-        console.log("상품 검색 api 호출", url);
+        console.log("상품 검색 API 호출:", url);
         console.log("검색 파라미터:", params);
         response = await apiRequest.get(url);
       } else {
         url = 'api/products';
-        // url = 'api/products/myproduct';
-        console.log("전체 상품 조회 api 호출", url);
+        console.log("전체 상품 조회 API 호출:", url);
+        console.log("요청 직전 토큰 재확인:", localStorage.getItem("accessToken") ? "있음" : "없음");
         response = await apiRequest.get(url);
       }
-      console.log("상품 목록 조회?" , response.data);
+
+      console.log("상품 목록 조회 성공:", response.data);
+      console.log("조회된 상품 수:", Array.isArray(response.data) ? response.data.length : "배열이 아님");
+      console.log("response 전체:", response);
+      console.log("response.status:", response.status);
+
+      // 성공 응답이어도 데이터가 비어있을 수 있음
+      if (!response.data) {
+        console.warn("응답 데이터가 null/undefined 둘중에 하나임");
+        return [];
+      }
+
       return response.data;
     } catch(er) {
-      console.error("상품 목록 조회 오류:" , er);
-      alert("상품 목록 불로오기 실패!!");
+      console.error("상품 목록 조회 오류:", er);
+      console.error("오류 상태코드:", er.response?.status);
+      console.error("오류 응답 데이터:", er.response?.data);
+      console.error("오류 메시지:", er.message);
+
+      // 구체적인 오류 메시지 표시
+      let errorMessage = "상품 목록 불러오기 실패!!";
+      if (er.response?.status === 401) {
+        errorMessage = "인증이 필요합니다. 다시 로그인해주세요.";
+      } else if (er.response?.status === 403) {
+        errorMessage = "권한이 없습니다.";
+      } else if (er.response?.status === 500) {
+        errorMessage = "서버 오류가 발생했습니다.";
+      }
+
+      alert(errorMessage);
       throw er;
     }
 };

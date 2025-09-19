@@ -237,7 +237,7 @@ function Header() {
               <Link to="/home">
                 <Star size={16} className="nav-icon" /> 즐겨찾기
               </Link>
-              <Link to="/booking">
+              <Link to="/my-bookings">
                 <CalendarCheck size={16} className="nav-icon" /> 예약내역
               </Link>
               {/* 업체 관리 */}

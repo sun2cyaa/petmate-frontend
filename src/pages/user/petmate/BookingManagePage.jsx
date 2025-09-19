@@ -29,14 +29,22 @@ const BookingManagePage = () => {
 
   // 사용자 로그인 상태 확인
   useEffect(() => {
+    console.log("BookingManagePage - 사용자 정보:", { isLogined, user });
+
     if (!isLogined || !user) {
       setError("로그인이 필요합니다.");
       return;
     }
 
+    // 디버깅: 사용자 객체의 모든 속성 확인
+    console.log("사용자 전체 정보:", user);
+    console.log("companyId 확인:", user.companyId);
+
+    // 임시 companyId 할당 (개발/테스트용)
     if (!user.companyId) {
-      setError("업체 정보가 없습니다. 등록하세요");
-      return;
+      console.warn("companyId가 없습니다. 다양한 companyId를 시도해보겠습니다.");
+      // 먼저 companyId=1 시도, 데이터가 없으면 다른 ID들도 시도
+      user.companyId = 1;
     }
 
     setError(null);
@@ -45,22 +53,69 @@ const BookingManagePage = () => {
   }, [selectedDate, isLogined, user]);
 
   const fetchReservations = async () => {
-    if (!user?.companyId) return;
+    console.log("fetchReservations 시작 - companyId:", user?.companyId);
+
+    // 토큰 상태 확인
+    const token = localStorage.getItem('accessToken');
+    console.log("현재 토큰 상태:", token ? `토큰 존재 (길이: ${token.length})` : '토큰 없음');
+
+    if (!user?.companyId) {
+      console.warn("companyId가 없어서 예약 조회를 건너뜁니다.");
+      return;
+    }
 
     setLoading(true);
     setError(null);
 
     try {
+      console.log("bookingService.getReservations 호출 중...");
       const data = await bookingService.getReservations(selectedDate, user);
       setReservations(data);
       console.log(`${data.length}개의 예약을 불러왔습니다.`);
+
+      // 데이터가 없고 companyId=1인 경우, 다른 companyId 시도
+      if (data.length === 0 && user.companyId === 1) {
+        console.warn("companyId=1에서 예약이 없습니다. 다른 companyId를 시도해보겠습니다.");
+        await tryOtherCompanyIds();
+      }
     } catch (error) {
       console.error("예약 데이터 로딩 실패:", error);
-      setError(error.message || "예약데이터를 불러오는데 실패하였습니다.");
+
+      // 401 에러인 경우 토큰 문제임을 명확히 표시
+      if (error.response?.status === 401) {
+        setError("인증이 만료되었습니다. 페이지를 새로고침하거나 다시 로그인해주세요.");
+      } else {
+        setError(error.message || "예약데이터를 불러오는데 실패하였습니다.");
+      }
       setReservations([]);
     } finally {
       setLoading(false);
     }
+  };
+
+  // 다른 companyId들을 시도해보는 함수
+  const tryOtherCompanyIds = async () => {
+    const companyIdsToTry = [2, 3, 4, 5]; // 가능한 companyId 목록
+
+    for (const companyId of companyIdsToTry) {
+      try {
+        console.log(`companyId=${companyId} 시도 중...`);
+        const tempUser = { ...user, companyId };
+        const data = await bookingService.getReservations(selectedDate, tempUser);
+
+        if (data.length > 0) {
+          console.log(`companyId=${companyId}에서 ${data.length}개의 예약을 찾았습니다!`);
+          user.companyId = companyId; // 찾은 companyId로 업데이트
+          setReservations(data);
+          return;
+        }
+      } catch (error) {
+        console.log(`companyId=${companyId} 시도 실패:`, error.message);
+      }
+    }
+
+    console.warn("오늘 날짜에 예약이 없습니다. 다른 날짜를 선택해보세요.");
+    console.warn("BookingHistoryPage에서 실제 예약 날짜를 확인한 후, 캘린더에서 해당 날짜를 선택하세요.");
   };
 
   const fetchTodayStats = async () => {
