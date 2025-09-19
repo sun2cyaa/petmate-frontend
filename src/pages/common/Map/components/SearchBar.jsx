@@ -35,7 +35,7 @@ function SearchBar({
         />
         <button
           className="search-btn"
-          onClick={onSearch}
+          onClick={() => onSearch(searchQuery)} 
         >
           검색
         </button>
