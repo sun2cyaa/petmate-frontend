@@ -13,7 +13,7 @@ const PaymentPage = () => {
   const [bookingData, setBookingData] = useState(null);
 
   // 백엔드 API 기본 URL
-  const API_BASE_URL = "http://localhost:8090/api/payment";
+  const API_BASE_URL = `${process.env.REACT_APP_SPRING_API_BASE || 'http://localhost:8090'}/api/payment`;
 
   useEffect(() => {
     // 예약데이터 불러오기
@@ -42,8 +42,8 @@ const PaymentPage = () => {
     orderId: new Date().getTime().toString(),
     userId: "user@naver.com",
     // 백엔드 콜백 URL로 변경
-    successUrl: "http://localhost:8090/api/payment/danal/success",
-    failUrl: "http://localhost:8090/api/payment/danal/fail",
+    successUrl: `${process.env.REACT_APP_SPRING_API_BASE || 'http://localhost:8090'}/api/payment/danal/success`,
+    failUrl: `${process.env.REACT_APP_SPRING_API_BASE || 'http://localhost:8090'}/api/payment/danal/fail`,
     userEmail: "user@naver.com",
   };
 
