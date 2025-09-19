@@ -5,8 +5,7 @@ import googleIcon from "../../assets/icons/login/google.png";
 
 const API_BASE =
   (typeof import.meta !== "undefined" && import.meta.env?.VITE_API_BASE) ||
-  process.env.REACT_APP_API_BASE ||
-  "http://localhost:8090";
+  "http://localhost:8090" || process.env.REACT_APP_API_BASE;
 
 export default function SigninPage() {
   const startOAuth = (provider) => {
