@@ -113,8 +113,8 @@
   gap: 10px;
 }
 .service-type-btn {
-  background: #fff;
-  border: 2px solid #eee;
+  background: #fde3d0 !important;
+  border: 2px solid #eb9666 !important;
   border-radius: 16px;
   padding: 20px;
   cursor: pointer;
@@ -133,6 +133,7 @@
 }
 .service-icon {
   font-size: 28px;
+  color: #EB9666;
 }
 .service-name {
   font-size: 17px;
@@ -141,7 +142,8 @@
 }
 .service-desc {
   font-size: 13px;
-  color: #888;
+  font-weight: 600;
+  color: #777;
 }
 .search-bar {
   position: relative;

@@ -168,6 +168,7 @@ function FeedbackFlowSection() {
 
   return (
     <section id="feedback-flow-container" className="feedback-flow-section">
+
       <div className="feedback-header">
         <h2 className="feedback-title">Feedback & Flow</h2>
         <p className="feedback-subtitle">이용 후기 및 예약 절차</p>

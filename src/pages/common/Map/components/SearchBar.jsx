@@ -13,21 +13,6 @@ function SearchBar({
 }) {
   return (
     <div className="map-top-bar">
-      <div className="search-box">
-        <input
-          type="text"
-          placeholder="지역, 업체명을 검색하세요"
-          value={searchQuery}
-          onChange={onSearchChange}
-          onKeyPress={onKeyPress}
-        />
-        <button
-          className="search-btn"
-          onClick={onSearch}
-        >
-          검색
-        </button>
-      </div>
       <div className="service-filter-buttons">
         {services.map((s) => (
           <button
@@ -39,6 +24,23 @@ function SearchBar({
           </button>
         ))}
       </div>
+
+      <div className="search-box">
+        <input
+          type="text"
+          placeholder="지역, 업체명을 검색하세요"
+          value={searchQuery}
+          onChange={onSearchChange}
+          onKeyDown={onKeyPress}
+        />
+        <button
+          className="search-btn"
+          onClick={onSearch}
+        >
+          검색
+        </button>
+      </div>
+      
     </div>
   );
 }

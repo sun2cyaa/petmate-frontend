@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"; // 🔥 useEffect 추가
+import React, { useState, useEffect } from "react"; // useEffect 추가
 import { useNavigate } from "react-router-dom";
 import SitterCard from "./../../../components/SitterCard";
 import SectionTitle from "./../../../components/SectionTitle";
@@ -23,6 +23,7 @@ import {
   FaComments,
   FaCreditCard,
   FaBolt,
+  FaEllipsisH,
 } from "react-icons/fa";
 import "swiper/css";
 import "swiper/css/pagination";
@@ -38,7 +39,7 @@ import expo5Img from "../../../assets/images/banners/expo5Img.jpg";
 const HomePage = ({ isLogined }) => {
   const [activeService, setActiveService] = useState("");
   const [searchText, setSearchText] = useState("");
-  const [isFixed, setIsFixed] = useState(false); // 🔥 검색바 고정 상태 추가
+  const [isFixed, setIsFixed] = useState(false); // 검색바 고정 상태 추가
   const navigate = useNavigate();
 
   // 행사 배너 데이터
@@ -53,11 +54,11 @@ const HomePage = ({ isLogined }) => {
 
   // 서비스
   const services = [
-    { id: "Hotel", name: "호텔", icon: <FaHotel size={28} />, desc: "소중한 가족 안심 호텔링" },
     { id: "care", name: "돌봄", icon: <FaHandsHelping size={28} />, desc: "집에서 안전하게" },
     { id: "walk", name: "산책", icon: <FaDog size={28} />, desc: "건강한 운동" },
     { id: "beauty", name: "미용", icon: <FaCut size={28} />, desc: "깔끔한 스타일링" },
     { id: "hospital", name: "병원", icon: <FaClinicMedical size={28} />, desc: "건강 체크업" },
+    { id: "Hotel", name: "기타", icon: <FaEllipsisH size={28} /> }
   ];
 
   // 추천 펫메이트
@@ -260,7 +261,7 @@ const HomePage = ({ isLogined }) => {
     { number: "24시간 고객센터", label: "고객지원" },
   ];
 
-  // 🔥 검색바 고정 이벤트
+  // 검색바 고정 이벤트
   useEffect(() => {
     const searchBar = document.querySelector(".search-bar");
     if (!searchBar) return;
@@ -314,7 +315,7 @@ const HomePage = ({ isLogined }) => {
                 </button>
               ))}
             </div>
-            {/* 🔥 고정 여부에 따라 클래스 추가 */}
+            {/* 고정 여부에 따라 클래스 추가 */}
             <div className={`search-bar ${isFixed ? "fixed" : ""}`}>
               <div className="search-input-wrapper">
                 <input
