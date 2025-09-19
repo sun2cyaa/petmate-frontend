@@ -1,0 +1,178 @@
+/* 지도 전용 예약 모달 */
+.map-booking-modal {
+  background: white;
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 2px 0 24px rgba(0, 0, 0, 0.15);
+  border: 2px solid #eb9666;
+  margin: 10px;
+}
+
+/* 헤더 */
+.map-booking-header {
+  background: linear-gradient(135deg, #eb9666, #e05353);
+  color: white;
+  flex-shrink: 0;
+  border-radius: 8px 8px 0 0;
+}
+
+.map-booking-header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+}
+
+.map-booking-close {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.map-booking-close:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.05);
+}
+
+.map-booking-title {
+  font-size: 18px;
+  font-weight: bold;
+  margin: 0;
+  color: white;
+}
+
+/* 바디 */
+.map-booking-body {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: #f9fafb;
+}
+
+/* 스크롤바 스타일링 */
+.map-booking-body::-webkit-scrollbar {
+  width: 6px;
+}
+
+.map-booking-body::-webkit-scrollbar-track {
+  background: #f1f3f4;
+  border-radius: 3px;
+}
+
+.map-booking-body::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #eb9666, #e05353);
+  border-radius: 3px;
+}
+
+.map-booking-body::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #d87b4c, #c94545);
+}
+
+/* 내부 컨텐츠 조정 */
+.map-booking-body .productSelect-wrap,
+.map-booking-body .date-select-page,
+.map-booking-body .booking-container,
+.map-booking-body .booking-complete-container {
+  margin: 0;
+  padding: 16px;
+  background: transparent;
+  min-height: auto;
+}
+
+/* 하단 버튼 영역 고정 */
+.map-booking-body .fixedBottom-wrap,
+.map-booking-body .bottom-bar,
+.map-booking-body .footer-actions,
+.map-booking-body .step-footer {
+  position: sticky;
+  bottom: 0;
+  background: white;
+  border-top: 1px solid #e5e7eb;
+  margin: 0;
+  flex-shrink: 0;
+  z-index: 10;
+  padding: 16px;
+}
+
+/* 컨텐츠 영역 패딩 조정 */
+.map-booking-body .company-wrap,
+.map-booking-body .service-category,
+.map-booking-body .product-card,
+.map-booking-body .section-card,
+.map-booking-body .summary-card,
+.map-booking-body .payment-card,
+.map-booking-body .method-card,
+.map-booking-body .terms-card {
+  margin-bottom: 16px;
+}
+
+/* 마지막 요소 마진 제거 */
+.map-booking-body > *:last-child {
+  margin-bottom: 0;
+}
+
+/* 컴팩트한 레이아웃을 위한 조정 */
+.map-booking-body .company-wrap {
+  padding: 16px;
+  margin-bottom: 20px;
+}
+
+.map-booking-body .service-category {
+  padding: 16px;
+  margin-bottom: 20px;
+}
+
+.map-booking-body .products-wrap {
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.map-booking-body .product-card {
+  padding: 16px;
+  margin-bottom: 12px;
+}
+
+/* 날짜 선택 페이지 조정 */
+.map-booking-body .selected-product-info {
+  padding: 16px;
+  margin-bottom: 20px;
+}
+
+.map-booking-body .date-selection,
+.map-booking-body .time-selection,
+.map-booking-body .pet-selection-section {
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+/* 확인 페이지 조정 */
+.map-booking-body .summary-card,
+.map-booking-body .payment-card,
+.map-booking-body .method-card,
+.map-booking-body .terms-card {
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+/* 완료 페이지 조정 */
+.map-booking-body .booking-complete-container {
+  padding: 20px 16px;
+  text-align: center;
+}
+
+.map-booking-body .booking-info-card,
+.map-booking-body .next-steps-card {
+  max-width: 100%;
+  margin: 0 auto 20px;
+  padding: 20px;
+}

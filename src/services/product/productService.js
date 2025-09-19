@@ -183,3 +183,39 @@ export const getProducts = async (params = {}) => {
           throw er;
       }
   };
+
+   // 업체별 상품 조회 (예약에서 사용)
+  export const getProductsByCompany = async (companyId) => {
+    try {
+      console.log('업체별 상품 조회 API 호출:', `/api/products/company/${companyId}`);
+
+      const response = await apiRequest.get(`/api/products/company/${companyId}`);
+      console.log('업체별 상품 조회 응답:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('업체별 상품 조회 실패:', error);
+      // 예약 시에는 alert 대신 조용히 빈 배열 반환
+      return [];
+    }
+  };
+
+  // 서비스 카테고리 조회 (예약에서 사용)
+  export const getServiceCategoriesForBooking = async () => {
+    try {
+      console.log('예약용 서비스 카테고리 조회 API 호출');
+
+      const response = await apiRequest.get('/api/products/service-categories');
+      console.log('서비스 카테고리 조회 응답:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('서비스 카테고리 조회 실패:', error);
+      // 기본 카테고리 반환
+      return [
+        { id: "C", name: "돌봄" },
+        { id: "W", name: "산책" },
+        { id: "G", name: "미용" },
+        { id: "M", name: "병원" },
+        { id: "E", name: "기타" }
+      ];
+    }
+  };
