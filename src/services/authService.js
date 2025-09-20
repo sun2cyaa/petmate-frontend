@@ -1,12 +1,7 @@
 // src/services/authService.js
 import api from "./api";
 
-const API_BASE =
-    (typeof import.meta !== "undefined" &&
-        import.meta.env &&
-        import.meta.env.VITE_API_BASE) ||
-    process.env.REACT_APP_API_BASE ||
-    "http://localhost:8090";
+const API_BASE = process.env.REACT_APP_SPRING_API_BASE || "http://localhost:8090";
 
 /** 로그인 */
 export const signin = async (id, pw) => {

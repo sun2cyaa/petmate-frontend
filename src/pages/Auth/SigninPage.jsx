@@ -3,11 +3,7 @@ import naverIcon from "../../assets/icons/login/naver.png";
 import kakaoIcon from "../../assets/icons/login/kakao.png";
 import googleIcon from "../../assets/icons/login/google.png";
 
-const API_BASE =
-  (typeof import.meta !== "undefined" && import.meta.env?.VITE_API_BASE) ||
-  process.env.REACT_APP_API_BASE_URL ||
-  process.env.REACT_APP_SPRING_API_BASE ||
-  "http://localhost:8090";
+const API_BASE = process.env.REACT_APP_SPRING_API_BASE || "http://localhost:8090";
 
 export default function SigninPage() {
   const startOAuth = (provider) => {
