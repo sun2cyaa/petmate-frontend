@@ -138,28 +138,74 @@ function MapPage() {
       if (window.kakao && window.kakao.maps && window.kakao.maps.services) {
         const geocoder = new window.kakao.maps.services.Geocoder();
 
-        geocoder.addressSearch(keywordToSearch, (result, status) => {
+        geocoder.addressSearch(keywordToSearch, async (result, status) => {
           if (status === window.kakao.maps.services.Status.OK) {
+            // 주소 검색 성공 - 해당 위치로 사용자 위치 변경
             setUserLocation({
               latitude: parseFloat(result[0].y),
               longitude: parseFloat(result[0].x),
             });
           } else {
-            searchByCompanyName(keywordToSearch);
+            // 주소 검색 실패 - 전역에서 업체명 검색
+            await searchGlobalCompanyName(keywordToSearch);
           }
         });
       } else {
         console.warn("카카오맵 services가 로드되지 않았습니다.");
-        searchByCompanyName(keywordToSearch);
+        await searchGlobalCompanyName(keywordToSearch);
       }
     } catch (e) {
       console.error("검색 오류:", e);
-      searchByCompanyName(keywordToSearch);
+      await searchGlobalCompanyName(keywordToSearch);
     }
-    
+
   },
-  [searchQuery, companies]
+  [searchQuery]
 );
+
+  // 전역 업체 검색 (넓은 반경으로 검색)
+  const searchGlobalCompanyName = useCallback(
+    async (query) => {
+      try {
+        setLoading(true);
+
+        // 현재 위치에서 넓은 반경(50km)으로 검색해서 전역 검색 효과
+        const currentLat = userLocation?.latitude || 37.5665; // 기본값: 서울
+        const currentLng = userLocation?.longitude || 126.978;
+
+        console.log(`🔍 전역 검색: "${query}" - 50km 반경`);
+
+        const data = await getNearbyCompanies(
+          currentLat,
+          currentLng,
+          50.0, // 넓은 반경으로 전역 검색 효과
+          selectedService
+        );
+
+        // 검색어로 필터링
+        const filtered = data.filter(
+          (company) =>
+            company.name.toLowerCase().includes(query.toLowerCase()) ||
+            company.roadAddr.toLowerCase().includes(query.toLowerCase())
+        );
+
+        console.log(`📍 전역 검색 결과: ${filtered.length}개 업체 발견`);
+
+        if (filtered.length > 0) {
+          const firstResult = filtered[0];
+          setSelectedCompany(firstResult);
+        }
+
+        setFilteredCompanies(filtered);
+        setCurrentPage(1);
+      } catch (e) {
+        console.error("전역 검색 실패:", e);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [userLocation, selectedService]
+  );
 
   const searchByCompanyName = useCallback(
     (query) => {
