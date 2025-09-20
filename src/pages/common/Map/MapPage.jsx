@@ -82,16 +82,38 @@ function MapPage() {
   }, []);
 
   const loadNearbyCompanies = useCallback(
-    async (latitude, longitude) => {
+    async (latitude, longitude, zoomLevel = 3) => {
       try {
         setLoading(true);
+
+        // 줌 레벨에 따른 검색 반경 및 마커 수 결정
+        let radius, limit;
+        if (zoomLevel <= 2) {
+          radius = 1.0; limit = 30;  // 매우 가까이
+        } else if (zoomLevel <= 4) {
+          radius = 2.0; limit = 40;  // 가까이(기본값)
+        } else if (zoomLevel <= 6) {
+          radius = 3.0; limit = 50;  // 보통
+        } else {
+          radius = 4.0; limit = 60;  // 멀리
+        }
+
+        console.log(`[줌 레벨 ${zoomLevel}] 검색 반경: ${radius}km, 최대 마커: ${limit}개`);
+
         const data = await getNearbyCompanies(
           latitude,
           longitude,
-          5.0,
+          radius,
           selectedService
         );
-        setCompanies(data);
+
+        console.log(`백엔드에서 받은 업체 수: ${data.length}개`);
+
+        // 마커 수 제한
+        const limitedData = data.slice(0, limit);
+        console.log(`프론트엔드에서 제한된 업체 수: ${limitedData.length}개`);
+
+        setCompanies(limitedData);
       } catch (e) {
         console.log("업체 로드 실패:", e);
       } finally {

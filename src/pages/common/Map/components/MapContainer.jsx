@@ -27,6 +27,7 @@ function MapContainer({
   const isInitializedRef = useRef(false);
   const userMarkerRef = useRef(null); // 사용자 위치 마커 참조
   const isUserDraggingRef = useRef(false); // 사용자가 마커를 드래그 중인지 확인
+  const debounceTimerRef = useRef(null); // 디바운싱 타이머
   
   // 현재 위치 버튼 로딩 상태
   const [isLocating, setIsLocating] = useState(false);
@@ -281,14 +282,15 @@ function MapContainer({
       window.kakao.maps.event.addListener(userMarker, 'dragend', function() {
         isUserDraggingRef.current = false;
         userMarker.setOpacity(1.0);
-        
+
         const markerPosition = userMarker.getPosition();
         const newLat = markerPosition.getLat();
         const newLng = markerPosition.getLng();
-        
-        // 새로운 위치로 업체 조회
-        onLocationChange(newLat, newLng);
-        
+        const zoomLevel = map.getLevel();
+
+        // 새로운 위치로 업체 조회 (줌 레벨 포함)
+        onLocationChange(newLat, newLng, zoomLevel);
+
         console.log(`사용자가 마커를 드래그로 이동: 위도 ${newLat}, 경도 ${newLng}`);
       });
 
@@ -314,12 +316,13 @@ function MapContainer({
       window.kakao.maps.event.addListener(fallbackMarker, 'dragend', function() {
         isUserDraggingRef.current = false;
         fallbackMarker.setOpacity(1.0);
-        
+
         const markerPosition = fallbackMarker.getPosition();
         const newLat = markerPosition.getLat();
         const newLng = markerPosition.getLng();
-        
-        onLocationChange(newLat, newLng);
+        const zoomLevel = map.getLevel();
+
+        onLocationChange(newLat, newLng, zoomLevel);
         console.log(`기본 마커 드래그로 이동: 위도 ${newLat}, 경도 ${newLng}`);
       });
       
@@ -344,20 +347,26 @@ function MapContainer({
     console.log(`지도 중심 변경으로 마커 이동: 위도 ${centerLat}, 경도 ${centerLng}`);
   }, []);
 
-  // 지도 드래그/줌 이벤트 핸들러
+  // 지도 드래그/줌 이벤트 핸들러 (디바운싱 적용)
   const handleMapChange = useCallback(() => {
-    if (!mapRef.current) return;
-    
-    const center = mapRef.current.getCenter();
-    const centerLat = center.getLat();
-    const centerLng = center.getLng();
-    
-    // 사용자 마커를 지도 중심으로 이동 (사용자가 드래그 중이 아닐 때만)
-    updateUserMarkerToCenter();
-    
-    // 업체 조회
-    onLocationChange(centerLat, centerLng);
-  }, [onLocationChange, updateUserMarkerToCenter]);
+    if (!mapRef.current || !userMarkerRef.current) return;
+
+    // 사용자 마커 위치 기준으로 업체 검색 (UI 안내문과 일치)
+    const userMarkerPosition = userMarkerRef.current.getPosition();
+    const userLat = userMarkerPosition.getLat();
+    const userLng = userMarkerPosition.getLng();
+    const zoomLevel = mapRef.current.getLevel();
+
+    // 기존 타이머 클리어
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current);
+    }
+
+    // 500ms 후에 업체 조회 실행 (파란색 마커 기준)
+    debounceTimerRef.current = setTimeout(() => {
+      onLocationChange(userLat, userLng, zoomLevel);
+    }, 500);
+  }, [onLocationChange]);
 
   // 현재 위치로 이동하는 함수
   const moveToCurrentLocation = useCallback(() => {
@@ -383,8 +392,9 @@ function MapContainer({
           userMarkerRef.current.setPosition(newPosition);
         }
         
-        // 업체 재조회
-        onLocationChange(latitude, longitude);
+        // 업체 재조회 (줌 레벨 포함)
+        const zoomLevel = mapRef.current ? mapRef.current.getLevel() : 3;
+        onLocationChange(latitude, longitude, zoomLevel);
         
         console.log(`현재 위치로 이동: 위도 ${latitude}, 경도 ${longitude}`);
         
@@ -421,7 +431,10 @@ function MapContainer({
   }, [onLocationChange]);
 
   // 지도 클릭 핸들러
-  const handleMapClick = useCallback(() => {
+  const handleMapClick = useCallback((mouseEvent) => {
+    console.log('지도 클릭 이벤트:', mouseEvent); // 디버깅용
+
+    // 업체 마커 선택 해제
     if (currentSelectedMarkerRef.current) {
       currentSelectedMarkerRef.current.setImage(
         currentSelectedMarkerRef.current._normalImage
@@ -430,7 +443,26 @@ function MapContainer({
     }
     currentSelectedMarkerRef.current = null;
     onCompanySelect(null);
-  }, [onCompanySelect]);
+
+    // 지도 클릭 시 파란색 마커 이동
+    if (userMarkerRef.current && mouseEvent) {
+      // 카카오맵에서는 mouseEvent.latLng가 클릭한 위치의 좌표
+      const clickPosition = mouseEvent.latLng;
+      const newLat = clickPosition.getLat();
+      const newLng = clickPosition.getLng();
+
+      console.log(`클릭 위치: 위도 ${newLat}, 경도 ${newLng}`); // 디버깅용
+
+      // 파란색 마커 위치 이동
+      userMarkerRef.current.setPosition(clickPosition);
+
+      // 새 위치 기준으로 업체 검색
+      const zoomLevel = mapRef.current ? mapRef.current.getLevel() : 3;
+      onLocationChange(newLat, newLng, zoomLevel);
+
+      console.log(`지도 클릭으로 마커 이동: 위도 ${newLat}, 경도 ${newLng}`);
+    }
+  }, [onCompanySelect, onLocationChange]);
 
   // 지도 초기화 (사용자 마커 제외)
   useEffect(() => {
@@ -457,6 +489,10 @@ function MapContainer({
         window.kakao.maps.event.removeListener(map, "dragend", handleMapChange);
         window.kakao.maps.event.removeListener(map, "zoom_changed", handleMapChange);
         window.kakao.maps.event.removeListener(map, "click", handleMapClick);
+      }
+      // 디바운싱 타이머 정리
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
       }
     };
   }, [isKakaoLoaded, userLocation]);
@@ -669,7 +705,7 @@ function MapContainer({
         <div id="map">
           {/* 사용 안내 메시지 */}
           <div className="map-guide">
-            지도를 움직이거나 파란색 마커를 드래그해서 위치를 조정하세요
+            지도를 클릭하거나 파란색 마커를 드래그해서 위치를 조정하세요
           </div>
 
           {/* 현재 위치 버튼 */}
