@@ -1,6 +1,8 @@
 // src/App.jsx
 import { Routes, Route, useLocation, Navigate } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
+import ScrollToTop from "../src/pages/common/ScrollToTop/ScrollToTop.jsx";
+
 
 import IntroPage from "./pages/common/Intro/IntroPage";
 import HomePage from "./pages/common/Home/HomePage";
@@ -49,6 +51,9 @@ function AppRoutes() {
   return (
     <>
       {!hideHeader && <Header />}
+
+      {/* 라우트 이동하면 항상 맨위로 가게끔 */}
+      <ScrollToTop />
 
       <AnimatePresence mode="wait">
         <Routes location={location} key={location.pathname}>
