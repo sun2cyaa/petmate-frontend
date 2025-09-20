@@ -36,11 +36,16 @@ import catexpoImg from "../../../assets/images/banners/cat-expo.jpg";
 import expo4Img from "../../../assets/images/banners/expo4Img.png";
 import expo5Img from "../../../assets/images/banners/expo5Img.jpg";
 
-const HomePage = ({ isLogined }) => {
+const HomePage = () => {
   const [activeService, setActiveService] = useState("");
   const [searchText, setSearchText] = useState("");
-  const [isFixed, setIsFixed] = useState(false); // 검색바 고정 상태 추가
+  const [isFixed, setIsFixed] = useState(false);
+
   const navigate = useNavigate();
+
+  // 여기서 직접 로그인 여부 체크
+  const isLogined = !!localStorage.getItem("accessToken");
+
 
   // 행사 배너 데이터
   const banners = [
