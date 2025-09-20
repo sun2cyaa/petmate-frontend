@@ -154,18 +154,22 @@
 .search-bar.fixed {
   position: fixed;
   top: 104px;
-  left: 0;
-  right: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 600px;     
+  max-width: 90%;   
   z-index: 1500;
-  background: #fff;
-  padding: 12px 700px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  background: transparent;
+  padding: 12px 16px; 
+  box-shadow: 0 2px 6px rgba(0,0,0,0.0);
+  border-radius: 10px;
 }
+
 
 .search-input-wrapper {
   background: #f8d2bb;
   border-radius: 10px;
-  padding: 6px;
+  padding: 4px 6px;
   display: flex;
   align-items: center;
   box-shadow: 0 4px 15px rgba(0,0,0,0.08);
@@ -567,27 +571,69 @@
 
 /* 반응형 추가 */
 
+/* 중간 태블릿 (1024px 이하) */
+@media (max-width: 1024px) {
+  .home-banner-section { height: 300px; }
+  .banner-title { font-size: 32px; }
+  .banner-desc { font-size: 16px; }
+
+  .search-container { grid-template-columns: 1fr 1fr; gap: 40px; }
+  .service-type-grid { grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); }
+
+  .pet-img { width: 480px; height: 480px; }
+  .alert-box { font-size: 14px; }
+
+  .sitters-grid { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+  .benefits-grid { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+  .stats-grid { gap: 50px; }
+}
+
 /* 태블릿 (768px 이하) */
 @media (max-width: 768px) {
   .banner-title { font-size: 28px; }
   .banner-desc { font-size: 14px; }
+  .banner-cta { padding: 10px 24px; font-size: 14px; }
+
   .search-container { grid-template-columns: 1fr; gap: 30px; }
-  .pet-img { width: 400px; height: 400px; }
+  .search-left { text-align: center; }
+  .service-type-grid { margin-bottom: 24px; }
+
+  .pet-img { width: 360px; height: 360px; }
+  .pet-alert-card { max-width: 100%; }
+
   .sitters-grid { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
   .benefits-grid { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
   .stats-grid { gap: 40px; }
+
+  .home-reviews-section .review-header { margin-right: 0; }
 }
 
 /* 모바일 (480px 이하) */
 @media (max-width: 480px) {
   .banner-title { font-size: 22px; }
   .banner-desc { font-size: 13px; }
-  .banner-cta { padding: 10px 20px; font-size: 13px; }
-  .pet-img { width: 280px; height: 280px; }
-  .alert-box { font-size: 12px; padding: 8px 12px; }
-  .benefit-card { padding: 24px 16px; }
-  .stat-card h3 { font-size: 32px; }
-  .cta-container h2 { font-size: 22px; }
-  .cta-container p { font-size: 14px; }
-  .cta-buttons { flex-direction: column; gap: 12px; }
+  .banner-cta { padding: 8px 18px; font-size: 13px; }
+
+  .search-header h2 { font-size: 22px; }
+  .search-header p { font-size: 13px; }
+
+  .pet-img { width: 260px; height: 260px; }
+  .alert-box { font-size: 11px; padding: 6px 10px; }
+
+  .service-type-btn { padding: 14px; }
+  .service-icon { font-size: 22px; }
+  .service-name { font-size: 15px; }
+
+  .sitters-grid { grid-template-columns: 1fr; gap: 20px; }
+
+  .benefit-card { padding: 20px 14px; }
+  .benefit-card h3 { font-size: 18px; }
+  .benefit-card p { font-size: 13px; }
+
+  .stat-card h3 { font-size: 28px; }
+  .stat-card p { font-size: 13px; }
+
+  .cta-container h2 { font-size: 20px; }
+  .cta-container p { font-size: 13px; }
+  .cta-buttons { flex-direction: column; gap: 10px; }
 }
