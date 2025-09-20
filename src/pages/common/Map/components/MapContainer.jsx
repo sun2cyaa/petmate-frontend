@@ -17,7 +17,8 @@ function MapContainer({
   services,
   onCompanySelect,
   onLocationChange,
-  onMarkersChange
+  onMarkersChange,
+  onBookingClick,
 }) {
   const mapRef = useRef(null);
   const markersRef = useRef([]);
@@ -665,6 +666,7 @@ function MapContainer({
       <CompanyDetailModal
         selectedCompany={selectedCompany}
         onClose={handleModalClose}
+        onBookingClick={onBookingClick}
       />
     </div>
   );

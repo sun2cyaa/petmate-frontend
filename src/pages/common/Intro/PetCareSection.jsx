@@ -70,7 +70,7 @@ function PetCareSection() {
   ];
 
   return (
-    <section className="petcare-section">
+    <section id="petcare-container" className="petcare-section">
       <div className="petcare-header">
         <h2>Pet Care, Made Simple</h2>
         <p>돌봄부터 산책까지, 한번에 해결</p>

@@ -114,10 +114,14 @@ body {
   font-size: 15px;
   transition: color 0.2s;
 }
-.nav a:hover { color: #eb9666; }
-.nav-icon {
-  color: #555;
+.nav a:hover { 
+  color: #eb9666; 
 }
+
+.nav-icon {
+  color: #E05353;
+}
+
 .nav a:hover .nav-icon {
   color: #eb9666;
 }
@@ -128,8 +132,6 @@ body {
   display: flex;
   align-items: center;
 }
-
-/* 주소 아이콘 스타일 */
 .header-address .map-icon {
   margin-right: 6px;
   color: #eb9666;
@@ -220,15 +222,11 @@ body {
   flex-shrink: 0;
   color: #555;
 }
-
-/* 구분선 */
 .user-menu_divider {
   height: 1px;
   background: #eee;
   margin: 6px 0;
 }
-
-/* 로그아웃 버튼 */
 .user-menu_logout {
   color: #e74c3c;
   font-weight: 500;
@@ -243,14 +241,10 @@ body {
 .user-menu_logout:hover .menu-icon {
   color: #c0392b;
 }
-
-/* ----- 드롭다운 공통 ------ */
 .header_dropdown {
   position: relative;
   display: inline-block;
 }
-
-/* 드롭다운 트리거 (업체관리, 펫메이트) */
 .nav-link {
   display: flex;
   align-items: center;
@@ -268,8 +262,6 @@ body {
 .nav-link:hover .nav-icon {
   color: #eb9666;
 }
-
-/* 업체 관리 / 펫메이트 드롭다운 메뉴 */
 .header_company_manage_menu,
 .header_product_manage_menu,
 .header_petmate_menu {
@@ -284,15 +276,11 @@ body {
   z-index: 1500;
   padding: 6px 0;
 }
-
-/* hover 시 드롭다운 열기 */
 .header_dropdown:hover .header_company_manage_menu,
 .header_dropdown:hover .header_product_manage_menu,
 .header_dropdown:hover .header_petmate_menu {
   display: block;
 }
-
-/* 메뉴 아이템 */
 .header_company_manage_item,
 .header_product_manage_item,
 .header_petmate_item {
@@ -302,7 +290,6 @@ body {
   text-decoration: none;
   transition: background 0.2s;
 }
-
 .header_company_manage_item:hover,
 .header_product_manage_item:hover,
 .header_petmate_item:hover {
@@ -310,7 +297,20 @@ body {
   color: #E05353;
 }
 
-/* 반응형 추가 */
+/* ---------------- 반응형 ---------------- */
+
+/* 태블릿 (1024px 이하) */
+@media (max-width: 1024px) {
+  body {
+    padding-top: 120px;
+  }
+  .main-nav {
+    padding: 0 16px;
+  }
+  .nav {
+    gap: 12px;
+  }
+}
 
 /* 태블릿 (768px 이하) */
 @media (max-width: 768px) {
@@ -334,10 +334,9 @@ body {
 
   .nav {
     flex-direction: column;
-    display: flex;
-    align-items: center;
+    align-items: flex-start;
     width: 100%;
-    gap: 24px;
+    gap: 16px;
     margin-top: 8px;
   }
 
@@ -345,16 +344,28 @@ body {
     margin-top: 10px;
     font-size: 13px;
   }
+
+  .user-badge {
+    margin-top: 8px;
+  }
 }
 
 /* 모바일 (480px 이하) */
 @media (max-width: 480px) {
+  body {
+    padding-top: 120px;
+  }
   .logo h2 {
     font-size: 18px;
   }
 
   .top-bar {
     font-size: 11px;
+    padding: 6px 12px;
+  }
+
+  .main-nav {
+    padding: 8px 12px;
   }
 
   .nav a,
@@ -369,5 +380,10 @@ body {
 
   .header-address {
     font-size: 12px;
+  }
+
+  .avatar {
+    width: 28px;
+    height: 28px;
   }
 }

@@ -5,45 +5,91 @@ import iconIntegrated from "../../assets/images/payment/icon_integrated.png";
 import payKakaopay from "../../assets/images/payment/pay_kakaopay.webp";
 import payNpay from "../../assets/images/payment/pay_npay.webp";
 import payPayco from "../../assets/images/payment/pay_payco.webp";
+import { useSearchParams } from "react-router-dom";
+import { getBookingForPayment } from "../../services/payment/paymentService";
 
 const PaymentPage = () => {
   const [selectedPayMethod, setSelectedPayMethod] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [danalPayments, setDanalPayments] = useState(null);
   const [bookingData, setBookingData] = useState(null);
+  const [searchParams] = useSearchParams();
+  const [dataLoading, setDataLoading] = useState(true);
 
   // 백엔드 API 기본 URL
-  const API_BASE_URL = `${process.env.REACT_APP_SPRING_API_BASE || 'http://localhost:8090'}/api/payment`;
+  const API_BASE_URL = "http://localhost:8090/api/payment";
 
   useEffect(() => {
-    // 예약데이터 불러오기
-    const savedBookingData = sessionStorage.getItem("bookingData");
-    if (savedBookingData) {
-      setBookingData(JSON.parse(savedBookingData));
-    }
-  }, []);
+    // URL 파라미터에서 id 가져오기
+    const loadBookingData = async () => {
+      try {
+        setDataLoading(true);
+        const bookingId = searchParams.get("bookingId");
 
-  // 백엔드 콜백 URL로 변경 (중요!)
-  // const baseParams = {
-  //   orderName: "test_상품",
-  //   amount: 100,
-  //   merchantId: "9810030930",
-  //   orderId: new Date().getTime().toString(),
-  //   userId: "user@naver.com",
-  //   // 백엔드 콜백 URL로 변경
-  //   successUrl: "http://localhost:8090/api/payment/danal/success",
-  //   failUrl: "http://localhost:8090/api/payment/danal/fail",
-  //   userEmail: "user@naver.com",
-  // };
+        if (!bookingId) {
+          alert("잚못된 접근입니다. 예약정보를 찾을 수 없습니다.");
+          window.history.back();
+          return;
+        }
+
+        // 이전 페이지에서 선택한 결제 방법 가져오기
+        const savedPaymentMethod = localStorage.getItem('selectedPaymentMethod');
+        if (savedPaymentMethod) {
+          // 결제 방법 매핑 (BookingConfirmStep의 방법을 PaymentPage 방법으로 변환)
+          const methodMap = {
+            'card': 'CARD',
+            'transfer': 'TRANSFER',
+            'mobile': 'MOBILE',
+            'integrated': 'INTEGRATED'
+          };
+          setSelectedPayMethod(methodMap[savedPaymentMethod] || 'INTEGRATED');
+          localStorage.removeItem('selectedPaymentMethod'); // 사용 후 삭제
+        }
+
+        console.log("예약 정보 로드 : ", bookingId);
+        const booking = await getBookingForPayment(bookingId);
+
+        // 결제에 필요한 형태로 데이터 변환
+        const paymentBookingData = {
+          reservationId: booking.id,
+          selectedProduct: {
+            name: booking.productName || "펫케어 서비스",
+            id: booking.productId,
+          },
+          selectedStore: {
+            name: booking.companyName,
+            id: booking.companyId,
+          },
+          totalAmount: booking.totalPrice,
+          customerName: booking.ownerName || "고객명",
+          customerPhone: booking.ownerPhone || "010-0000-0000",
+          selectedDate: booking.startDt?.split("T")[0],
+          selectedTimeSlot: {
+            startTime: booking.startDt?.split("T")[1]?.substring(0, 5),
+            endTime: booking.endDt?.split("T")[1]?.substring(0, 5),
+          },
+        };
+        setBookingData(paymentBookingData);
+      } catch (error) {
+        console.error("예약 정보 로드 실패: ", error);
+        alert("예약 정보를 불러오는데 실패하였습니다.");
+        window.history.back();
+      } finally {
+        setDataLoading(false);
+      }
+    };
+
+    loadBookingData();
+  }, [searchParams]);
+
   const baseParams = {
     orderName: bookingData?.selectedProduct?.name || "펫케어 서비스",
     amount: bookingData?.totalAmount || 100,
-    merchantId: "9810030930",
+    merchantId: process.env.REACT_APP_DANAL_MERCHANT_ID || "9810030930", // 환경변수로 변경
     orderId: new Date().getTime().toString(),
     userId: "user@naver.com",
-    // 백엔드 콜백 URL로 변경
-    successUrl: `${process.env.REACT_APP_SPRING_API_BASE || 'http://localhost:8090'}/api/payment/danal/success`,
-    failUrl: `${process.env.REACT_APP_SPRING_API_BASE || 'http://localhost:8090'}/api/payment/danal/fail`,
+    successUrl: "http://localhost:8090/api/payment/danal/success",
+    failUrl: "http://localhost:8090/api/payment/danal/fail",
     userEmail: "user@naver.com",
   };
 
@@ -52,7 +98,7 @@ const PaymentPage = () => {
     const initializeDanalSDK = async () => {
       try {
         const payments = await loadDanalPaymentsSDK({
-          clientKey: "CL_TEST_I4d8FWYSSKl-42F7y3o9g_7iexSCyHbL8qthpZxPnpY=",
+          clientKey: process.env.REACT_APP_DANAL_CLIENT_KEY || "CL_TEST_I4d8FWYSSKl-42F7y3o9g_7iexSCyHbL8qthpZxPnpY=",
         });
         setDanalPayments(payments);
         console.log("다날 SDK 초기화 완료");
@@ -217,6 +263,11 @@ const PaymentPage = () => {
       return;
     }
 
+    if (!danalPayments) {
+      alert("결제 시스템이 준비되지 않았습니다. 페이지를 새로고침해주세요.");
+      return;
+    }
+
     setIsLoading(true);
 
     try {
@@ -229,7 +280,9 @@ const PaymentPage = () => {
       console.log("백엔드에 결제 요청 전송:", paymentData);
       const backendResponse = await sendPaymentRequestToBackend(paymentData);
 
-      if (!backendResponse || !backendResponse.success) {
+      console.log("백엔드 응답 상세:", backendResponse);
+
+      if (!backendResponse || (!backendResponse.success && !backendResponse.isSuccess)) {
         throw new Error("백엔드 결제 요청 실패");
       }
 
@@ -284,7 +337,9 @@ const PaymentPage = () => {
       console.log("Mock 결제 - 백엔드에 결제 요청 전송:", paymentData);
       const backendResponse = await sendPaymentRequestToBackend(paymentData);
 
-      if (!backendResponse || !backendResponse.success) {
+      console.log("Mock 결제 - 백엔드 응답:", backendResponse);
+
+      if (!backendResponse || (!backendResponse.success && !backendResponse.isSuccess)) {
         throw new Error("백엔드 결제 요청 실패");
       }
 
@@ -349,6 +404,32 @@ const PaymentPage = () => {
     { value: "BOOK_AND_LIFE", label: "도서문화상품권", icon: "📖" },
     { value: "CULTURELAND", label: "컬쳐랜드상품권", icon: "📖" },
   ];
+
+  // 데이터 로딩 중일 때 로딩 화면 표시
+  if (dataLoading) {
+    return (
+      <div className="payment-container">
+        <div className="payment-loading">
+          <h2>예약 정보를 불러오는 중...</h2>
+          <div className="loading-spinner">로딩 중...</div>
+        </div>
+      </div>
+    );
+  }
+
+  // 예약 데이터가 없을 때 에러 화면 표시
+  if (!bookingData) {
+    return (
+      <div className="payment-container">
+        <div className="payment-error">
+          <h2>예약 정보를 찾을 수 없습니다</h2>
+          <button onClick={() => window.history.back()}>
+            이전 페이지로 돌아가기
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="payment-container">

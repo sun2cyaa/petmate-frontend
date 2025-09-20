@@ -1,0 +1,274 @@
+import React, { useState, useEffect } from "react";
+import dayjs from "dayjs";
+import "dayjs/locale/ko";
+import { useAuth } from "../../../contexts/AuthContext";
+import { apiRequest } from "../../../services/api";
+import "./BookingHistoryPage.css";
+
+// 아이콘
+import { FaCalendarAlt, FaClock, FaMapMarkerAlt, FaDog } from "react-icons/fa";
+import { MdPayment, MdPets } from "react-icons/md";
+
+dayjs.locale("ko");
+
+const BookingHistoryPage = () => {
+  const { user, isLogined } = useAuth();
+  const [bookings, setBookings] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [filter, setFilter] = useState("all"); // all, pending, confirmed, completed, cancelled
+
+  useEffect(() => {
+    if (!isLogined || !user) {
+      setError("로그인이 필요합니다.");
+      return;
+    }
+
+    fetchMyBookings();
+  }, [isLogined, user, filter]);
+
+  const fetchMyBookings = async () => {
+    // user.id, user.userId, user.memberId 등 다양한 필드를 확인
+    const userId = user?.id || user?.userId || user?.memberId;
+    if (!userId) {
+      setError("사용자 정보를 찾을 수 없습니다.");
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      console.log("반려인 예약 내역 조회 ---> userId:", userId);
+      console.log("전체 user 객체:", user);
+
+      // 필터 상태를 백엔드 숫자 형식으로 변환
+      const getBackendStatus = (filter) => {
+        switch (filter) {
+          case "pending": return "0";
+          case "confirmed": return "1";
+          case "completed": return "2";
+          case "cancelled": return "3";
+          case "all": return null;
+          default: return null;
+        }
+      };
+
+      // 현재 사용자의 예약 데이터 조회
+      const response = await apiRequest.get(`/api/booking/user/${userId}`, {
+        params: {
+          status: getBackendStatus(filter),
+          limit: 50,
+          offset: 0
+        }
+      });
+
+      let bookingsData = response.data || [];
+
+      // 임시로 테스트 이전 테스트 데이터(userId=1)도 함께 조회
+      if (userId === 9) {
+        try {
+          const oldDataResponse = await apiRequest.get(`/api/booking/user/1`, {
+            params: {
+              status: getBackendStatus(filter),
+              limit: 50,
+              offset: 0
+            }
+          });
+          const oldBookings = oldDataResponse.data || [];
+          bookingsData = [...bookingsData, ...oldBookings];
+          console.log(`이전 테스트 데이터 ${oldBookings.length}개 추가 로드`);
+        } catch (oldDataError) {
+          console.log("이전 데이터 조회 실패 (정상):", oldDataError.message);
+        }
+      }
+
+      setBookings(bookingsData);
+      console.log(`총 ${bookingsData.length}개의 예약 내역을 불러왔습니다.`);
+
+      // 디버깅: 예약 데이터의 companyId와 날짜 확인
+      if (bookingsData.length > 0) {
+        console.log("예약 데이터 샘플:", bookingsData[0]);
+        bookingsData.forEach((booking, index) => {
+          console.log(`예약 ${index + 1} - companyId: ${booking.companyId}, companyName: ${booking.companyName}, 예약일: ${booking.reservationDate}`);
+        });
+      }
+
+    } catch (error) {
+      console.error("예약 내역 조회 실패:", error);
+
+      if (error.response?.status === 401) {
+        setError("로그인이 만료되었습니다. 다시 로그인해주세요.");
+      } else if (error.response?.status === 404) {
+        setBookings([]);
+        setError(null); // 404는 정상 (예약 내역 없음)
+      } else {
+        setError("예약 내역을 불러오는데 실패했습니다.");
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getStatusBadge = (status) => {
+    // 백엔드 숫자 상태를 문자열로 변환
+    const normalizeStatus = (status) => {
+      const statusStr = String(status);
+      switch (statusStr) {
+        case "0": return "pending";
+        case "1": return "confirmed";
+        case "2": return "completed";
+        case "3": return "cancelled";
+        default: return statusStr;
+      }
+    };
+
+    const statusConfig = {
+      "0": { text: "예약 대기", class: "status-pending" },
+      "1": { text: "예약 확정", class: "status-confirmed" },
+      "2": { text: "서비스 완료", class: "status-completed" },
+      "3": { text: "예약 취소", class: "status-cancelled" },
+      pending: { text: "예약 대기", class: "status-pending" },
+      confirmed: { text: "예약 확정", class: "status-confirmed" },
+      completed: { text: "서비스 완료", class: "status-completed" },
+      cancelled: { text: "예약 취소", class: "status-cancelled" }
+    };
+
+    const config = statusConfig[status] || { text: status, class: "status-default" };
+    return <span className={`status-badge ${config.class}`}>{config.text}</span>;
+  };
+
+  const formatDate = (dateString) => {
+    return dayjs(dateString).format("YYYY년 MM월 DD일 (ddd)");
+  };
+
+  const formatTime = (timeString) => {
+    return dayjs(timeString).format("HH:mm");
+  };
+
+  if (loading) {
+    return (
+      <div className="booking-history-container">
+        <div className="loading-state">
+          <div className="loading-spinner"></div>
+          <p>예약 내역을 불러오는 중...</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="booking-history-container">
+      <div className="page-header">
+        <h1>
+          <FaCalendarAlt className="header-icon" />
+          내 예약 내역
+        </h1>
+        <p>신청하신 펫케어 서비스 예약 현황을 확인하세요</p>
+      </div>
+
+      {error && (
+        <div className="error-message">
+          <p>{error}</p>
+        </div>
+      )}
+
+      {/* 필터 */}
+      <div className="filter-section">
+        <div className="filter-buttons">
+          {[
+            { key: "all", label: "전체" },
+            { key: "pending", label: "예약 대기" },
+            { key: "confirmed", label: "예약 확정" },
+            { key: "completed", label: "완료" },
+            { key: "cancelled", label: "취소" }
+          ].map(item => (
+            <button
+              key={item.key}
+              className={`filter-btn ${filter === item.key ? "active" : ""}`}
+              onClick={() => setFilter(item.key)}
+            >
+              {item.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* 예약 목록 */}
+      <div className="bookings-section">
+        {bookings.length === 0 ? (
+          <div className="empty-state">
+            <MdPets className="empty-icon" />
+            <h3>예약 내역이 없습니다</h3>
+            <p>아직 펫케어 서비스를 예약하지 않으셨어요.</p>
+            <button
+              className="primary-btn"
+              onClick={() => window.location.href = "/map"}
+            >
+              서비스 찾아보기
+            </button>
+          </div>
+        ) : (
+          <div className="bookings-list">
+            {bookings.map((booking) => (
+              <div key={booking.id} className="booking-card">
+                <div className="booking-header">
+                  <div className="booking-title">
+                    <h3>{booking.productName || "펫케어 서비스"}</h3>
+                    {getStatusBadge(booking.status)}
+                  </div>
+                  <div className="booking-id">예약번호: {booking.id}</div>
+                </div>
+
+                <div className="booking-details">
+                  <div className="detail-row">
+                    <FaCalendarAlt className="detail-icon" />
+                    <span>예약일: {formatDate(booking.reservationDate)}</span>
+                  </div>
+
+                  <div className="detail-row">
+                    <FaClock className="detail-icon" />
+                    <span>시간: {formatTime(booking.startTime)} - {formatTime(booking.endTime)}</span>
+                  </div>
+
+                  <div className="detail-row">
+                    <FaMapMarkerAlt className="detail-icon" />
+                    <span>업체: {booking.companyName || "업체명"}</span>
+                  </div>
+
+                  <div className="detail-row">
+                    <FaDog className="detail-icon" />
+                    <span>반려동물: {booking.petNames || "정보 없음"}</span>
+                  </div>
+
+                  <div className="detail-row">
+                    <MdPayment className="detail-icon" />
+                    <span>금액: {booking.totalPrice?.toLocaleString() || "0"}원</span>
+                  </div>
+                </div>
+
+                <div className="booking-actions">
+                  <button className="detail-btn">상세보기</button>
+                  {(booking.status === "0" || booking.status === "1" || booking.status === "confirmed") && (
+                    <button className="cancel-btn">예약취소</button>
+                  )}
+                  {booking.status === "0" && (
+                    <span className="status-info">업체 승인 대기 중</span>
+                  )}
+                  {booking.status === "1" && (
+                    <span className="status-info">예약 확정됨</span>
+                  )}
+                  {booking.status === "2" && (
+                    <span className="status-info">서비스 완료</span>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default BookingHistoryPage;

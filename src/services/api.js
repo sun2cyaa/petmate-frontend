@@ -21,7 +21,7 @@ export const getAuthHeaders = () => {
     } : {};
 };
 
-// 401 처리: refresh 후 한 번만 재시도
+// 401 처리: refresh 후 한 번만 재시도 이거라도 되면 가능(제발..)
 const tryRefresh = async () => {
     try {
         console.log('🔄 JWT 토큰 갱신 시도...');
@@ -32,13 +32,13 @@ const tryRefresh = async () => {
         const newToken = res?.data?.accessToken;
         if (newToken) {
             setAccessToken(newToken);
-            console.log('✅ JWT 토큰 갱신 성공');
+            console.log(' JWT 토큰 갱신 성공');
             return newToken;
         }
-        console.log('❌ JWT 토큰 갱신 실패: 응답에 accessToken 없음');
+        console.log('JWT 토큰 갱신 실패: 응답에 accessToken 없음');
         return null;
     } catch (error) {
-        console.log('❌ JWT 토큰 갱신 실패:', error.response?.status || error.message);
+        console.log('JWT 토큰 갱신 실패:', error.response?.status || error.message);
         return null;
     }
 };
@@ -58,6 +58,7 @@ api.interceptors.response.use(
     },
     (err) => {
         console.warn("[api] 응답 에러:", err?.response?.status, err?.config?.url, err?.response?.data);
+        // 401 에러는 apiRequest에서 처리하도록 그대로 전달
         return Promise.reject(err);
     }
 );

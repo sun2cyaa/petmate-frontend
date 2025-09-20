@@ -32,9 +32,20 @@ const ReservationCard = ({ reservation, onUpdate }) => {
         className: "status-approved",
         icon: <FaCheckCircle style={{ marginRight: "4px" }} />,
       },
+      completed: {
+        text: "서비스 완료",
+        className: "status-completed",
+        icon: <FaCheckCircle style={{ marginRight: "4px" }} />,
+      },
+      cancelled: {
+        text: "취소됨",
+        className: "status-cancelled",
+        icon: <FaTimesCircle style={{ marginRight: "4px" }} />,
+      },
+      // 레거시 지원
       rejected: {
         text: "거절",
-        className: "status-rejected",
+        className: "status-cancelled",
         icon: <FaTimesCircle style={{ marginRight: "4px" }} />,
       },
     };
@@ -50,7 +61,7 @@ const ReservationCard = ({ reservation, onUpdate }) => {
   };
 
   const handleReject = () => {
-    onUpdate(reservation.id, "rejected");
+    onUpdate(reservation.id, "cancelled");
   };
 
   const statusBadge = getStatusBadge(reservation.status);

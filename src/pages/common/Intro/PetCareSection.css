@@ -1,17 +1,17 @@
 /* 3번째 전체 섹션 */
-.petcare-section {
+#petcare-container.petcare-section {
   font-family: 'Arial', sans-serif;
   background: #fffaf5;
   padding: 40px 40px 10px;
   text-align: center;
-  width: 100%;            
-  height: 100vh;           
+  width: 100%;
+  height: 100vh;
   box-sizing: border-box;
   justify-content: space-between;
 }
 
 /* ---------------- 헤더 ---------------- */
-.petcare-header {
+#petcare-container .petcare-header {
   position: relative;
   display: flex;
   flex-direction: column;
@@ -21,29 +21,29 @@
   width: 100%;
 }
 
-.petcare-header::before {
+#petcare-container .petcare-header::before {
   content: '';
   position: absolute;
-  top: 30%;             
+  top: 30%;
   left: 0;
   width: 90%;
   height: 2px;
-  background: #eb9666;  
+  background: #eb9666;
   z-index: 0;
 }
 
-.petcare-header h2 {
+#petcare-container .petcare-header h2 {
   position: relative;
   font-size: 40px;
   font-weight: 700;
   color: #2c3e50;
   margin: 0 0 10px 0;
   z-index: 1;
-  background: #fffaf5;  
+  background: #fffaf5;
   padding: 0 15px;
 }
 
-.petcare-header p {
+#petcare-container .petcare-header p {
   position: relative;
   font-size: 20px;
   color: #777;
@@ -54,7 +54,7 @@
 }
 
 /* ---------------- 서비스 카드 ---------------- */
-.petcare-grid {
+#petcare-container .petcare-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 20px;
@@ -63,7 +63,8 @@
   margin-top: -50px;
 }
 
-.petcare-card {
+
+#petcare-container .petcare-card {
   background: #fff;
   border-radius: 15px;
   box-shadow: 0 6px 18px rgba(0,0,0,0.08);
@@ -72,12 +73,12 @@
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.petcare-card:hover {
+#petcare-container .petcare-card:hover {
   transform: translateY(-6px);
   box-shadow: 0 12px 25px rgba(235, 150, 102, 0.4);
 }
 
-.petcare-card img {
+#petcare-container .petcare-card img {
   width: 100%;
   height: 165px;
   object-fit: cover;
@@ -87,21 +88,21 @@
   margin-bottom: 19px;
 }
 
-.petcare-card h3 {
+#petcare-container .petcare-card h3 {
   font-size: 18px;
   font-weight: 600;
   margin: 15px 0 5px;
   color: #2c3e50;
 }
 
-.petcare-card p {
+#petcare-container .petcare-card p {
   font-size: 14px;
   color: #555;
   margin-bottom: 10px;
 }
 
 /* ---------------- 우리 플랫폼 특징 4개 ---------------- */
-.petcare-features {
+#petcare-container .petcare-features {
   display: flex;
   justify-content: space-around;
   align-items: center;
@@ -109,17 +110,16 @@
 
   background: rgba(235, 150, 102, 0.5);
   padding: 10px 0px;
-  height: 140px;
+  height: 168px;
 
-  width: 99.5vw;
+  width: 100vw;
   position: relative;
   left: 50%;
   transform: translateX(-50%);
   margin-top: 13px;
-  
 }
 
-.feature-item {
+#petcare-container .feature-item {
   flex: 1;
   max-width: 250px;
   text-align: center;
@@ -127,7 +127,7 @@
   margin-bottom: 50px;
 }
 
-.feature-icon {
+#petcare-container .feature-icon {
   width: 80px;
   height: 80px;
   object-fit: contain;
@@ -135,14 +135,16 @@
   margin-top: 60px;
 }
 
-.feature-item h4 {
+#petcare-container .feature-item h4 {
   font-size: 18px;
   font-weight: 600;
   margin-bottom: 5px;
 }
 
-.feature-item p {
+#petcare-container .feature-item p {
   font-size: 14px;
   line-height: 1.3;
 }
+
+
 

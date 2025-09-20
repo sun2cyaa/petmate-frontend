@@ -1,6 +1,8 @@
 // src/App.jsx
 import { Routes, Route, useLocation, Navigate } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
+import ScrollToTop from "../src/pages/common/ScrollToTop/ScrollToTop.jsx";
+
 
 import IntroPage from "./pages/common/Intro/IntroPage";
 import HomePage from "./pages/common/Home/HomePage";
@@ -15,6 +17,7 @@ import AddressManagePage from "./pages/user/owner/MyPage/Address/AddressManagePa
 import PetManagePage from "./pages/user/owner/MyPage/PetManagePage";
 import ProfilePage from "./pages/user/owner/MyPage/ProfilePage";
 import BookingManagePage from "./pages/user/petmate/BookingManagePage";
+import BookingHistoryPage from "./pages/user/owner/BookingHistoryPage";
 import CompanyManagePage from "./pages/company/CompanyManagePage";
 import CompanyRegisterPage from "./pages/company/CompanyRegisterPage";
 import ProductManagePage from "./pages/product/ProductManagePage";
@@ -37,7 +40,6 @@ import "./styles/App.css";
 import Header from "./components/common/Header/Header";
 
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
-import BookingPage from "./pages/booking/BookingPage";
 
 
 function AppRoutes() {
@@ -49,6 +51,9 @@ function AppRoutes() {
   return (
     <>
       {!hideHeader && <Header />}
+
+      {/* 라우트 이동하면 항상 맨위로 가게끔 */}
+      <ScrollToTop />
 
       <AnimatePresence mode="wait">
         <Routes location={location} key={location.pathname}>
@@ -83,9 +88,12 @@ function AppRoutes() {
 
           {/* 펫메이트 예약 관리 */}
           <Route path="/petmate/booking" element={<BookingManagePage />} />
+          <Route path="/user/petmate/booking-manage" element={<BookingManagePage />} />
 
-          {/* 예약 */}
-          <Route path="/booking" element={<BookingPage />} />
+          {/* 반려인 예약 내역 */}
+          <Route path="/user/owner/booking-history" element={<BookingHistoryPage />} />
+          <Route path="/my-bookings" element={<BookingHistoryPage />} />
+          
 
           {/* 업체 */}
           <Route path="/companymanage" element={<CompanyManagePage />} />

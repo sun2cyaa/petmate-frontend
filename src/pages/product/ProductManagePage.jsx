@@ -62,20 +62,48 @@ const ProductManagePage = () => {
 
   const loadInitialData = async () => {
     try {
+      console.log("📋 ProductManagePage - 초기 데이터 로딩 시작");
       setLoading(true);
+
+      // 🔑 페이지 진입 시 토큰 상태 확인
+      const token = localStorage.getItem("accessToken");
+      console.log("🔑 페이지 로딩 시 토큰 상태:", token ? "있음" : "없음");
+
       const [productData, companiesData, categoriesData] = await Promise.all([
         getProducts(),
         getCompanies(),
         getServiceCategories(),
       ]);
+
+      console.log("✅ 모든 초기 데이터 로딩 완료");
+      console.log("📦 상품 데이터:", productData);
+      console.log("🏢 업체 데이터:", companiesData);
+      console.log("📂 카테고리 데이터:", categoriesData);
+
       setProducts(productData);
       setCompanies(companiesData);
       setServiceCategories(categoriesData);
     } catch (error) {
-      console.error("데이터 로드 실패:", error);
-      alert("데이터를 불러오는데 실패하였습니다.");
+      console.error("❌ ProductManagePage - 데이터 로드 실패:", error);
+      console.error("❌ 오류 세부사항:", {
+        status: error.response?.status,
+        message: error.message,
+        data: error.response?.data
+      });
+
+      // 구체적인 오류 처리
+      if (error.response?.status === 401) {
+        alert("로그인이 필요합니다. 다시 로그인해주세요.");
+      } else if (error.response?.status === 403) {
+        alert("권한이 없습니다.");
+      } else if (error.message?.includes("timeout")) {
+        alert("서버 응답 시간을 초과했습니다. 다시 시도해주세요.");
+      } else {
+        alert("데이터를 불러오는데 실패하였습니다: " + (error.message || "알 수 없는 오류"));
+      }
     } finally {
       setLoading(false);
+      console.log("📋 ProductManagePage - 로딩 상태 해제");
     }
   };
 
