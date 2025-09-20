@@ -1,11 +1,19 @@
+/* BookingHistoryPage 전용 스타일 */
 .booking-history-container {
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
   font-family: 'Noto Sans KR', sans-serif;
+  animation: fadeIn 0.6s ease-in-out;
 }
 
-.page-header {
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== 페이지 헤더 ===== */
+.booking-history-container .page-header {
   text-align: center;
   margin-bottom: 40px;
   padding: 40px 20px;
@@ -14,7 +22,7 @@
   box-shadow: 0 8px 24px rgba(0,0,0,0.08);
 }
 
-.page-header h1 {
+.booking-history-container .page-header h1 {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -27,17 +35,19 @@
   margin-bottom: 16px;
 }
 
-.header-icon {
+.booking-history-container .header-icon {
   color: #EB9666;
+  font-size: 32px;
 }
 
-.page-header p {
+.booking-history-container .page-header p {
   color: #6b7280;
   font-size: 16px;
   margin: 0;
 }
 
-.loading-state {
+/* ===== 로딩 ===== */
+.booking-history-container .loading-state {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -45,9 +55,9 @@
   padding: 80px 20px;
 }
 
-.loading-spinner {
-  width: 40px;
-  height: 40px;
+.booking-history-container .loading-spinner {
+  width: 42px;
+  height: 42px;
   border: 4px solid #f3f4f6;
   border-top: 4px solid #EB9666;
   border-radius: 50%;
@@ -60,7 +70,8 @@
   100% { transform: rotate(360deg); }
 }
 
-.error-message {
+/* ===== 에러 메시지 ===== */
+.booking-history-container .error-message {
   background: #fef2f2;
   border: 1px solid #fecaca;
   border-left: 4px solid #ef4444;
@@ -70,17 +81,20 @@
   color: #dc2626;
 }
 
-.filter-section {
+/* ===== 필터 버튼 ===== */
+.booking-history-container .filter-section {
   margin-bottom: 32px;
+  text-align: center;
 }
 
-.filter-buttons {
+.booking-history-container .filter-buttons {
   display: flex;
   gap: 12px;
   flex-wrap: wrap;
+  justify-content: center;
 }
 
-.filter-btn {
+.booking-history-container .filter-btn {
   background: white;
   border: 2px solid #e5e7eb;
   border-radius: 10px;
@@ -92,87 +106,44 @@
   transition: all 0.3s;
 }
 
-.filter-btn:hover {
+.booking-history-container .filter-btn:hover {
   border-color: #EB9666;
   color: #EB9666;
+  transform: translateY(-2px);
 }
 
-.filter-btn.active {
+.booking-history-container .filter-btn.active {
   background: linear-gradient(135deg, #EB9666, #E05353);
   border-color: #EB9666;
   color: white;
-}
-
-.bookings-section {
-  min-height: 400px;
-}
-
-.empty-state {
-  text-align: center;
-  padding: 80px 20px;
-  background: white;
-  border-radius: 20px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-}
-
-.empty-icon {
-  font-size: 64px;
-  color: #d1d5db;
-  margin-bottom: 24px;
-}
-
-.empty-state h3 {
-  font-size: 24px;
-  font-weight: 700;
-  color: #374151;
-  margin-bottom: 12px;
-}
-
-.empty-state p {
-  color: #6b7280;
-  font-size: 16px;
-  margin-bottom: 32px;
-}
-
-.primary-btn {
-  background: linear-gradient(135deg, #EB9666, #E05353);
-  color: white;
-  border: none;
-  border-radius: 10px;
-  padding: 14px 28px;
-  font-size: 16px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.3s;
   box-shadow: 0 4px 12px rgba(235,150,102,0.35);
 }
 
-.primary-btn:hover {
-  background: linear-gradient(135deg, #E05353, #EB9666);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(235,150,102,0.4);
-}
-
-.bookings-list {
+/* ===== 예약 목록 ===== */
+.booking-history-container .bookings-list {
   display: grid;
   gap: 24px;
 }
 
-.booking-card {
+.booking-history-container .booking-card {
   background: white;
   border-radius: 16px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.05);
   padding: 24px;
   transition: all 0.3s;
   border: 1px solid #f3f4f6;
+
+  max-width: 600px;
+  margin-left: 270px;
 }
 
-.booking-card:hover {
+.booking-history-container .booking-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.12);
 }
 
-.booking-header {
+/* ===== 카드 헤더 ===== */
+.booking-history-container .booking-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
@@ -181,26 +152,21 @@
   border-bottom: 1px solid #f3f4f6;
 }
 
-.booking-title {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.booking-title h3 {
+.booking-history-container .booking-title h3 {
   font-size: 20px;
   font-weight: 700;
   color: #1f2937;
   margin: 0;
 }
 
-.booking-id {
+.booking-history-container .booking-id {
   font-size: 14px;
   color: #6b7280;
   font-weight: 500;
 }
 
-.status-badge {
+/* ===== 상태 뱃지 ===== */
+.booking-history-container .status-badge {
   padding: 6px 12px;
   border-radius: 20px;
   font-size: 12px;
@@ -209,59 +175,46 @@
   letter-spacing: 0.5px;
 }
 
-.status-pending {
-  background: #fef3c7;
-  color: #d97706;
-}
+.booking-history-container .status-pending { background: #fef3c7; color: #d97706; }
+.booking-history-container .status-confirmed { background: #d1fae5; color: #059669; }
+.booking-history-container .status-completed { background: #dbeafe; color: #2563eb; }
+.booking-history-container .status-cancelled { background: #fee2e2; color: #dc2626; }
 
-.status-confirmed {
-  background: #d1fae5;
-  color: #059669;
-}
-
-.status-completed {
-  background: #dbeafe;
-  color: #2563eb;
-}
-
-.status-cancelled {
-  background: #fee2e2;
-  color: #dc2626;
-}
-
-.status-default {
-  background: #f3f4f6;
-  color: #6b7280;
-}
-
-.booking-details {
+/* ===== 예약 상세 ===== */
+.booking-history-container .booking-details {
   display: grid;
   gap: 12px;
   margin-bottom: 24px;
 }
 
-.detail-row {
+.booking-history-container .detail-row {
   display: flex;
   align-items: center;
-  gap: 12px;
+  justify-content: flex-start;
+  gap: 12px;         
   font-size: 14px;
   color: #4b5563;
 }
 
-.detail-icon {
+.booking-history-container .detail-row span {
+ margin-left: 0;
+}
+
+.booking-history-container .detail-icon {
   color: #EB9666;
   font-size: 16px;
-  width: 16px;
   flex-shrink: 0;
 }
 
-.booking-actions {
+/* ===== 액션 버튼 ===== */
+.booking-history-container .booking-actions {
   display: flex;
   gap: 12px;
   justify-content: flex-end;
 }
 
-.detail-btn, .cancel-btn {
+.booking-history-container .detail-btn,
+.booking-history-container .cancel-btn {
   padding: 8px 16px;
   border-radius: 8px;
   font-size: 14px;
@@ -270,29 +223,29 @@
   transition: all 0.3s;
 }
 
-.detail-btn {
+.booking-history-container .detail-btn {
   background: white;
   border: 2px solid #EB9666;
   color: #EB9666;
 }
 
-.detail-btn:hover {
+.booking-history-container .detail-btn:hover {
   background: #EB9666;
   color: white;
 }
 
-.cancel-btn {
+.booking-history-container .cancel-btn {
   background: white;
   border: 2px solid #ef4444;
   color: #ef4444;
 }
 
-.cancel-btn:hover {
+.booking-history-container .cancel-btn:hover {
   background: #ef4444;
   color: white;
 }
 
-.cancel-disabled {
+.booking-history-container .cancel-disabled {
   padding: 8px 16px;
   border-radius: 8px;
   font-size: 14px;
@@ -303,37 +256,28 @@
   cursor: not-allowed;
 }
 
-.status-info {
-  font-size: 12px;
-  color: #6b7280;
-  font-style: italic;
-}
-
-/* 반응형 */
+/* ===== 반응형 ===== */
 @media (max-width: 768px) {
   .booking-history-container {
     padding: 16px;
   }
 
-  .page-header h1 {
+  .booking-history-container .page-header h1 {
     font-size: 24px;
   }
 
-  .filter-buttons {
-    justify-content: center;
-  }
-
-  .booking-header {
+  .booking-history-container .booking-header {
     flex-direction: column;
     gap: 12px;
     align-items: flex-start;
   }
 
-  .booking-actions {
+  .booking-history-container .booking-actions {
     justify-content: stretch;
   }
 
-  .detail-btn, .cancel-btn {
+  .booking-history-container .detail-btn,
+  .booking-history-container .cancel-btn {
     flex: 1;
   }
 }

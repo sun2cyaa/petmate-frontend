@@ -4,6 +4,8 @@ import {
   formatDateForAPI,
   getAvailableTimeSlots,
 } from "../../services/booking/timeSlotService";
+import { FaDog, FaCat } from "react-icons/fa";   
+import "./DateSelectStep.css";
 
 // 달력 컴포넌트
 const Calendar = ({ selectedDate, onDateSelect, disabledDates = [] }) => {
@@ -16,13 +18,8 @@ const Calendar = ({ selectedDate, onDateSelect, disabledDates = [] }) => {
     const firstDayOfWeek = new Date(year, month, 1).getDay();
 
     const days = [];
+    for (let i = 0; i < firstDayOfWeek; i++) days.push(null);
 
-    // 빈 칸 추가
-    for (let i = 0; i < firstDayOfWeek; i++) {
-      days.push(null);
-    }
-
-    // 날짜 추가
     for (let day = 1; day <= daysInMonth; day++) {
       const date = new Date(year, month, day);
       const today = new Date();
@@ -46,7 +43,6 @@ const Calendar = ({ selectedDate, onDateSelect, disabledDates = [] }) => {
         isAvailable: !isPast && !isDisabled,
       });
     }
-
     return days;
   };
 
@@ -57,56 +53,36 @@ const Calendar = ({ selectedDate, onDateSelect, disabledDates = [] }) => {
   };
 
   const monthNames = [
-    "1월", "2월", "3월", "4월", "5월", "6월",
-    "7월", "8월", "9월", "10월", "11월", "12월"
+    "1월","2월","3월","4월","5월","6월",
+    "7월","8월","9월","10월","11월","12월"
   ];
-
-  const dayNames = ["일", "월", "화", "수", "목", "금", "토"];
+  const dayNames = ["일","월","화","수","목","금","토"];
 
   return (
-    <div style={{ background: 'white', padding: '16px', borderRadius: '8px', marginBottom: '16px' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-        <button
-          onClick={() => navigateMonth(-1)}
-          style={{ border: 'none', background: 'none', fontSize: '18px', cursor: 'pointer' }}
-        >
-          ◀
-        </button>
-        <h4 style={{ margin: 0, fontSize: '18px' }}>
+    <div className="calendar">
+      <div className="calendar-header">
+        <button onClick={() => navigateMonth(-1)}>◀</button>
+        <h4>
           {currentMonth.getFullYear()}년 {monthNames[currentMonth.getMonth()]}
         </h4>
-        <button
-          onClick={() => navigateMonth(1)}
-          style={{ border: 'none', background: 'none', fontSize: '18px', cursor: 'pointer' }}
-        >
-          ▶
-        </button>
+        <button onClick={() => navigateMonth(1)}>▶</button>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '4px', marginBottom: '8px' }}>
-        {dayNames.map(day => (
-          <div key={day} style={{ textAlign: 'center', padding: '8px', fontSize: '14px', fontWeight: '600', color: '#666' }}>
-            {day}
-          </div>
+      <div className="calendar-daynames">
+        {dayNames.map((day) => (
+          <div key={day}>{day}</div>
         ))}
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '4px' }}>
+      <div className="calendar-days">
         {getDaysInMonth().map((dayData, index) => (
-          <div key={index} style={{ aspectRatio: '1', display: 'flex' }}>
+          <div key={index} className="calendar-day">
             {dayData && (
               <button
-                style={{
-                  width: '100%',
-                  height: '100%',
-                  border: `1px solid ${dayData.isSelected ? '#eb9666' : '#e5e7eb'}`,
-                  borderRadius: '8px',
-                  background: dayData.isSelected ? '#eb9666' : dayData.isPast ? '#f9fafb' : 'white',
-                  color: dayData.isSelected ? 'white' : dayData.isPast ? '#9ca3af' : '#111827',
-                  cursor: dayData.isAvailable ? 'pointer' : 'not-allowed',
-                  fontSize: '14px',
-                  fontWeight: dayData.isToday ? 'bold' : 'normal',
-                }}
+                className={`calendar-cell 
+                  ${dayData.isSelected ? "selected" : ""} 
+                  ${dayData.isPast ? "past" : ""} 
+                  ${dayData.isToday ? "today" : ""}`}
                 onClick={() => dayData.isAvailable && onDateSelect(dayData.date)}
                 disabled={!dayData.isAvailable}
               >
@@ -120,46 +96,28 @@ const Calendar = ({ selectedDate, onDateSelect, disabledDates = [] }) => {
   );
 };
 
-// 시간 슬롯 컴포넌트
+// 시간 슬롯
 const TimeSlots = ({ timeSlots, selectedTimeSlot, onTimeSlotSelect, loading }) => {
-  if (loading) {
-    return (
-      <div style={{ textAlign: 'center', padding: '40px', color: '#666' }}>
-        시간대를 불러오는 중...
-      </div>
-    );
-  }
-
-  if (!timeSlots || timeSlots.length === 0) {
-    return (
-      <div style={{ textAlign: 'center', padding: '40px', color: '#666' }}>
-        선택한 날짜에 예약 가능한 시간이 없습니다.
-      </div>
-    );
-  }
+  if (loading) return <div className="loading-text">시간대를 불러오는 중...</div>;
+  if (!timeSlots || timeSlots.length === 0)
+    return <div className="empty-text">선택한 날짜에 예약 가능한 시간이 없습니다.</div>;
 
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: '12px' }}>
+    <div className="timeslots">
       {timeSlots.map((slot, index) => (
         <button
           key={index}
-          style={{
-            padding: '16px 12px',
-            border: `2px solid ${selectedTimeSlot?.startTime === slot.startTime ? '#eb9666' : '#e5e7eb'}`,
-            borderRadius: '12px',
-            background: selectedTimeSlot?.startTime === slot.startTime ? '#fff8f3' : 'white',
-            cursor: slot.available ? 'pointer' : 'not-allowed',
-            opacity: slot.available ? 1 : 0.5,
-            textAlign: 'center',
-          }}
+          className={`timeslot-btn ${
+            selectedTimeSlot?.startTime === slot.startTime ? "selected" : ""
+          }`}
           onClick={() => slot.available && onTimeSlotSelect(slot)}
           disabled={!slot.available}
         >
-          <div style={{ fontSize: '16px', fontWeight: '600', marginBottom: '4px' }}>
+          <div className="timeslot-time">
             {slot.startTime} - {slot.endTime}
           </div>
-          <div style={{ fontSize: '12px', color: slot.available ? '#666' : '#ef4444' }}>
-            {slot.available ? '예약가능' : '예약불가'}
+          <div className={`timeslot-status ${slot.available ? "available" : "unavailable"}`}>
+            {slot.available ? "예약가능" : "예약불가"}
           </div>
         </button>
       ))}
@@ -167,67 +125,33 @@ const TimeSlots = ({ timeSlots, selectedTimeSlot, onTimeSlotSelect, loading }) =
   );
 };
 
-// 반려동물 선택 컴포넌트
+// 반려동물 선택
 const PetSelection = ({ pets, selectedPets, onPetToggle }) => {
-  if (!pets || pets.length === 0) {
-    return (
-      <div style={{ textAlign: 'center', padding: '40px', color: '#666' }}>
-        등록된 반려동물이 없습니다.
-      </div>
-    );
-  }
+  if (!pets || pets.length === 0)
+    return <div className="empty-text">등록된 반려동물이 없습니다.</div>;
 
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: '12px' }}>
-      {pets.map((pet) => (
-        <div
-          key={pet.id}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '12px',
-            padding: '16px',
-            border: `2px solid ${selectedPets.includes(pet.id) ? '#eb9666' : '#e5e7eb'}`,
-            borderRadius: '12px',
-            background: selectedPets.includes(pet.id) ? '#fff8f3' : 'white',
-            cursor: 'pointer',
-          }}
-          onClick={() => onPetToggle(pet.id)}
-        >
-          <div style={{
-            width: '48px',
-            height: '48px',
-            borderRadius: '50%',
-            background: '#f3f4f6',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontSize: '24px',
-          }}>
-            🐕
-          </div>
-          <div>
-            <h5 style={{ margin: '0 0 4px 0', fontSize: '16px' }}>{pet.name}</h5>
-            <p style={{ margin: 0, fontSize: '14px', color: '#666' }}>{pet.breed} • {pet.age}살</p>
-          </div>
-          {selectedPets.includes(pet.id) && (
-            <div style={{
-              marginLeft: 'auto',
-              width: '20px',
-              height: '20px',
-              borderRadius: '50%',
-              background: '#10b981',
-              color: 'white',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: '12px',
-            }}>
-              ✓
+    <div className="pet-list">
+      {pets.map((pet) => {
+        
+        const Icon = pet.breed.includes("냥") || pet.name.includes("냥") ? FaCat : FaDog;
+        return (
+          <div
+            key={pet.id}
+            className={`pet-card ${selectedPets.includes(pet.id) ? "selected" : ""}`}
+            onClick={() => onPetToggle(pet.id)}
+          >
+            <div className="pet-avatar">
+              <Icon />
             </div>
-          )}
-        </div>
-      ))}
+            <div className="pet-info">
+              <h5>{pet.name}</h5>
+              <p>{pet.breed} • {pet.age}살</p>
+            </div>
+            {selectedPets.includes(pet.id) && <div className="pet-check">✓</div>}
+          </div>
+        );
+      })}
     </div>
   );
 };
@@ -237,18 +161,14 @@ const DateSelectStep = () => {
   const [pets] = useState([
     { id: 1, name: "멍멍이", breed: "골든리트리버", age: 3 },
     { id: 2, name: "냥냥이", breed: "페르시안", age: 2 },
-  ]); // 임시 데이터
+  ]);
 
   const loadTimeSlots = async (date) => {
     if (!state.selectedProduct?.id || !date) return;
-
     try {
       dispatch({ type: "SET_LOADING", field: "timeSlots", value: true });
       const formattedDate = formatDateForAPI(date);
-      const timeSlots = await getAvailableTimeSlots(
-        state.selectedProduct.id,
-        formattedDate
-      );
+      const timeSlots = await getAvailableTimeSlots(state.selectedProduct.id, formattedDate);
       dispatch({ type: "SET_AVAILABLE_TIME_SLOTS", payload: timeSlots || [] });
     } catch (error) {
       console.error("시간 슬롯 로드 실패:", error);
@@ -287,31 +207,26 @@ const DateSelectStep = () => {
     dispatch({ type: "SET_STEP", payload: 1 });
   };
 
-  const isNextEnabled = state.selectedDate && state.selectedTimeSlot && state.selectedPets.length > 0;
+  const isNextEnabled =
+    state.selectedDate && state.selectedTimeSlot && state.selectedPets.length > 0;
 
   return (
-    <div style={{ padding: '16px' }}>
-      {/* 선택된 상품 정보 */}
+    <div className="date-select_wrap">
       {state.selectedProduct && (
-        <div style={{ background: 'white', padding: '16px', borderRadius: '8px', marginBottom: '16px' }}>
-          <h4 style={{ margin: '0 0 8px 0' }}>{state.selectedProduct.name}</h4>
-          <p style={{ margin: '0', color: '#666', fontSize: '14px' }}>{state.selectedProduct.description}</p>
+        <div className="selected-product">
+          <h4>{state.selectedProduct.name}</h4>
+          <p>{state.selectedProduct.description}</p>
         </div>
       )}
 
-      {/* 날짜 선택 */}
-      <div>
-        <h4 style={{ margin: '0 0 16px 0' }}>날짜 선택</h4>
-        <Calendar
-          selectedDate={state.selectedDate}
-          onDateSelect={handleDateSelect}
-        />
+      <div className="section">
+        <h4>날짜 선택</h4>
+        <Calendar selectedDate={state.selectedDate} onDateSelect={handleDateSelect} />
       </div>
 
-      {/* 시간 선택 */}
       {state.selectedDate && (
-        <div style={{ background: 'white', padding: '16px', borderRadius: '8px', marginBottom: '16px' }}>
-          <h4 style={{ margin: '0 0 16px 0' }}>시간 선택</h4>
+        <div className="section">
+          <h4>시간 선택</h4>
           <TimeSlots
             timeSlots={state.availableTimeSlots}
             selectedTimeSlot={state.selectedTimeSlot}
@@ -321,59 +236,14 @@ const DateSelectStep = () => {
         </div>
       )}
 
-      {/* 반려동물 선택 */}
-      <div style={{ background: 'white', padding: '16px', borderRadius: '8px', marginBottom: '80px' }}>
-        <h4 style={{ margin: '0 0 16px 0' }}>반려동물 선택</h4>
-        <PetSelection
-          pets={pets}
-          selectedPets={state.selectedPets}
-          onPetToggle={handlePetToggle}
-        />
+      <div className="section">
+        <h4>반려동물 선택</h4>
+        <PetSelection pets={pets} selectedPets={state.selectedPets} onPetToggle={handlePetToggle} />
       </div>
 
-      {/* 하단 버튼 */}
-      <div style={{
-        position: 'sticky',
-        bottom: '0',
-        background: 'white',
-        padding: '16px',
-        borderTop: '1px solid #e5e7eb',
-        marginLeft: '-16px',
-        marginRight: '-16px',
-        display: 'flex',
-        gap: '12px',
-      }}>
-        <button
-          style={{
-            flex: '1',
-            padding: '16px',
-            background: '#f3f4f6',
-            color: '#374151',
-            border: 'none',
-            borderRadius: '8px',
-            fontSize: '16px',
-            fontWeight: 'bold',
-            cursor: 'pointer',
-          }}
-          onClick={handlePrev}
-        >
-          이전
-        </button>
-        <button
-          style={{
-            flex: '2',
-            padding: '16px',
-            background: isNextEnabled ? 'linear-gradient(135deg, #eb9666, #e05353)' : '#e5e7eb',
-            color: isNextEnabled ? 'white' : '#9ca3af',
-            border: 'none',
-            borderRadius: '8px',
-            fontSize: '16px',
-            fontWeight: 'bold',
-            cursor: isNextEnabled ? 'pointer' : 'not-allowed',
-          }}
-          onClick={handleNext}
-          disabled={!isNextEnabled}
-        >
+      <div className="footer-btns">
+        <button className="btn-prev" onClick={handlePrev}>이전</button>
+        <button className="btn-next" onClick={handleNext} disabled={!isNextEnabled}>
           다음 단계
         </button>
       </div>

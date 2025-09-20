@@ -1,0 +1,135 @@
+.payment-success_wrap {
+    width: 100%;
+    max-width: 720px;
+    margin: 32px auto;
+    background: linear-gradient(145deg, #fff, #fffaf7);
+    border-radius: 20px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    padding: 48px 32px;
+    text-align: center;
+    font-family: "Noto Sans KR", sans-serif;
+    animation: fadeIn 0.6s ease-out;
+  }
+  
+  /* 애니메이션 */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .success-icon {
+    width: 300px;
+    height: 300px;
+    margin: 0 auto 24px;
+  }
+  .loading-icon,
+  .error-icon {
+    width: 120px;
+    height: 120px;
+    margin: 0 auto 24px;
+    font-size: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* 텍스트 */
+  .title {
+    font-size: 32px;
+    font-weight: 800;
+    background: linear-gradient(135deg, #EB9666, #E05353);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 16px;
+  }
+  .subtitle {
+    font-size: 18px;
+    color: #10b981;
+    font-weight: 600;
+    margin-bottom: 24px;
+  }
+  .description {
+    color: #6b7280;
+    font-size: 16px;
+    line-height: 1.6;
+    margin-bottom: 32px;
+  }
+  
+  /* 상세 카드 */
+  .detail-card {
+    background: #fff8f5;
+    border: 1px solid #ffe0d5;
+    border-left: 4px solid #EB9666;
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 32px;
+    text-align: left;
+  }
+  .detail-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #E05353;
+    margin-bottom: 16px;
+  }
+  .detail-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    align-items: center;
+  }
+  .detail-row .label {
+    color: #6b7280;
+    font-size: 14px;
+  }
+  .detail-row .value {
+    font-weight: 700;
+    color: #333;
+    font-size: 14px;
+  }
+  
+  /* 버튼 */
+  .button-group {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+  }
+  .btn-main {
+    background: linear-gradient(135deg, #EB9666, #E05353);
+    color: #fff;
+    border: none;
+    padding: 14px 28px;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 4px 12px rgba(235, 150, 102, 0.35);
+  }
+  .btn-main:hover {
+    background: linear-gradient(135deg, #E05353, #EB9666);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(235, 150, 102, 0.4);
+  }
+  .btn-outline {
+    background: #fff;
+    color: #EB9666;
+    border: 2px solid #EB9666;
+    padding: 12px 28px;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  .btn-outline:hover {
+    background: #EB9666;
+    color: #fff;
+    transform: translateY(-2px);
+  }
+  
