@@ -6,7 +6,10 @@ export const bookingService = {
   async getReservations(date, userInfo = null) {
     try {
       // 사용자 정보 검증
-      const companyId = userInfo?.companyId || this._getFallbackCompanyId();
+      console.log('getReservations - 전달받은 userInfo:', userInfo);
+      const companyId = userInfo?.companyId;
+      console.log('getReservations - 추출된 companyId:', companyId);
+
       if (!companyId) {
         throw new Error('업체 정보를 찾을 수 없습니다. 로그인을 확인해주세요.');
       }
@@ -55,6 +58,7 @@ export const bookingService = {
   // 오늘의 예약 통계 가져오기
   async getTodayStats(userInfo = null) {
     try {
+      console.log('getTodayStats - 전달받은 userInfo:', userInfo);
       const today = dayjs().format('YYYY-MM-DD');
       const reservations = await this.getReservations(today, userInfo);
 
@@ -121,12 +125,12 @@ export const bookingService = {
 
   // 프라이빗 메서드들
   _getFallbackCompanyId() {
-    // localStorage에서 임시로 가져오거나, 기본값 반환
+    // localStorage에서 companyId 가져오기
     try {
       const userData = JSON.parse(localStorage.getItem('userData') || '{}');
-      return userData.companyId || 1; // 개발용 기본값
+      return userData.companyId || null; // null 반환으로 명확한 오류 처리
     } catch {
-      return 1; // 개발용 기본값
+      return null; // null 반환으로 명확한 오류 처리
     }
   },
 
