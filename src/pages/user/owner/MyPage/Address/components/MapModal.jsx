@@ -217,7 +217,7 @@ export default function MapModal({ show, onClose, onLocationSelect }) {
   if (!show) return null;
 
   return (
-    <div className="modal-overlay">
+    <div className="map-modal-overlay">
       <div className="map-modal-content">
         <div className="modal-header">
           <h3 className="modal-title">지도에서 주소 찾기</h3>

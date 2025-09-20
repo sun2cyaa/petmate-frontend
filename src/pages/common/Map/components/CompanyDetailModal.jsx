@@ -54,13 +54,6 @@ function CompanyDetailModal({ selectedCompany, onClose, onBookingClick }) {
           </a>
           <a
             href="#none"
-            className={`tab-item ${activeTab === 'reservation' ? 'active' : ''}`}
-            onClick={(e) => { e.preventDefault(); setActiveTab('reservation'); }}
-          >
-            예약
-          </a>
-          <a
-            href="#none"
             className={`tab-item ${activeTab === 'review' ? 'active' : ''}`}
             onClick={(e) => { e.preventDefault(); setActiveTab('review'); }}
           >
@@ -80,25 +73,28 @@ function CompanyDetailModal({ selectedCompany, onClose, onBookingClick }) {
           {/* 홈 내용 */}
           {activeTab === 'home' && (
             <div className="company-info">
-              <div className="company-section-content">
-                <div className="coupon-section">
-                    <div className="coupon-container">
-                        <div className="coupon-header">
-                          <img src={mapmodal_home_img1} alt="회복과 성장의 마중물"/>
-                          <img src={mapmodal_home_img2} alt="민생회복 소비쿠폰"/>
-                          <span className="sr-only">회복과 성장의 마중물 민생회복 소비쿠폰</span>
+              {/* 개인(P)이 아닐 경우에만 쿠폰 섹션 표시 */}
+              {selectedCompany.businessType !== 'P' && selectedCompany.type !== 'P' && (
+                <div className="company-section-content">
+                  <div className="coupon-section">
+                      <div className="coupon-container">
+                          <div className="coupon-header">
+                            <img src={mapmodal_home_img1} alt="회복과 성장의 마중물"/>
+                            <img src={mapmodal_home_img2} alt="민생회복 소비쿠폰"/>
+                            <span className="sr-only">회복과 성장의 마중물 민생회복 소비쿠폰</span>
+                          </div>
+                          <div className="coupon-title">
+                            신용·체크 카드 사용 가능 매장
+                          </div>
+                          <div className="coupon-notice">
+                            <img src={mapmodal_home_img3} alt="안내" className="modal_home_img3"/>
+                            <span className="sr-only">안내</span>
+                            소비쿠폰 가맹점 정보는 행안부(참여 신용카드사)와 사업주분들께서 제공한 정보로, 실제 사용 가능 여부는 매장에 확인해 주세요.
+                          </div>
                         </div>
-                        <div className="coupon-title">
-                          신용·체크 카드 사용 가능 매장
-                        </div>
-                        <div className="coupon-notice">
-                          <img src={mapmodal_home_img3} alt="안내" className="modal_home_img3"/>
-                          <span className="sr-only">안내</span>
-                          소비쿠폰 가맹점 정보는 행안부(참여 신용카드사)와 사업주분들께서 제공한 정보로, 실제 사용 가능 여부는 매장에 확인해 주세요.
-                        </div>
-                      </div>
-                  </div>
-              </div>
+                    </div>
+                </div>
+              )}
               <div className="info-section">
                 <div className="info-item">
                   <span className="icon">

@@ -40,7 +40,7 @@
   }
 }
 
-.modal-header {
+.company-detail-modal > .modal-header {
   position: sticky;
   top: 0;
   background: linear-gradient(135deg, #eb9666, #e05353);

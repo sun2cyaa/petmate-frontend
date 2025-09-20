@@ -1,5 +1,5 @@
 // src/pages/common/Map/MapPage.jsx
-import React, { useEffect, useState, useRef, useCallback } from "react";
+import React, { useEffect, useState, useRef, useCallback, useMemo } from "react";
 import {
   FaHandsHelping,
   FaDog,
@@ -104,6 +104,7 @@ function MapPage() {
   const handleServiceFilter = useCallback((serviceId) => {
     setSelectedService(serviceId);
     setCurrentPage(1);
+    setSelectedCompany(null); // 선택된 업체 초기화
   }, []);
 
   const handleSearch = useCallback(
@@ -183,8 +184,17 @@ function MapPage() {
     setCompanyMarkers(markers);
   }, []);
 
-  const displayCompanies =
-    filteredCompanies.length > 0 ? filteredCompanies : companies;
+  const displayCompanies = useMemo(() => {
+    // 기본 데이터 결정 (검색 결과가 있으면 검색 결과, 없으면 전체 업체)
+    const baseCompanies = filteredCompanies.length > 0 ? filteredCompanies : companies;
+
+    // 서비스 필터 적용
+    if (selectedService === null) {
+      return baseCompanies; // 전체 선택시 필터링 없음
+    }
+
+    return baseCompanies.filter(company => company.repService === selectedService);
+  }, [filteredCompanies, companies, selectedService]);
   const totalPages = Math.ceil(displayCompanies.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;

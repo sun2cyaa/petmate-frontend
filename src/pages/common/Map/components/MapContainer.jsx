@@ -432,10 +432,10 @@ function MapContainer({
     onCompanySelect(null);
   }, [onCompanySelect]);
 
-  // 지도 초기화
+  // 지도 초기화 (사용자 마커 제외)
   useEffect(() => {
     if (!isKakaoLoaded || !userLocation || isInitializedRef.current) return;
-    
+
     const container = document.getElementById("map");
     if (!container) return;
 
@@ -446,19 +446,6 @@ function MapContainer({
     const map = new window.kakao.maps.Map(container, options);
     mapRef.current = map;
     isInitializedRef.current = true;
-
-    // 드래그 가능한 사용자 위치 마커 생성
-    const userPosition = new window.kakao.maps.LatLng(userLocation.latitude, userLocation.longitude);
-    createUserMarker(map, userPosition).then(marker => {
-      if (marker) {
-        userMarkerRef.current = marker;
-        console.log('사용자 마커 생성 완료:', marker);
-      } else {
-        console.error('사용자 마커 생성 실패');
-      }
-    }).catch(error => {
-      console.error('사용자 마커 생성 중 오류:', error);
-    });
 
     // 지도 이벤트 리스너
     window.kakao.maps.event.addListener(map, "dragend", handleMapChange);
@@ -471,12 +458,39 @@ function MapContainer({
         window.kakao.maps.event.removeListener(map, "zoom_changed", handleMapChange);
         window.kakao.maps.event.removeListener(map, "click", handleMapClick);
       }
+    };
+  }, [isKakaoLoaded, userLocation]);
+
+  // 사용자 마커 생성 및 관리 (독립적)
+  useEffect(() => {
+    if (!mapRef.current || !userLocation) return;
+
+    // 기존 사용자 마커 제거
+    if (userMarkerRef.current) {
+      userMarkerRef.current.setMap(null);
+      userMarkerRef.current = null;
+    }
+
+    // 새 사용자 마커 생성
+    const userPosition = new window.kakao.maps.LatLng(userLocation.latitude, userLocation.longitude);
+    createUserMarker(mapRef.current, userPosition).then(marker => {
+      if (marker) {
+        userMarkerRef.current = marker;
+        console.log('사용자 마커 생성 완료:', marker);
+      } else {
+        console.error('사용자 마커 생성 실패');
+      }
+    }).catch(error => {
+      console.error('사용자 마커 생성 중 오류:', error);
+    });
+
+    return () => {
       if (userMarkerRef.current) {
         userMarkerRef.current.setMap(null);
         userMarkerRef.current = null;
       }
     };
-  }, [isKakaoLoaded, userLocation, handleMapChange, handleMapClick, createUserMarker]);
+  }, [userLocation, createUserMarker]);
 
   // 지도 중심 변경 (userLocation 변경시)
   useEffect(() => {
@@ -496,12 +510,17 @@ function MapContainer({
 
   // 업체 마커 표시
   useEffect(() => {
-    if (!mapRef.current || !companies || companies.length === 0) {
-      // 마커 정리
-      markersRef.current.forEach(m => m.setMap(null));
-      labelsRef.current.forEach(l => l.setMap(null));
-      markersRef.current = [];
-      labelsRef.current = [];
+    if (!mapRef.current) {
+      return;
+    }
+
+    // 기존 업체 마커들만 정리 (사용자 마커는 건드리지 않음)
+    markersRef.current.forEach(m => m.setMap(null));
+    labelsRef.current.forEach(l => l.setMap(null));
+    markersRef.current = [];
+    labelsRef.current = [];
+
+    if (!companies || companies.length === 0) {
       if (onMarkersChange) onMarkersChange([]);
       return;
     }
