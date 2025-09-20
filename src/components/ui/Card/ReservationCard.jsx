@@ -64,6 +64,7 @@ const ReservationCard = ({ reservation, onUpdate }) => {
     onUpdate(reservation.id, "cancelled");
   };
 
+
   const statusBadge = getStatusBadge(reservation.status);
 
   // Day.js를 사용한 시간 포맷팅

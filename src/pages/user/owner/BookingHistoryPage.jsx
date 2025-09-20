@@ -86,6 +86,19 @@ const BookingHistoryPage = () => {
       setBookings(bookingsData);
       console.log(`총 ${bookingsData.length}개의 예약 내역을 불러왔습니다.`);
 
+      // 예약 데이터 구조 확인용 로그
+      if (bookingsData.length > 0) {
+        console.log('첫 번째 예약 데이터 구조:', bookingsData[0]);
+        console.log('예약 데이터 필드들:', Object.keys(bookingsData[0]));
+        console.log('시간 데이터 확인:', {
+          startDt: bookingsData[0].startDt,
+          endDt: bookingsData[0].endDt,
+          reservationDate: bookingsData[0].reservationDate,
+          startTime: bookingsData[0].startTime,
+          endTime: bookingsData[0].endTime
+        });
+      }
+
       // 디버깅: 예약 데이터의 companyId와 날짜 확인
       if (bookingsData.length > 0) {
         console.log("예약 데이터 샘플:", bookingsData[0]);
@@ -144,6 +157,70 @@ const BookingHistoryPage = () => {
 
   const formatTime = (timeString) => {
     return dayjs(timeString).format("HH:mm");
+  };
+
+  // 취소 가능 여부 확인 (예약 시작 시간 이전까지만 취소 가능)
+  const canCancelBooking = (booking) => {
+    // 예약 상태가 취소 가능한 상태인지 확인
+    const cancellableStatuses = ["0", "1", "pending", "confirmed"];
+    if (!cancellableStatuses.includes(String(booking.status))) {
+      return false;
+    }
+
+    // startDt 필드를 사용
+    if (!booking.startDt) {
+      return false;
+    }
+
+    try {
+      // startDt를 사용하여 예약 시작 시간 계산
+      const reservationDateTime = dayjs(booking.startDt);
+      const currentDateTime = dayjs();
+
+      // 현재 시간이 예약 시작 시간 이전인지 확인
+      const canCancel = currentDateTime.isBefore(reservationDateTime);
+
+      // 디버깅용 로그
+      console.log('취소 가능 여부 확인:', {
+        bookingId: booking.id,
+        startDt: booking.startDt,
+        reservationDateTime: reservationDateTime.format('YYYY-MM-DD HH:mm:ss'),
+        currentDateTime: currentDateTime.format('YYYY-MM-DD HH:mm:ss'),
+        canCancel,
+        status: booking.status
+      });
+
+      return canCancel;
+    } catch (error) {
+      console.error('취소 가능 여부 확인 중 오류:', error, booking);
+      return false;
+    }
+  };
+
+  // 예약 취소 처리
+  const handleCancelBooking = async (bookingId) => {
+    if (!window.confirm("정말로 예약을 취소하시겠습니까?")) {
+      return;
+    }
+
+    try {
+      setError(null);
+      console.log("예약 취소 요청:", bookingId);
+
+      const response = await apiRequest.put(`/api/booking/${bookingId}/cancel`);
+
+      if (response.data?.success) {
+        console.log("예약 취소 성공");
+        // 예약 목록 새로고침
+        fetchMyBookings();
+        alert("예약이 성공적으로 취소되었습니다.");
+      } else {
+        throw new Error(response.data?.message || "예약 취소에 실패했습니다.");
+      }
+    } catch (error) {
+      console.error("예약 취소 실패:", error);
+      setError(error.message || "예약 취소 중 오류가 발생했습니다.");
+    }
   };
 
   if (loading) {
@@ -249,17 +326,17 @@ const BookingHistoryPage = () => {
 
                 <div className="booking-actions">
                   <button className="detail-btn">상세보기</button>
-                  {(booking.status === "0" || booking.status === "1" || booking.status === "confirmed") && (
-                    <button className="cancel-btn">예약취소</button>
-                  )}
-                  {booking.status === "0" && (
-                    <span className="status-info">업체 승인 대기 중</span>
-                  )}
-                  {booking.status === "1" && (
-                    <span className="status-info">예약 확정됨</span>
-                  )}
-                  {booking.status === "2" && (
-                    <span className="status-info">서비스 완료</span>
+                  {canCancelBooking(booking) ? (
+                    <button
+                      className="cancel-btn"
+                      onClick={() => handleCancelBooking(booking.id)}
+                    >
+                      예약취소
+                    </button>
+                  ) : (
+                    (booking.status === "0" || booking.status === "1" || booking.status === "confirmed") && (
+                      <span className="cancel-disabled">취소 불가 (예약시간 경과)</span>
+                    )
                   )}
                 </div>
               </div>

@@ -292,6 +292,23 @@
   color: white;
 }
 
+.cancel-disabled {
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  background: #f3f4f6;
+  border: 2px solid #d1d5db;
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+
+.status-info {
+  font-size: 12px;
+  color: #6b7280;
+  font-style: italic;
+}
+
 /* 반응형 */
 @media (max-width: 768px) {
   .booking-history-container {

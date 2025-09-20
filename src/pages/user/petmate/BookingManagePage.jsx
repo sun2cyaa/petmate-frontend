@@ -178,6 +178,7 @@ const BookingManagePage = () => {
     }
   };
 
+
   if (error) {
     return (
       <div className="booking-manage-page">
@@ -245,44 +246,97 @@ const BookingManagePage = () => {
                   setCompanyId(newCompanyId);
                   console.log(`회사 변경: ${selectedCompany?.name} (ID: ${newCompanyId})`);
                 }}
+                className="company-dropdown"
                 style={{
                   width: '100%',
-                  padding: '12px 16px',
-                  border: '2px solid #f3f4f6',
-                  borderRadius: '8px',
-                  fontSize: '14px',
-                  backgroundColor: '#f8f9fa',
-                  color: '#333',
+                  padding: '14px 18px',
+                  border: '2px solid #e5e7eb',
+                  borderRadius: '10px',
+                  fontSize: '15px',
+                  backgroundColor: '#ffffff',
+                  color: '#374151',
                   cursor: 'pointer',
                   outline: 'none',
-                  fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-                  transition: 'all 0.2s ease'
+                  fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Malgun Gothic", sans-serif',
+                  fontWeight: '500',
+                  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                  boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+                  backgroundImage: 'url("data:image/svg+xml,%3csvg xmlns=\'http://www.w3.org/2000/svg\' fill=\'none\' viewBox=\'0 0 20 20\'%3e%3cpath stroke=\'%236b7280\' stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'1.5\' d=\'m6 8 4 4 4-4\'/%3e%3c/svg%3e")',
+                  backgroundPosition: 'right 12px center',
+                  backgroundRepeat: 'no-repeat',
+                  backgroundSize: '16px',
+                  paddingRight: '40px',
+                  appearance: 'none'
                 }}
                 onFocus={(e) => {
-                  e.target.style.backgroundColor = '#fff';
+                  e.target.style.backgroundColor = '#ffffff';
                   e.target.style.borderColor = '#E05353';
+                  e.target.style.boxShadow = '0 0 0 3px rgba(224, 83, 83, 0.1)';
                 }}
                 onBlur={(e) => {
-                  e.target.style.backgroundColor = '#f8f9fa';
-                  e.target.style.borderColor = '#f3f4f6';
+                  e.target.style.backgroundColor = '#ffffff';
+                  e.target.style.borderColor = '#e5e7eb';
+                  e.target.style.boxShadow = '0 1px 3px rgba(0, 0, 0, 0.1)';
+                }}
+                onMouseEnter={(e) => {
+                  if (e.target !== document.activeElement) {
+                    e.target.style.borderColor = '#eb9666';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (e.target !== document.activeElement) {
+                    e.target.style.borderColor = '#e5e7eb';
+                  }
                 }}
               >
                 {companies.map(company => (
-                  <option key={company.id} value={company.id}>
+                  <option key={company.id} value={company.id} style={{ padding: '12px' }}>
                     🏢 {company.name}
                   </option>
                 ))}
               </select>
 
-              {/* 회사 개수 표시 */}
+              {/* 선택된 회사 정보와 통계 */}
               <div style={{
-                marginTop: '12px',
-                textAlign: 'center',
-                fontSize: '12px',
-                color: '#777777',
-                fontWeight: '500'
+                marginTop: '16px',
+                padding: '12px 16px',
+                backgroundColor: '#f8f9fa',
+                borderRadius: '8px',
+                border: '1px solid #e9ecef'
               }}>
-                총 {companies.length}개 업체 관리 중
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  marginBottom: '8px'
+                }}>
+                  <span style={{
+                    fontSize: '13px',
+                    color: '#495057',
+                    fontWeight: '600'
+                  }}>
+                    선택된 업체
+                  </span>
+                  <span style={{
+                    fontSize: '12px',
+                    color: '#E05353',
+                    backgroundColor: '#fff',
+                    padding: '4px 8px',
+                    borderRadius: '12px',
+                    fontWeight: '500',
+                    border: '1px solid #E05353'
+                  }}>
+                    {companies.length}개 업체
+                  </span>
+                </div>
+                <div style={{
+                  fontSize: '14px',
+                  color: '#212529',
+                  fontWeight: '600',
+                  textAlign: 'center'
+                }}>
+                  🏢 {companies.find(c => c.id === companyId)?.name || '업체를 선택하세요'}
+                </div>
               </div>
             </div>
           )}

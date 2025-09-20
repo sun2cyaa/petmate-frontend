@@ -283,3 +283,46 @@
     gap: 5px;
   }
 }
+
+/* 회사 선택 드롭다운 추가 스타일 */
+.company-dropdown {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e") !important;
+}
+
+.company-dropdown:focus {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23E05353' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e") !important;
+}
+
+/* 회사 선택 섹션 애니메이션 */
+.company-selector {
+  animation: slideInLeft 0.5s ease-out;
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* 반응형 추가 스타일 */
+@media (max-width: 768px) {
+  .company-selector {
+    margin-bottom: 16px !important;
+    padding: 16px !important;
+  }
+
+  .company-dropdown {
+    font-size: 14px !important;
+    padding: 12px 16px !important;
+  }
+
+  /* 회사 정보 카드 모바일 최적화 */
+  .company-selector > div:last-child {
+    padding: 10px 12px !important;
+  }
+}
