@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import BookingContext from "./BookingContext";
 import { getBookingById } from "../../services/booking/bookingService";
+import "./BookingCompleteStep.css";
 
 const BookingCompleteStep = () => {
   const { state } = useContext(BookingContext);
@@ -62,81 +63,41 @@ const BookingCompleteStep = () => {
   };
 
   return (
-    <div style={{ padding: '20px', textAlign: 'center' }}>
+    <div className="booking-complete-container">
       {/* 성공 아이콘 */}
-      <div style={{ marginBottom: '32px' }}>
-        <div style={{
-          display: 'inline-block',
-          width: '80px',
-          height: '80px',
-          borderRadius: '50%',
-          background: 'linear-gradient(135deg, #eb9666, #e05353)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          fontSize: '40px',
-          marginBottom: '16px',
-        }}>
-          ✅
-        </div>
-        <h2 style={{ margin: '0 0 8px 0', fontSize: '24px', fontWeight: '800', color: '#e05353' }}>
-          예약이 완료되었습니다!
-        </h2>
-        <p style={{ margin: 0, fontSize: '16px', color: '#6b7280' }}>
+      <div className="success-icon-wrap">
+        <div className="success-icon">✅</div>
+        <h2 className="success-title">예약이 완료되었습니다!</h2>
+        <p className="success-desc">
           예약 확인 및 관리는 마이페이지에서 가능합니다.
         </p>
       </div>
 
       {/* 예약 정보 카드 */}
-      <div style={{
-        background: 'white',
-        borderRadius: '16px',
-        padding: '24px',
-        marginBottom: '24px',
-        textAlign: 'left',
-        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)'
-      }}>
-        <div style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          marginBottom: '20px',
-          paddingBottom: '16px',
-          borderBottom: '2px solid #f1f3f4'
-        }}>
-          <h3 style={{ margin: 0, fontSize: '20px', fontWeight: '700', color: '#e05353' }}>
-            예약 정보
-          </h3>
-          <span style={{
-            background: 'linear-gradient(135deg, #eb9666, #e05353)',
-            color: 'white',
-            padding: '6px 16px',
-            borderRadius: '20px',
-            fontSize: '14px',
-            fontWeight: '600'
-          }}>
-            예약완료
-          </span>
+      <div className="card booking-info-card">
+        <div className="card-header">
+          <h3>예약 정보</h3>
+          <span className="status-badge">예약완료</span>
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span style={{ fontSize: '14px', color: '#6b7280' }}>업체명</span>
-            <span style={{ fontSize: '14px', fontWeight: '600' }}>
+        <div className="info-list">
+          <div className="info-item">
+            <span className="label">업체명</span>
+            <span className="value">
               {actualBookingData?.companyName || displayData.selectedStore?.name}
             </span>
           </div>
 
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span style={{ fontSize: '14px', color: '#6b7280' }}>서비스</span>
-            <span style={{ fontSize: '14px', fontWeight: '600' }}>
+          <div className="info-item">
+            <span className="label">서비스</span>
+            <span className="value">
               {actualBookingData?.productName || displayData.selectedProduct?.name}
             </span>
           </div>
 
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span style={{ fontSize: '14px', color: '#6b7280' }}>예약일시</span>
-            <span style={{ fontSize: '14px', fontWeight: '600' }}>
+          <div className="info-item">
+            <span className="label">예약일시</span>
+            <span className="value">
               {actualBookingData ?
                 `${formatDate(actualBookingData.startDt)} ${actualBookingData.startDt?.split('T')[1]?.substring(0,5)}-${actualBookingData.endDt?.split('T')[1]?.substring(0,5)}` :
                 `${formatDate(displayData.selectedDate)} ${displayData.selectedTimeSlot?.startTime}-${displayData.selectedTimeSlot?.endTime}`
@@ -144,128 +105,57 @@ const BookingCompleteStep = () => {
             </span>
           </div>
 
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span style={{ fontSize: '14px', color: '#6b7280' }}>반려동물</span>
-            <span style={{ fontSize: '14px', fontWeight: '600' }}>
+          <div className="info-item">
+            <span className="label">반려동물</span>
+            <span className="value">
               {actualBookingData?.petCount || displayData.selectedPets?.length || 1}마리
             </span>
           </div>
 
-          <div style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            borderTop: '2px solid #eb9666',
-            paddingTop: '16px',
-            marginTop: '8px'
-          }}>
-            <span style={{ fontSize: '16px', fontWeight: '600' }}>총 결제금액</span>
-            <span style={{ fontSize: '20px', fontWeight: '700', color: '#e05353' }}>
-              {calculateTotal().toLocaleString()}원
-            </span>
+          <div className="info-total">
+            <span>총 결제금액</span>
+            <span>{calculateTotal().toLocaleString()}원</span>
           </div>
         </div>
       </div>
 
       {/* 다음 단계 안내 */}
-      <div style={{
-        background: 'white',
-        borderRadius: '16px',
-        padding: '24px',
-        marginBottom: '32px',
-        textAlign: 'left',
-        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)'
-      }}>
-        <h4 style={{ margin: '0 0 20px 0', fontSize: '18px', fontWeight: '700', color: '#e05353', textAlign: 'center' }}>
-          다음 단계
-        </h4>
+      <div className="card next-step-card">
+        <h4 className="next-step-title">다음 단계</h4>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          <div style={{
-            display: 'flex',
-            alignItems: 'flex-start',
-            gap: '16px',
-            padding: '16px',
-            background: '#fff8f3',
-            borderRadius: '12px'
-          }}>
-            <span style={{ fontSize: '24px' }}>📞</span>
+        <div className="next-step-list">
+          <div className="next-step-item">
+            <span className="icon">📞</span>
             <div>
-              <h5 style={{ margin: '0 0 4px 0', fontSize: '16px', fontWeight: '600' }}>업체 연락</h5>
-              <p style={{ margin: 0, fontSize: '14px', color: '#6b7280', lineHeight: '1.4' }}>
-                예약 확정을 위해 업체에서 연락드릴 예정입니다.
-              </p>
+              <h5>업체 연락</h5>
+              <p>예약 확정을 위해 업체에서 연락드릴 예정입니다.</p>
             </div>
           </div>
 
-          <div style={{
-            display: 'flex',
-            alignItems: 'flex-start',
-            gap: '16px',
-            padding: '16px',
-            background: '#fff8f3',
-            borderRadius: '12px'
-          }}>
-            <span style={{ fontSize: '24px' }}>💬</span>
+          <div className="next-step-item">
+            <span className="icon">💬</span>
             <div>
-              <h5 style={{ margin: '0 0 4px 0', fontSize: '16px', fontWeight: '600' }}>서비스 준비</h5>
-              <p style={{ margin: 0, fontSize: '14px', color: '#6b7280', lineHeight: '1.4' }}>
-                예약일 전날까지 반려동물 준비사항을 확인해주세요.
-              </p>
+              <h5>서비스 준비</h5>
+              <p>예약일 전날까지 반려동물 준비사항을 확인해주세요.</p>
             </div>
           </div>
 
-          <div style={{
-            display: 'flex',
-            alignItems: 'flex-start',
-            gap: '16px',
-            padding: '16px',
-            background: '#fff8f3',
-            borderRadius: '12px'
-          }}>
-            <span style={{ fontSize: '24px' }}>⭐</span>
+          <div className="next-step-item">
+            <span className="icon">⭐</span>
             <div>
-              <h5 style={{ margin: '0 0 4px 0', fontSize: '16px', fontWeight: '600' }}>서비스 완료</h5>
-              <p style={{ margin: 0, fontSize: '14px', color: '#6b7280', lineHeight: '1.4' }}>
-                서비스 이용 후 리뷰를 남겨주시면 더 좋은 서비스 개선에 도움이 됩니다.
-              </p>
+              <h5>서비스 완료</h5>
+              <p>서비스 이용 후 리뷰를 남겨주시면 더 좋은 서비스 개선에 도움이 됩니다.</p>
             </div>
           </div>
         </div>
       </div>
 
       {/* 하단 버튼 */}
-      <div style={{ display: 'flex', gap: '12px' }}>
-        <button
-          style={{
-            flex: '1',
-            padding: '16px 24px',
-            background: 'white',
-            color: '#eb9666',
-            border: '2px solid #eb9666',
-            borderRadius: '12px',
-            fontSize: '16px',
-            fontWeight: '600',
-            cursor: 'pointer',
-          }}
-          onClick={handleViewBookings}
-        >
+      <div className="footer-buttons">
+        <button className="btn-outline" onClick={handleViewBookings}>
           예약 내역 보기
         </button>
-        <button
-          style={{
-            flex: '1',
-            padding: '16px 24px',
-            background: 'linear-gradient(135deg, #eb9666, #e05353)',
-            color: 'white',
-            border: 'none',
-            borderRadius: '12px',
-            fontSize: '16px',
-            fontWeight: '600',
-            cursor: 'pointer',
-          }}
-          onClick={handleClose}
-        >
+        <button className="btn-primary" onClick={handleClose}>
           완료
         </button>
       </div>

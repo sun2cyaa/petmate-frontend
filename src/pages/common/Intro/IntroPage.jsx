@@ -43,7 +43,7 @@ function IntroPage() {
   }, []);
 
   return (
-    <>
+    <div id="intro-page"> {/* ✅ 네임스페이스 컨테이너 */}
       <IntroHeader />
 
       <div id="fullpage">
@@ -117,7 +117,7 @@ function IntroPage() {
 
       {/* props로 보임 여부 */}
       <BackToTop visible={showBackToTop} />
-    </>
+    </div>
   );
 }
 

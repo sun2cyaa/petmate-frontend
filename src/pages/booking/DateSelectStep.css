@@ -1,244 +1,243 @@
 .date-select_wrap {
-    font-family: "Noto Sans KR", sans-serif;
-    max-width: 960px;
-    margin: 0 auto;
-    padding: 24px 20px 80px;
-    background: linear-gradient(180deg, #fff 0%, #fffaf7 100%);
-  }
-  
-  /* 선택된 상품 */
-  .selected-product {
-    background: #fff;
-    border-radius: 12px;
-    padding: 16px;
-    margin-bottom: 20px;
-    border: 1px solid #eee;
-  }
-  .selected-product h4 {
-    margin: 0 0 8px 0;
-    font-size: 18px;
-    font-weight: 700;
-  }
-  .selected-product p {
-    margin: 0;
-    font-size: 14px;
-    color: #666;
-  }
-  
-  /* 공통 섹션 */
-  .section {
-    background: #fff;
-    border-radius: 12px;
-    padding: 16px;
-    margin-bottom: 20px;
-  }
-  .section h4 {
-    margin: 0 0 16px 0;
-    font-size: 16px;
-    font-weight: 700;
-    color: #e05353;
-  }
-  
-  /* 달력 */
-  .calendar-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 16px;
-  }
-  .calendar-header button {
-    border: none;
-    background: none;
-    font-size: 18px;
-    cursor: pointer;
-  }
-  .calendar-daynames {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 4px;
-    margin-bottom: 8px;
-    text-align: center;
-    font-size: 14px;
-    font-weight: 600;
-    color: #666;
-  }
-  .calendar-days {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 4px;
-  }
-  .calendar-cell {
-    width: 100%;
-    aspect-ratio: 1;
-    border: 1px solid #e5e7eb;
-    border-radius: 8px;
-    background: #fff;
-    cursor: pointer;
-    font-size: 14px;
-    transition: all 0.15s;
-  }
-  .calendar-cell.today {
-    font-weight: bold;
-    color: #e05353;
-  }
-  .calendar-cell.selected {
-    background: #eb9666;
-    border-color: #eb9666;
-    color: #fff;
-  }
-  .calendar-cell.past {
-    background: #f9fafb;
-    color: #9ca3af;
-    cursor: not-allowed;
-  }
-  
-  /* 시간 슬롯 */
-  .timeslots {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    gap: 12px;
-  }
-  .timeslot-btn {
-    padding: 16px 12px;
-    border: 2px solid #e5e7eb;
-    border-radius: 12px;
-    background: #fff;
-    cursor: pointer;
-    transition: all 0.15s;
-  }
-  .timeslot-btn:hover {
-    border-color: #eb9666;
-    background: #fffdf9;
-  }
-  .timeslot-btn.selected {
-    border-color: #eb9666;
-    background: #fff8f3;
-  }
-  .timeslot-time {
-    font-size: 16px;
-    font-weight: 600;
-    margin-bottom: 4px;
-  }
-  .timeslot-status {
-    font-size: 12px;
-  }
-  .timeslot-status.available {
-    color: #666;
-  }
-  .timeslot-status.unavailable {
-    color: #ef4444;
-  }
-  
-  /* 반려동물 선택 */
-  .pet-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 12px;
-  }
-  .pet-card {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 16px;
-    border: 2px solid #e5e7eb;
-    border-radius: 12px;
-    background: #fff;
-    cursor: pointer;
-    transition: all 0.15s;
-  }
-  .pet-card:hover {
-    border-color: #eb9666;
-    background: #fffdf9;
-  }
-  .pet-card.selected {
-    border-color: #eb9666;
-    background: #fff8f3;
-  }
-  .pet-avatar {
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    background: #f3f4f6;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 22px;   
-    color: #eb9666;    
-  }
-  .pet-info h5 {
-    margin: 0 0 4px 0;
-    font-size: 16px;
-  }
-  .pet-info p {
-    margin: 0;
-    font-size: 14px;
-    color: #666;
-  }
-  .pet-check {
-    margin-left: auto;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background: #10b981;
-    color: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 12px;
-  }
-  
-  /* 상태 */
-  .loading-text,
-  .empty-text {
-    text-align: center;
-    padding: 40px;
-    font-size: 15px;
-    color: #555;
-  }
-  
-  /* 하단 버튼 */
-  .footer-btns {
-    position: sticky;
-    bottom: 0;
-    background: #fff;
-    padding: 16px;
-    border-top: 1px solid #e5e7eb;
-    margin-left: -20px;
-    margin-right: -20px;
-    display: flex;
-    gap: 12px;
-  }
-  .btn-prev {
-    flex: 1;
-    padding: 16px;
-    background: #f3f4f6;
-    color: #374151;
-    border: none;
-    border-radius: 8px;
-    font-size: 16px;
-    font-weight: 700;
-    cursor: pointer;
-  }
-  .btn-next {
-    flex: 2;
-    padding: 16px;
-    background: linear-gradient(135deg, #eb9666, #e05353);
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    font-size: 16px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.15s;
-  }
-  .btn-next:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(224, 83, 83, 0.25);
-  }
-  .btn-next:disabled {
-    background: #e5e7eb;
-    color: #9ca3af;
-    cursor: not-allowed;
-    box-shadow: none;
-  }
-  
+  font-family: "Noto Sans KR", sans-serif;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 24px 20px 80px;
+  background: linear-gradient(180deg, #fff 0%, #fffaf7 100%);
+}
+
+/* 선택된 상품 */
+.date-select_wrap .selected-product {
+  background: #fff;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 20px;
+  border: 1px solid #eee;
+}
+.date-select_wrap .selected-product h4 {
+  margin: 0 0 8px 0;
+  font-size: 18px;
+  font-weight: 700;
+}
+.date-select_wrap .selected-product p {
+  margin: 0;
+  font-size: 14px;
+  color: #666;
+}
+
+/* 공통 섹션 */
+.date-select_wrap .section {
+  background: #fff;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 20px;
+}
+.date-select_wrap .section h4 {
+  margin: 0 0 16px 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: #e05353;
+}
+
+/* 달력 */
+.date-select_wrap .calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+.date-select_wrap .calendar-header button {
+  border: none;
+  background: none;
+  font-size: 18px;
+  cursor: pointer;
+}
+.date-select_wrap .calendar-daynames {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  margin-bottom: 8px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 600;
+  color: #666;
+}
+.date-select_wrap .calendar-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+.date-select_wrap .calendar-cell {
+  width: 100%;
+  aspect-ratio: 1;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #fff;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.15s;
+}
+.date-select_wrap .calendar-cell.today {
+  font-weight: bold;
+  color: #e05353;
+}
+.date-select_wrap .calendar-cell.selected {
+  background: #eb9666;
+  border-color: #eb9666;
+  color: #fff;
+}
+.date-select_wrap .calendar-cell.past {
+  background: #f9fafb;
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+
+/* 시간 슬롯 */
+.date-select_wrap .timeslots {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 12px;
+}
+.date-select_wrap .timeslot-btn {
+  padding: 16px 12px;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  background: #fff;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.date-select_wrap .timeslot-btn:hover {
+  border-color: #eb9666;
+  background: #fffdf9;
+}
+.date-select_wrap .timeslot-btn.selected {
+  border-color: #eb9666;
+  background: #fff8f3;
+}
+.date-select_wrap .timeslot-time {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.date-select_wrap .timeslot-status {
+  font-size: 12px;
+}
+.date-select_wrap .timeslot-status.available {
+  color: #666;
+}
+.date-select_wrap .timeslot-status.unavailable {
+  color: #ef4444;
+}
+
+/* 반려동물 선택 */
+.date-select_wrap .pet-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 12px;
+}
+.date-select_wrap .pet-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  background: #fff;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.date-select_wrap .pet-card:hover {
+  border-color: #eb9666;
+  background: #fffdf9;
+}
+.date-select_wrap .pet-card.selected {
+  border-color: #eb9666;
+  background: #fff8f3;
+}
+.date-select_wrap .pet-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #f3f4f6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;   
+  color: #eb9666;    
+}
+.date-select_wrap .pet-info h5 {
+  margin: 0 0 4px 0;
+  font-size: 16px;
+}
+.date-select_wrap .pet-info p {
+  margin: 0;
+  font-size: 14px;
+  color: #666;
+}
+.date-select_wrap .pet-check {
+  margin-left: auto;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #10b981;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+}
+
+/* 상태 */
+.date-select_wrap .loading-text,
+.date-select_wrap .empty-text {
+  text-align: center;
+  padding: 40px;
+  font-size: 15px;
+  color: #555;
+}
+
+/* 하단 버튼 */
+.date-select_wrap .footer-btns {
+  position: sticky;
+  bottom: 0;
+  background: #fff;
+  padding: 16px;
+  border-top: 1px solid #e5e7eb;
+  margin-left: -20px;
+  margin-right: -20px;
+  display: flex;
+  gap: 12px;
+}
+.date-select_wrap .btn-prev {
+  flex: 1;
+  padding: 16px;
+  background: #f3f4f6;
+  color: #374151;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.date-select_wrap .btn-next {
+  flex: 2;
+  padding: 16px;
+  background: linear-gradient(135deg, #eb9666, #e05353);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.date-select_wrap .btn-next:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(224, 83, 83, 0.25);
+}
+.date-select_wrap .btn-next:disabled {
+  background: #e5e7eb;
+  color: #9ca3af;
+  cursor: not-allowed;
+  box-shadow: none;
+}

@@ -1,0 +1,141 @@
+/* BookingConfirmStep.css */
+/* 네임스페이스: 이 컴포넌트 전용 */
+.booking-confirm-container {
+    padding: 16px;
+    font-family: 'Noto Sans KR', sans-serif;
+  }
+  
+  /* 카드 박스 */
+  .booking-confirm-container .section-card {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 16px;
+  }
+  
+  /* 제목 */
+  .booking-confirm-container .section-title {
+    margin: 0 0 16px 0;
+    color: #e05353;
+    font-size: 18px;
+    font-weight: bold;
+  }
+  
+  /* 예약 정보 */
+  .booking-confirm-container .info-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .booking-confirm-container .info-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid #f1f3f4;
+  }
+  .booking-confirm-container .info-item:last-child {
+    border-bottom: none;
+  }
+  .booking-confirm-container .label {
+    font-size: 14px;
+    color: #6b7280;
+  }
+  .booking-confirm-container .value {
+    font-size: 14px;
+    font-weight: 600;
+  }
+  
+  /* 결제 금액 */
+  .booking-confirm-container .price-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .booking-confirm-container .price-item {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    color: #6b7280;
+  }
+  .booking-confirm-container .price-total {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 16px;
+    border-top: 2px solid #eb9666;
+    font-weight: 600;
+    font-size: 18px;
+    color: #e05353;
+  }
+  
+  /* 이용약관 */
+  .booking-confirm-container .terms-all {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    background: #fff8f3;
+    border: 2px solid #eb9666;
+    border-radius: 12px;
+    cursor: pointer;
+    margin-bottom: 12px;
+    font-weight: 600;
+    color: #e05353;
+  }
+  .booking-confirm-container .terms-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .booking-confirm-container .terms-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    cursor: pointer;
+    border-radius: 8px;
+  }
+  .booking-confirm-container input[type="checkbox"] {
+    accent-color: #eb9666;
+  }
+  
+  /* 하단 버튼 */
+  .booking-confirm-container .footer-buttons {
+    position: sticky;
+    bottom: 0;
+    background: white;
+    padding: 16px;
+    border-top: 1px solid #e5e7eb;
+    margin-left: -16px;
+    margin-right: -16px;
+    display: flex;
+    gap: 12px;
+  }
+  .booking-confirm-container .btn-prev {
+    flex: 1;
+    padding: 16px;
+    background: #f3f4f6;
+    color: #374151;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  .booking-confirm-container .btn-payment {
+    flex: 2;
+    padding: 16px;
+    background: #e5e7eb;
+    color: #9ca3af;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: not-allowed;
+    transition: all 0.2s ease;
+  }
+  .booking-confirm-container .btn-payment.active {
+    background: linear-gradient(135deg, #eb9666, #e05353);
+    color: white;
+    cursor: pointer;
+  }
+  
