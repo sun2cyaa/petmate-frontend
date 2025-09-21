@@ -11,14 +11,51 @@ import map_icon4 from "../../../../assets/images/map/map_icon4.png";
 import map_icon5 from "../../../../assets/images/map/map_icon5.png";
 import map_icon6 from "../../../../assets/images/map/map_icon6.png";
 
+// 이미지 URL 생성 헬퍼 함수
+const getImageUrl = (filePath) => {
+  if (!filePath) {
+    console.log('❌ filePath가 없습니다:', filePath);
+    return null;
+  }
+
+  console.log('📸 원본 filePath:', filePath);
+
+  // 이미 완전한 URL인 경우
+  if (filePath.startsWith('http://') || filePath.startsWith('https://')) {
+    console.log('✅ 이미 완전한 URL:', filePath);
+    return filePath;
+  }
+
+  // API 베이스 URL 가져오기
+  const API_BASE = process.env.REACT_APP_SPRING_API_BASE || "http://localhost:8090";
+  console.log('🌐 API_BASE:', API_BASE);
+
+  // /img/ 경로를 /uploads/ 또는 실제 경로로 변경
+  let cleanPath = filePath;
+  if (cleanPath.startsWith('/img/')) {
+    cleanPath = cleanPath.replace('/img/', '/uploads/');
+    console.log('🔄 경로 변경: /img/ → /uploads/', cleanPath);
+  }
+
+  // 상대 경로인 경우 API 베이스 URL과 결합
+  if (!cleanPath.startsWith('/')) {
+    cleanPath = `/${cleanPath}`;
+  }
+
+  const fullUrl = `${API_BASE}${cleanPath}`;
+  console.log('🔗 최종 이미지 URL:', fullUrl);
+  return fullUrl;
+};
+
 function CompanyDetailModal({ selectedCompany, onClose, onBookingClick }) {
   const [activeTab, setActiveTab] = useState('home');
   const [showFullSchedule, setShowFullSchedule] = useState(false);
 
   if (!selectedCompany) return null;
 
+
   return (
-    <div id="company-modal" className={`company-detail-modal ${selectedCompany ? 'show' : ''}`}>
+    <div className={`company-detail-modal ${selectedCompany ? 'show' : ''}`}>
       <div className="modal-header">
         <button
           className="close-btn"
@@ -32,21 +69,17 @@ function CompanyDetailModal({ selectedCompany, onClose, onBookingClick }) {
       <div className="modal-content">
         <div className="company-image-section">
           {(() => {
+            console.log('🏢 selectedCompany.images:', selectedCompany.images);
             const thumbnailImage = selectedCompany.images?.find(img => img.isThumbnail === true);
             const firstImage = selectedCompany.images?.[0];
             const displayImage = thumbnailImage || firstImage;
 
-            return displayImage ? (
-              <img
-                src={displayImage.filePath}
-                alt={displayImage.altText || `${selectedCompany.name} 대표 사진`}
-                className="company-main-image"
-                onError={(e) => {
-                  e.target.style.display = 'none';
-                  e.target.nextSibling.style.display = 'flex';
-                }}
-              />
-            ) : null;
+            if (displayImage) {
+              console.log('🖼️ 선택된 displayImage:', displayImage);
+            }
+
+            // 메인 이미지 임시 비활성화 - 성능 문제 해결을 위해
+            return null;
           })()}
           <div
             className="company-image-placeholder"
@@ -250,16 +283,29 @@ function CompanyDetailModal({ selectedCompany, onClose, onBookingClick }) {
                   ssnFirst = {selectedCompany.ssnFirst}
                 </div>
                 <div className="photo-grid">
-                  {selectedCompany.images && selectedCompany.images.length > 0 ? (
+                  {/* 임시로 이미지 갤러리 비활성화 */}
+                  {false && selectedCompany.images && selectedCompany.images.length > 0 ? (
                     selectedCompany.images
                       .sort((a, b) => a.displayOrder - b.displayOrder)
+                      .slice(0, 6) // 최대 6개만 표시하여 성능 향상
                       .map((image, index) => (
                         <div key={image.id} className="photo-item">
                           <img
-                            src={image.filePath}
+                            src={getImageUrl(image.filePath)}
                             alt={image.altText || `${selectedCompany.name} 사진 ${index + 1}`}
                             className="company-photo"
+                            loading="lazy"
+                            style={{
+                              backgroundColor: '#f5f5f5',
+                              minHeight: '120px',
+                              objectFit: 'cover'
+                            }}
+                            onLoad={(e) => {
+                              console.log('갤러리 이미지 로드 성공:', image.filePath);
+                              e.target.style.backgroundColor = 'transparent';
+                            }}
                             onError={(e) => {
+                              console.log('갤러리 이미지 로드 실패:', image.filePath);
                               e.target.style.display = 'none';
                               e.target.nextSibling.style.display = 'flex';
                             }}
