@@ -15,6 +15,9 @@ const normalizeRole = (v) => {
 export function AuthProvider({ children }) {
     const [user, setUser] = useState(null);
     const [isLogined, setIsLogined] = useState(false);
+    const [currentMode, setCurrentMode] = useState(() => {
+        return localStorage.getItem("currentMode") || "owner";
+    });
 
     // 앱 시작 시 토큰 있으면 1회만 me 호출
     useEffect(() => {
@@ -93,26 +96,35 @@ export function AuthProvider({ children }) {
         }
     };
 
+    const switchMode = (mode) => {
+        setCurrentMode(mode);
+        localStorage.setItem("currentMode", mode);
+    };
+
     const logout = async () => {
         try {
             await apiSignout();
         } finally {
             console.log('🚪 로그아웃 처리 중... (다른 탭에도 동기화됨)');
             localStorage.removeItem("accessToken");
+            localStorage.removeItem("currentMode");
             setUser(null);
             setIsLogined(false);
+            setCurrentMode("owner");
         }
     };
 
     const value = useMemo(() => ({
         user,
         isLogined,
+        currentMode,
         setIsLogined,
         setUser,
         login,
         logout,
-        hydrateMe
-    }), [user, isLogined]);
+        hydrateMe,
+        switchMode
+    }), [user, isLogined, currentMode]);
 
     return <AuthCtx.Provider value={value}>{children}</AuthCtx.Provider>;
 }

@@ -11,16 +11,12 @@ import "./UserProfilePage.css";
 
 export default function UserProfilePage() {
     const nav = useNavigate();
-    const { user, hydrateMe } = useAuth();
+    const { user, hydrateMe, currentMode } = useAuth();
     const [searchParams] = useSearchParams();
     const profileImageRef = useRef(null);
     const certImageRef = useRef(null);
 
-    // URL 파라미터로 모드 결정 (petowner, petmate)
-    const mode = searchParams.get("mode") || "petowner";
-    const isPetmateMode = mode === "petmate";
-
-    // 현재 사용자 역할 정규화
+    // 현재 사용자 역할 정규화 (먼저 계산)
     const normalizeRole = (val) => {
         let r = String(val ?? "1").trim();
         if ((r.startsWith('"') && r.endsWith('"')) || (r.startsWith("'") && r.endsWith("'"))) {
@@ -30,6 +26,12 @@ export default function UserProfilePage() {
     };
 
     const currentRole = normalizeRole(user?.role);
+
+    // 모드 결정: Role 4인 경우 currentMode 우선, 아니면 URL 파라미터 사용
+    const urlMode = searchParams.get("mode") || "owner";
+    const mode = currentRole === "4" ? currentMode : urlMode;
+    const isPetmateMode = mode === "petmate";
+
     const isEditMode = (currentRole === "2" && !isPetmateMode) ||
         (currentRole === "3" && isPetmateMode) ||
         (currentRole === "4");
@@ -86,7 +88,7 @@ export default function UserProfilePage() {
             // 프로필사진은 ImageUploadViewer가 자동으로 로드함
             // (소셜 이미지는 OAuth2 시점에 이미 저장됨)
         })();
-    }, [isPetmateMode]);
+    }, [isPetmateMode, currentMode]);
 
     const onChange = (e) => {
         const { name, value, type, checked } = e.target;
