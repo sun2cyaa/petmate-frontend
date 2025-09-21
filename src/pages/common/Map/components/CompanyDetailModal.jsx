@@ -17,6 +17,7 @@ function CompanyDetailModal({ selectedCompany, onClose, onBookingClick }) {
 
   if (!selectedCompany) return null;
 
+
   return (
     <div className={`company-detail-modal ${selectedCompany ? 'show' : ''}`}>
       <div className="modal-header">
@@ -32,18 +33,14 @@ function CompanyDetailModal({ selectedCompany, onClose, onBookingClick }) {
       <div className="modal-content">
         <div className="company-image-section">
           {(() => {
-            const thumbnailImage = selectedCompany.images?.find(img =>
-              img.status === 'ACTIVE' && img.is_thumbnail === true
-            );
-            const firstImage = selectedCompany.images?.find(img =>
-              img.status === 'ACTIVE'
-            );
+            const thumbnailImage = selectedCompany.images?.find(img => img.isThumbnail === true);
+            const firstImage = selectedCompany.images?.[0];
             const displayImage = thumbnailImage || firstImage;
 
             return displayImage ? (
               <img
-                src={displayImage.file_path}
-                alt={displayImage.alt_text || `${selectedCompany.name} 대표 사진`}
+                src={displayImage.filePath}
+                alt={displayImage.altText || `${selectedCompany.name} 대표 사진`}
                 className="company-main-image"
                 onError={(e) => {
                   e.target.style.display = 'none';
@@ -55,7 +52,7 @@ function CompanyDetailModal({ selectedCompany, onClose, onBookingClick }) {
           <div
             className="company-image-placeholder"
             style={{
-              display: selectedCompany.images?.some(img => img.status === 'ACTIVE') ? 'none' : 'flex'
+              display: selectedCompany.images?.length > 0 ? 'none' : 'flex'
             }}
           >
             📷 업체 사진
@@ -246,16 +243,22 @@ function CompanyDetailModal({ selectedCompany, onClose, onBookingClick }) {
             <div className="photo-content">
               <div className="info-section">
                 <h4>사진</h4>
+                <div style={{ padding: '10px', background: '#f0f0f0', marginBottom: '10px', fontSize: '12px' }}>
+                  디버깅: images = {JSON.stringify(selectedCompany.images)}<br/>
+                  bizRegNo = {selectedCompany.bizRegNo}<br/>
+                  type = {selectedCompany.type}<br/>
+                  name = {selectedCompany.name}<br/>
+                  ssnFirst = {selectedCompany.ssnFirst}
+                </div>
                 <div className="photo-grid">
                   {selectedCompany.images && selectedCompany.images.length > 0 ? (
                     selectedCompany.images
-                      .filter(img => img.status === 'ACTIVE')
-                      .sort((a, b) => a.display_order - b.display_order)
+                      .sort((a, b) => a.displayOrder - b.displayOrder)
                       .map((image, index) => (
                         <div key={image.id} className="photo-item">
                           <img
-                            src={image.file_path}
-                            alt={image.alt_text || `${selectedCompany.name} 사진 ${index + 1}`}
+                            src={image.filePath}
+                            alt={image.altText || `${selectedCompany.name} 사진 ${index + 1}`}
                             className="company-photo"
                             onError={(e) => {
                               e.target.style.display = 'none';
@@ -268,12 +271,9 @@ function CompanyDetailModal({ selectedCompany, onClose, onBookingClick }) {
                         </div>
                       ))
                   ) : (
-                    <>
-                      <div className="photo-item">📷 업체 외관</div>
-                      <div className="photo-item">📷 내부 시설</div>
-                      <div className="photo-item">📷 서비스 모습</div>
-                      <div className="photo-item">📷 추가 사진</div>
-                    </>
+                    <div className="no-photos">
+                      <p>등록된 사진이 없습니다.</p>
+                    </div>
                   )}
                 </div>
               </div>
