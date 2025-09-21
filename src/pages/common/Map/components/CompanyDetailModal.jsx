@@ -17,9 +17,8 @@ function CompanyDetailModal({ selectedCompany, onClose, onBookingClick }) {
 
   if (!selectedCompany) return null;
 
-
   return (
-    <div className={`company-detail-modal ${selectedCompany ? 'show' : ''}`}>
+    <div id="company-modal" className={`company-detail-modal ${selectedCompany ? 'show' : ''}`}>
       <div className="modal-header">
         <button
           className="close-btn"

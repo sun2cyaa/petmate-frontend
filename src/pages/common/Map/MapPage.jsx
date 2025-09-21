@@ -356,7 +356,7 @@ useEffect(() => {
 }, [isKakaoLoaded, searchQuery, handleSearch, userLocation, companies.length]);
 
   return (
-    <div className="map_wrap">
+    <div id="map-page" className="map_wrap">
       <SearchBar
         searchQuery={searchQuery}
         onSearchChange={handleSearchInput}
