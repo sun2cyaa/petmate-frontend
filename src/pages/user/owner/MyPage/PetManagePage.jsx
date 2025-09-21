@@ -3,8 +3,8 @@ import { Plus, Edit2, Trash2, Calendar, Heart } from 'lucide-react';
 import './PetManagePage.css';
 import { useAuth } from '../../../../contexts/AuthContext';
 import { apiRequest } from '../../../../services/api';
-import Lottie from "lottie-react";
-import petAnim from "../../../../assets/lottie/pet.json";
+import Lottie from 'lottie-react';
+import petAnim from '../../../../assets/lottie/pet.json';
 
 // 품종 id → name 변환
 async function resolveBreedName(breedId, species) {
@@ -18,7 +18,6 @@ async function resolveBreedName(breedId, species) {
 const PetManagePage = () => {
   const { user, isLogined } = useAuth();
   const [pets, setPets] = useState([]);
-  const [breeds, setBreeds] = useState([]);
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingPet, setEditingPet] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -32,7 +31,6 @@ const PetManagePage = () => {
     try {
       setLoading(true);
       const { data } = await apiRequest.get('/pet/my');
-      console.log('>>> /pet/my 응답:', data);
       setPets(Array.isArray(data) ? data : []);
     } catch (e) {
       console.error('펫 목록 로드 실패:', e);
@@ -67,9 +65,7 @@ const PetManagePage = () => {
     } catch (error) {
       console.error('펫 등록 실패:', error);
       const msg =
-        error?.response?.data?.message ||
-        error?.message ||
-        '알 수 없는 오류';
+        error?.response?.data?.message || error?.message || '알 수 없는 오류';
       alert(`펫 등록 실패: ${msg}`);
     } finally {
       setLoading(false);
@@ -89,20 +85,14 @@ const PetManagePage = () => {
         (await resolveBreedName(updated.breedId, updated.species));
 
       setPets((prev) =>
-        prev.map((p) =>
-          p.id === editingPet.id
-            ? { ...updated, breedName: nameById }
-            : p
-        )
+        prev.map((p) => (p.id === editingPet.id ? { ...updated, breedName: nameById } : p))
       );
       setEditingPet(null);
       alert('반려동물이 수정되었습니다.');
     } catch (error) {
       console.error('펫 수정 실패:', error);
       const msg =
-        error?.response?.data?.message ||
-        error?.message ||
-        '알 수 없는 오류';
+        error?.response?.data?.message || error?.message || '알 수 없는 오류';
       alert(`펫 수정 실패: ${msg}`);
     } finally {
       setLoading(false);
@@ -120,31 +110,17 @@ const PetManagePage = () => {
     } catch (error) {
       console.error('펫 삭제 실패:', error);
       const msg =
-        error?.response?.data?.message ||
-        error?.message ||
-        '알 수 없는 오류';
+        error?.response?.data?.message || error?.message || '알 수 없는 오류';
       alert(`펫 삭제 실패: ${msg}`);
     } finally {
       setLoading(false);
     }
   };
 
-  const getSpeciesText = (species) =>
-    (
-      {
-        D: '강아지',
-        C: '고양이',
-        R: '토끼',
-        S: '설치류',
-        H: '말',
-        B: '새',
-        P: '파충류',
-        F: '가축동물',
-        O: '기타',
-      }[species] || species
-    );
+  const getSpeciesText = (s) =>
+    ({ D: '강아지', C: '고양이', R: '토끼', S: '설치류', H: '말', B: '새', P: '파충류', F: '가축동물', O: '기타' }[s] || s);
 
-  const getGenderText = (gender) => (gender === 'M' ? '수컷' : '암컷');
+  const getGenderText = (g) => (g === 'M' ? '수컷' : '암컷');
   const formatDate = (s) => new Date(s).toLocaleDateString('ko-KR');
 
   if (!isLogined) {
@@ -154,9 +130,7 @@ const PetManagePage = () => {
           <div className="pet-manage-empty">
             <Heart size={64} className="pet-manage-empty-icon" />
             <h3 className="pet-manage-empty-title">로그인이 필요합니다</h3>
-            <p className="pet-manage-empty-desc">
-              반려동물 관리를 위해 로그인해주세요.
-            </p>
+            <p className="pet-manage-empty-desc">반려동물 관리를 위해 로그인해주세요.</p>
           </div>
         </div>
       </div>
@@ -167,40 +141,26 @@ const PetManagePage = () => {
     <div className="pet-manage-page">
       <div className="pet-manage-container">
         <div className="pet-manage-header">
-      <div className="pet-manage-header-wrapper">
-        {/* Lottie 애니메이션 */}
-    <div className="pet-manage-header-lottie">
-      <Lottie animationData={petAnim} loop={true} style={{ width: 300, height: 300 }} />
-    </div>
-      </div>
-        <div className="pet-manage-header-info">
-          <h1 className="pet-manage-title">내 반려동물 관리</h1>
-          <p className="pet-manage-subtitle">
-            등록된 반려동물: {pets.length}마리
-          </p>
+          <div className="pet-manage-header-wrapper">
+            <div className="pet-manage-header-lottie">
+              <Lottie animationData={petAnim} loop style={{ width: 300, height: 300 }} />
+            </div>
+          </div>
+          <div className="pet-manage-header-info">
+            <h1 className="pet-manage-title">내 반려동물 관리</h1>
+            <p className="pet-manage-subtitle">등록된 반려동물: {pets.length}마리</p>
+          </div>
+          <button onClick={() => setShowAddModal(true)} className="pet-manage-add-btn">
+            <Plus size={20} />
+            반려동물 등록
+          </button>
         </div>
-
-    
-
-  {/* 버튼을 헤더 안에 둠 */}
-    <button
-      onClick={() => setShowAddModal(true)}
-      className="pet-manage-add-btn"
-    >
-      <Plus size={20} />
-      반려동물 등록
-    </button>
-    </div>
 
         {pets.length === 0 ? (
           <div className="pet-manage-empty">
             <Heart size={64} className="pet-manage-empty-icon" />
-            <h3 className="pet-manage-empty-title">
-              등록된 반려동물이 없습니다
-            </h3>
-            <p className="pet-manage-empty-desc">
-              첫 번째 반려동물을 등록해보세요!
-            </p>
+            <h3 className="pet-manage-empty-title">등록된 반려동물이 없습니다</h3>
+            <p className="pet-manage-empty-desc">첫 번째 반려동물을 등록해보세요!</p>
           </div>
         ) : (
           <div className="pet-manage-grid">
@@ -213,16 +173,10 @@ const PetManagePage = () => {
                     className="pet-card-image"
                   />
                   <div className="pet-card-actions">
-                    <button
-                      onClick={() => setEditingPet(pet)}
-                      className="pet-card-action-btn pet-card-edit-btn"
-                    >
+                    <button onClick={() => setEditingPet(pet)} className="pet-card-action-btn pet-card-edit-btn">
                       <Edit2 size={16} />
                     </button>
-                    <button
-                      onClick={() => handleDeletePet(pet.id)}
-                      className="pet-card-action-btn pet-card-delete-btn"
-                    >
+                    <button onClick={() => handleDeletePet(pet.id)} className="pet-card-action-btn pet-card-delete-btn">
                       <Trash2 size={16} />
                     </button>
                   </div>
@@ -231,41 +185,29 @@ const PetManagePage = () => {
                 <div className="pet-card-content">
                   <div className="pet-card-header">
                     <h3 className="pet-card-name">{pet.name}</h3>
-                    <span className="pet-card-species">
-                      {getSpeciesText(pet.species)}
-                    </span>
+                    <span className="pet-card-species">{getSpeciesText(pet.species)}</span>
                   </div>
 
                   <div className="pet-card-info">
                     <div className="pet-card-info-row">
                       <span>품종:</span>
-                      <span className="pet-card-info-value">
-                        {pet.breedName}
-                      </span>
+                      <span className="pet-card-info-value">{pet.breedName}</span>
                     </div>
                     <div className="pet-card-info-row">
                       <span>나이:</span>
-                      <span className="pet-card-info-value">
-                        {pet.ageYear}살
-                      </span>
+                      <span className="pet-card-info-value">{pet.ageYear}살</span>
                     </div>
                     <div className="pet-card-info-row">
                       <span>성별:</span>
-                      <span className="pet-card-info-value">
-                        {getGenderText(pet.gender)}
-                      </span>
+                      <span className="pet-card-info-value">{getGenderText(pet.gender)}</span>
                     </div>
                     <div className="pet-card-info-row">
                       <span>체중:</span>
-                      <span className="pet-card-info-value">
-                        {pet.weightKg}kg
-                      </span>
+                      <span className="pet-card-info-value">{pet.weightKg}kg</span>
                     </div>
                     <div className="pet-card-info-row">
                       <span>중성화:</span>
-                      <span className="pet-card-info-value">
-                        {pet.neutered ? '완료' : '미완료'}
-                      </span>
+                      <span className="pet-card-info-value">{pet.neutered ? '완료' : '미완료'}</span>
                     </div>
                   </div>
 
@@ -295,7 +237,6 @@ const PetManagePage = () => {
         {(showAddModal || editingPet) && (
           <PetModal
             pet={editingPet}
-            breeds={breeds}
             loading={loading}
             onSave={editingPet ? handleEditPet : handleAddPet}
             onClose={() => {
@@ -310,7 +251,7 @@ const PetManagePage = () => {
 };
 
 /* ------------------------- Modal 컴포넌트 ------------------------- */
-const PetModal = ({ pet, breeds, loading, onSave, onClose }) => {
+const PetModal = ({ pet, loading, onSave, onClose }) => {
   const [formData, setFormData] = useState({
     name: '',
     imageUrl: '',
@@ -327,21 +268,18 @@ const PetModal = ({ pet, breeds, loading, onSave, onClose }) => {
 
   const [dragOver, setDragOver] = useState(false);
   const [file, setFile] = useState(null);
-  const [previewUrl, setPreviewUrl] = useState("");
+  const [previewUrl, setPreviewUrl] = useState('');
   const [filteredBreeds, setFilteredBreeds] = useState([]);
   const [search, setSearch] = useState('');
   const [suggestions, setSuggestions] = useState([]);
   const [openSuggest, setOpenSuggest] = useState(false);
 
-  const fileInputRef = useRef(null); // ▼ 파일 탐색기 트리거용
-
+  const fileInputRef = useRef(null);
   const norm = (s) => s?.trim().toLowerCase();
 
   useEffect(() => {
     const handleClickOutside = (e) => {
-      if (!e.target.closest('.suggest-wrap')) {
-        setOpenSuggest(false);
-      }
+      if (!e.target.closest('.suggest-wrap')) setOpenSuggest(false);
     };
     document.addEventListener('click', handleClickOutside);
     return () => document.removeEventListener('click', handleClickOutside);
@@ -363,11 +301,23 @@ const PetModal = ({ pet, breeds, loading, onSave, onClose }) => {
         note: pet.note || '',
       });
       setSearch(pet.breedName || '');
-      // ▼ 수정 모드에서 기존 이미지 미리보기
       if (pet.imageUrl) setPreviewUrl(pet.imageUrl);
     } else {
-      setPreviewUrl(""); // 새 등록 모드 초기화
+      setPreviewUrl('');
       setFile(null);
+      setFormData((p) => ({
+        ...p,
+        name: '',
+        imageUrl: '',
+        breedId: '',
+        breedName: '',
+        ageYear: '',
+        weightKg: '',
+        neutered: 0,
+        temper: '',
+        note: '',
+      }));
+      setSearch('');
     }
   }, [pet]);
 
@@ -392,19 +342,15 @@ const PetModal = ({ pet, breeds, loading, onSave, onClose }) => {
   const resolveBreedId = (name, list) => {
     const n = norm(name);
     return (list.find((b) => norm(b.name) === n) || {}).id || '';
-    };
+  };
 
   const handleBreedFocus = () => {
     setOpenSuggest(true);
     setSuggestions(filteredBreeds);
   };
 
-  // ▼ 클릭해서 파일 탐색기 열기
-  const openFileDialog = () => {
-    if (fileInputRef.current) fileInputRef.current.click();
-  };
+  const openFileDialog = () => fileInputRef.current && fileInputRef.current.click();
 
-  // ▼ input=file 선택 처리
   const handleFileChange = (e) => {
     const f = e.target.files && e.target.files[0];
     if (f) {
@@ -413,14 +359,13 @@ const PetModal = ({ pet, breeds, loading, onSave, onClose }) => {
     }
   };
 
-  // 드래그&드롭
   const handleDrop = (e) => {
     e.preventDefault();
     setDragOver(false);
     const f = e.dataTransfer.files[0];
     if (f) {
       setFile(f);
-      setPreviewUrl(URL.createObjectURL(f)); // 미리보기
+      setPreviewUrl(URL.createObjectURL(f));
     }
   };
 
@@ -440,9 +385,7 @@ const PetModal = ({ pet, breeds, loading, onSave, onClose }) => {
     const rx = chosungMap[value];
     const list = rx
       ? filteredBreeds.filter((b) => rx.test(b.name))
-      : filteredBreeds.filter((b) =>
-          b.name.toLowerCase().includes(value.toLowerCase())
-        );
+      : filteredBreeds.filter((b) => b.name.toLowerCase().includes(value.toLowerCase()));
     setSuggestions(list);
   };
 
@@ -454,35 +397,34 @@ const PetModal = ({ pet, breeds, loading, onSave, onClose }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (loading) return;
     if (!formData.name.trim()) return alert('펫 이름을 입력해주세요.');
+
     const resolved =
-      formData.breedId ||
-      resolveBreedId(formData.breedName || search, filteredBreeds);
+      formData.breedId || resolveBreedId(formData.breedName || search, filteredBreeds);
     if (!resolved) return alert('품종을 선택해주세요.');
+
     try {
       let imageUrl = formData.imageUrl;
 
-      // 파일 업로드 먼저
       if (file) {
         const formDataObj = new FormData();
-        formDataObj.append("file", file);
-
-        const { data } = await apiRequest.post("/upload/pet", formDataObj);
+        formDataObj.append('file', file);
+        const { data } = await apiRequest.post('/upload/pet', formDataObj);
         imageUrl = data.url;
       }
 
-      // 실제 펫 저장 호출
       onSave({
         ...formData,
-        imageUrl, // 업로드된 url 또는 기존 url
-        breedId: Number(formData.breedId),
+        imageUrl,
+        breedId: Number(resolved),            // ★ 확정된 breedId 전송
         ageYear: +formData.ageYear || 0,
         weightKg: +formData.weightKg || 0,
         neutered: +formData.neutered,
       });
     } catch (err) {
-      console.error("펫 저장 실패:", err);
-      alert("펫 저장 실패");
+      console.error('펫 저장 실패:', err);
+      alert('펫 저장 실패');
     }
   };
 
@@ -495,15 +437,11 @@ const PetModal = ({ pet, breeds, loading, onSave, onClose }) => {
     <div className="pet-modal-overlay">
       <div className="pet-modal">
         <div className="pet-modal-header">
-          <h2 className="pet-modal-title">
-            {pet ? '반려동물 정보 수정' : '새 반려동물 등록'}
-          </h2>
+          <h2 className="pet-modal-title">{pet ? '반려동물 정보 수정' : '새 반려동물 등록'}</h2>
         </div>
 
         <div className="pet-modal-content">
-          {/* form */}
           <div className="pet-form-grid">
-            {/* ... 기존 입력들 동일 ... */}
             <div className="pet-form-group">
               <label className="pet-form-label">이름 *</label>
               <input
@@ -604,9 +542,9 @@ const PetModal = ({ pet, breeds, loading, onSave, onClose }) => {
             </div>
           </div>
 
-          {/* ▼ 드래그&드롭 + 클릭 업로드 */}
+          {/* 업로드 영역 */}
           <div
-            className={`drop-zone ${dragOver ? "drag-over" : ""}`}
+            className={`drop-zone ${dragOver ? 'drag-over' : ''}`}
             onClick={openFileDialog}
             onDragOver={(e) => {
               e.preventDefault();
@@ -616,14 +554,15 @@ const PetModal = ({ pet, breeds, loading, onSave, onClose }) => {
             onDrop={handleDrop}
             role="button"
             tabIndex={0}
-            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') openFileDialog(); }}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') openFileDialog();
+            }}
           >
             {previewUrl ? (
               <img src={previewUrl} alt="preview" className="preview-img" />
             ) : (
               <p>클릭하여 파일 선택 또는 여기에 드래그 앤 드롭</p>
             )}
-            {/* 숨겨진 파일 입력 */}
             <input
               ref={fileInputRef}
               type="file"
@@ -671,11 +610,7 @@ const PetModal = ({ pet, breeds, loading, onSave, onClose }) => {
           </div>
 
           <div className="pet-modal-actions">
-            <button
-              type="button"
-              onClick={onClose}
-              className="pet-modal-btn pet-modal-cancel-btn"
-            >
+            <button type="button" onClick={onClose} className="pet-modal-btn pet-modal-cancel-btn">
               취소
             </button>
             <button
