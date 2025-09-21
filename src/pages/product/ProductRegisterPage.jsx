@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./ProductRegisterPage.css";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   PackagePlus,
   CalendarDays,
@@ -16,15 +16,20 @@ import {
   createProduct,
   getCompanies,
   getServiceCategories,
+  getProducts,
+  getServiceTypesByCompany,
 } from "../../services/product/productService";
 import { createProductSlots } from "../../services/product/availabilitySlotService";
 
 const ProductRegisterPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [companies, setCompanies] = useState([]);
   const [serviceCategories, setServiceCategories] = useState([]);
+  const [filteredServiceCategories, setFilteredServiceCategories] = useState([]);
+  const [allProducts, setAllProducts] = useState([]); // 전체 상품 데이터 저장
 
   const [formData, setFormData] = useState({
     companyId: "",
@@ -47,6 +52,21 @@ const ProductRegisterPage = () => {
     selectedTimes: [],
     capacity: 1,
   });
+
+  // 가격 포맷팅 함수
+  const formatPrice = (value) => {
+    if (!value) return '';
+    // 숫자만 추출
+    const numericValue = value.toString().replace(/[^\d]/g, '');
+    // 천 단위 콤마 추가
+    return numericValue.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  };
+
+  // 포맷된 가격에서 숫자만 추출
+  const parsePrice = (formattedPrice) => {
+    if (!formattedPrice) return '';
+    return formattedPrice.toString().replace(/[^\d]/g, '');
+  };
 
   // 30분 단위 시간 생성
   const generateTimeSlots = () => {
@@ -72,16 +92,52 @@ const ProductRegisterPage = () => {
     loadInitialData();
   }, []);
 
+  // 업체 데이터가 로딩된 후 미리 선택된 업체가 있으면 필터링 실행
+  useEffect(() => {
+    if (companies.length > 0 && formData.companyId) {
+      console.log("업체 데이터 로딩 완료 후 필터링 실행:", formData.companyId);
+      loadServiceTypesForCompany(formData.companyId);
+    }
+  }, [companies, serviceCategories]);
+
   const loadInitialData = async () => {
     try {
       setLoading(true);
-      const [companiesData, categoriesData] = await Promise.all([
+      const [companiesData, categoriesData, productsData] = await Promise.all([
         getCompanies(),
         getServiceCategories(),
+        getProducts(),
       ]);
+
+      console.log("로딩된 업체 데이터:", companiesData);
+      console.log("로딩된 서비스 카테고리:", categoriesData);
+      console.log("로딩된 상품 데이터:", productsData);
 
       setCompanies(companiesData);
       setServiceCategories(categoriesData);
+      setFilteredServiceCategories(categoriesData); // 초기에는 전체 카테고리 표시
+      setAllProducts(productsData); // 전체 상품 데이터 저장
+
+      // 상품 관리 페이지에서 전달받은 선택된 값이 있다면 자동으로 설정
+      const preSelectedData = location.state;
+      if (preSelectedData) {
+        const { preSelectedCompanyId, preSelectedServiceType } = preSelectedData;
+
+        if (preSelectedCompanyId || preSelectedServiceType) {
+          setFormData(prev => ({
+            ...prev,
+            companyId: preSelectedCompanyId || "",
+            serviceTypeId: preSelectedServiceType || ""
+          }));
+
+          // 미리 선택된 업체가 있다면 useEffect에서 처리됨
+
+          console.log("상품 관리 페이지에서 선택된 정보 자동 반영:", {
+            companyId: preSelectedCompanyId,
+            serviceTypeId: preSelectedServiceType
+          });
+        }
+      }
     } catch (error) {
       console.error("데이터 로드 실패", error);
       alert("데이터를 불러오는데 실패하였습니다.");
@@ -91,15 +147,137 @@ const ProductRegisterPage = () => {
     }
   };
 
+  // 업체별 서비스 유형 필터링 함수
+  const loadServiceTypesForCompany = async (companyId) => {
+    if (!companyId) {
+      setFilteredServiceCategories(serviceCategories);
+      return;
+    }
+
+    try {
+      const companyServiceTypes = await getServiceTypesByCompany(companyId);
+
+      if (companyServiceTypes && companyServiceTypes.length > 0) {
+        setFilteredServiceCategories(companyServiceTypes);
+      } else {
+        // 백엔드 API에서 빈 결과가 나왔을 때 클라이언트 사이드에서 필터링 시도
+        const selectedCompany = companies.find(
+          company => company.id === parseInt(companyId)
+        );
+
+        if (selectedCompany && selectedCompany.services) {
+
+          // services JSON 파싱 시도
+          try {
+            const servicesObj = JSON.parse(selectedCompany.services);
+            const serviceTypeIds = [];
+
+            Object.entries(servicesObj).forEach(([serviceName, isProvided]) => {
+              if (isProvided) {
+                const serviceCode = convertServiceNameToCode(serviceName);
+                if (serviceCode) {
+                  serviceTypeIds.push(serviceCode);
+                }
+              }
+            });
+
+            if (serviceTypeIds.length > 0) {
+              const availableServiceTypes = serviceCategories.filter(category =>
+                serviceTypeIds.includes(category.id)
+              );
+              setFilteredServiceCategories(availableServiceTypes);
+              return;
+            }
+          } catch (jsonError) {
+            console.error("services JSON 파싱 오류:", jsonError);
+          }
+        }
+
+        // 클라이언트 사이드 필터링도 실패한 경우 기존 상품 데이터 사용
+        fallbackToExistingProducts(companyId);
+      }
+    } catch (error) {
+      console.error("업체별 서비스 유형 조회 실패:", error);
+      fallbackToExistingProducts(companyId);
+    }
+  };
+
+  // 서비스명을 코드로 변환하는 함수
+  const convertServiceNameToCode = (serviceName) => {
+    const mapping = {
+      "돌봄": "C",
+      "산책": "W",
+      "미용": "G",
+      "병원": "M",
+      "기타": "E"
+    };
+    return mapping[serviceName] || null;
+  };
+
+  // 기존 상품 데이터 기반 필터링 함수
+  const fallbackToExistingProducts = (companyId) => {
+    const companyProducts = allProducts.filter(
+      product => product.companyId === parseInt(companyId)
+    );
+
+    if (companyProducts.length > 0) {
+      const usedServiceTypeIds = [...new Set(
+        companyProducts.map(product => product.serviceType)
+      )];
+
+      const availableServiceTypes = serviceCategories.filter(category =>
+        usedServiceTypeIds.includes(category.id)
+      );
+
+      if (availableServiceTypes.length > 0) {
+        setFilteredServiceCategories(availableServiceTypes);
+      } else {
+        setFilteredServiceCategories(serviceCategories);
+      }
+    } else {
+      setFilteredServiceCategories(serviceCategories);
+    }
+  };
+
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: type === "checkbox" ? checked : value,
-    }));
+
+    // 업체 선택이 변경된 경우
+    if (name === "companyId") {
+      // 서비스 유형 초기화
+      setFormData((prev) => ({
+        ...prev,
+        companyId: value,
+        serviceTypeId: "", // 업체 변경 시 서비스 유형 초기화
+      }));
+
+      // 업체별 서비스 유형 로딩
+      loadServiceTypesForCompany(value);
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: type === "checkbox" ? checked : value,
+      }));
+    }
 
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: "" }));
+    }
+  };
+
+  // 가격 입력 전용 핸들러
+  const handlePriceChange = (e) => {
+    const { value } = e.target;
+    // 숫자만 추출하여 저장
+    const numericValue = parsePrice(value);
+
+    setFormData((prev) => ({
+      ...prev,
+      price: numericValue,
+    }));
+
+    if (errors.price) {
+      setErrors((prev) => ({ ...prev, price: "" }));
     }
   };
 
@@ -286,9 +464,14 @@ const ProductRegisterPage = () => {
                 name="serviceTypeId"
                 value={formData.serviceTypeId}
                 onChange={handleInputChange}
+                disabled={!formData.companyId}
               >
-                <option value="">서비스 유형을 선택하세요</option>
-                {serviceCategories.map((category) => (
+                <option value="">
+                  {!formData.companyId
+                    ? "먼저 업체를 선택하세요"
+                    : "서비스 유형을 선택하세요"}
+                </option>
+                {filteredServiceCategories.map((category) => (
                   <option key={category.id} value={category.id}>
                     {category.name}
                   </option>
@@ -341,14 +524,12 @@ const ProductRegisterPage = () => {
                 <Tag size={16} /> 가격(원)
               </label>
               <input
-                type="number"
+                type="text"
                 id="price"
                 name="price"
-                value={formData.price || ""}
-                onChange={handleInputChange}
+                value={formatPrice(formData.price)}
+                onChange={handlePriceChange}
                 placeholder="가격을 입력하세요"
-                min="0"
-                step="100"
                 className={errors.price ? "error" : ""}
               />
               {errors.price && (

@@ -247,3 +247,22 @@ export const getProducts = async (params = {}) => {
       ];
     }
   };
+
+  // 업체별 서비스 유형 조회
+  export const getServiceTypesByCompany = async (companyId) => {
+    try {
+      const response = await apiRequest.get(`/api/company/${companyId}/service-types`);
+      const serviceTypeCodes = response.data;
+      const allServiceCategories = await getServiceCategories();
+
+      const filteredCategories = allServiceCategories.filter(category =>
+        serviceTypeCodes.includes(category.id)
+      );
+
+      return filteredCategories;
+    } catch (error) {
+      console.error('업체별 서비스 유형 조회 실패:', error);
+      // 실패 시 전체 서비스 카테고리 반환
+      return await getServiceCategories();
+    }
+  };

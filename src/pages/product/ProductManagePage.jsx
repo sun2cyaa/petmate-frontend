@@ -16,6 +16,7 @@ import {
   getCompanies,
   getProducts,
   getServiceCategories,
+  getServiceTypesByCompany,
 } from "../../services/product/productService";
 import { getAvailableSlots } from "../../services/product/availabilitySlotService";
 
@@ -42,6 +43,7 @@ const ProductManagePage = () => {
   const [products, setProducts] = useState([]);
   const [companies, setCompanies] = useState([]);
   const [serviceCategories, setServiceCategories] = useState([]);
+  const [filteredServiceCategories, setFilteredServiceCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchFilters, setSearchFilters] = useState({
     companyId: "",
@@ -60,14 +62,21 @@ const ProductManagePage = () => {
     loadProducts();
   }, [searchFilters]);
 
+  // 서비스 카테고리 로드 후 필터링 초기화
+  useEffect(() => {
+    if (serviceCategories.length > 0 && !searchFilters.companyId) {
+      setFilteredServiceCategories(serviceCategories);
+    }
+  }, [serviceCategories]);
+
   const loadInitialData = async () => {
     try {
-      console.log("📋 ProductManagePage - 초기 데이터 로딩 시작");
+      console.log("ProductManagePage - 초기 데이터 로딩 시작");
       setLoading(true);
 
-      // 🔑 페이지 진입 시 토큰 상태 확인
+      // 페이지 진입 시 토큰 상태 확인
       const token = localStorage.getItem("accessToken");
-      console.log("🔑 페이지 로딩 시 토큰 상태:", token ? "있음" : "없음");
+      console.log("페이지 로딩 시 토큰 상태:", token ? "있음" : "없음");
 
       const [productData, companiesData, categoriesData] = await Promise.all([
         getProducts(),
@@ -75,17 +84,18 @@ const ProductManagePage = () => {
         getServiceCategories(),
       ]);
 
-      console.log("✅ 모든 초기 데이터 로딩 완료");
-      console.log("📦 상품 데이터:", productData);
-      console.log("🏢 업체 데이터:", companiesData);
-      console.log("📂 카테고리 데이터:", categoriesData);
+      console.log("모든 초기 데이터 로딩 완료");
+      console.log("상품 데이터:", productData);
+      console.log("업체 데이터:", companiesData);
+      console.log("카테고리 데이터:", categoriesData);
 
       setProducts(productData);
       setCompanies(companiesData);
       setServiceCategories(categoriesData);
+      setFilteredServiceCategories(categoriesData); // 초기에는 전체 카테고리 표시
     } catch (error) {
-      console.error("❌ ProductManagePage - 데이터 로드 실패:", error);
-      console.error("❌ 오류 세부사항:", {
+      console.error("ProductManagePage - 데이터 로드 실패:", error);
+      console.error("오류 세부사항:", {
         status: error.response?.status,
         message: error.message,
         data: error.response?.data
@@ -121,6 +131,27 @@ const ProductManagePage = () => {
     }
   };
 
+  // 업체별 서비스 유형 필터링 함수
+  const loadServiceTypesForCompany = async (companyId) => {
+    if (!companyId) {
+      setFilteredServiceCategories(serviceCategories);
+      return;
+    }
+
+    try {
+      const companyServiceTypes = await getServiceTypesByCompany(companyId);
+
+      if (companyServiceTypes && companyServiceTypes.length > 0) {
+        setFilteredServiceCategories(companyServiceTypes);
+      } else {
+        setFilteredServiceCategories(serviceCategories);
+      }
+    } catch (error) {
+      console.error("업체별 서비스 유형 조회 실패:", error);
+      setFilteredServiceCategories(serviceCategories);
+    }
+  };
+
   // 기존 loadProducts 함수 개선
   const loadProducts = async () => {
     try {
@@ -152,14 +183,30 @@ const ProductManagePage = () => {
   };
 
   const handleSearchFilterChange = (key, value) => {
-    setSearchFilters((prev) => ({
-      ...prev,
-      [key]: value,
-    }));
+    // 업체 변경 시 서비스 유형 필터링
+    if (key === "companyId") {
+      loadServiceTypesForCompany(value);
+      // 서비스 유형도 초기화
+      setSearchFilters((prev) => ({
+        ...prev,
+        companyId: value,
+        serviceType: "",
+      }));
+    } else {
+      setSearchFilters((prev) => ({
+        ...prev,
+        [key]: value,
+      }));
+    }
   };
 
   const handleRegisterClick = () => {
-    navigate("/product/register");
+    navigate("/product/register", {
+      state: {
+        preSelectedCompanyId: searchFilters.companyId,
+        preSelectedServiceType: searchFilters.serviceType
+      }
+    });
   };
 
   const handleEditClick = (productid) => {
@@ -271,7 +318,7 @@ const ProductManagePage = () => {
               }
             >
               <option value="">전체</option>
-              {serviceCategories.map((category) => (
+              {filteredServiceCategories.map((category) => (
                 <option key={category.id} value={category.id}>
                   {category.name}
                 </option>

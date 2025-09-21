@@ -9,6 +9,7 @@ import {
   updateProduct,
   getCompanies,
   getServiceCategories,
+  getServiceTypesByCompany,
 } from "../../services/product/productService";
 import {
   getAvailableSlots,
@@ -26,6 +27,7 @@ const ProductEditPage = () => {
   const [saving, setSaving] = useState(false);
   const [companies, setCompanies] = useState([]);
   const [serviceCategories, setServiceCategories] = useState([]);
+  const [filteredServiceCategories, setFilteredServiceCategories] = useState([]);
 
   // 상품 폼 데이터
   const [formData, setFormData] = useState({
@@ -42,6 +44,27 @@ const ProductEditPage = () => {
   });
 
   const [errors, setErrors] = useState({});
+
+  // 업체별 서비스 유형 필터링 함수
+  const loadServiceTypesForCompany = async (companyId) => {
+    if (!companyId) {
+      setFilteredServiceCategories(serviceCategories);
+      return;
+    }
+
+    try {
+      const companyServiceTypes = await getServiceTypesByCompany(companyId);
+
+      if (companyServiceTypes && companyServiceTypes.length > 0) {
+        setFilteredServiceCategories(companyServiceTypes);
+      } else {
+        setFilteredServiceCategories(serviceCategories);
+      }
+    } catch (error) {
+      console.error("업체별 서비스 유형 조회 실패:", error);
+      setFilteredServiceCategories(serviceCategories);
+    }
+  };
 
   // 슬롯 관리 상태
   const [showSlotManagement, setShowSlotManagement] = useState(false);
@@ -84,6 +107,13 @@ const ProductEditPage = () => {
       setCompanies(companiesData);
       setServiceCategories(categoriesData);
 
+      // 초기 서비스 카테고리 필터링 (상품에 등록된 업체 기준)
+      if (productData.companyId) {
+        loadServiceTypesForCompany(productData.companyId);
+      } else {
+        setFilteredServiceCategories(categoriesData);
+      }
+
       // 슬롯 데이터도 로드
       loadExistingSlots();
     } catch (error) {
@@ -115,6 +145,17 @@ const ProductEditPage = () => {
       ...prev,
       [name]: type === "checkbox" ? checked : value,
     }));
+
+    // 업체 변경 시 서비스 유형 필터링
+    if (name === "companyId") {
+      loadServiceTypesForCompany(value);
+      // 서비스 유형 초기화
+      setFormData((prev) => ({
+        ...prev,
+        companyId: value,
+        serviceTypeId: "",
+      }));
+    }
 
     // 에러 메시지 제거
     if (errors[name]) {
@@ -341,7 +382,7 @@ const ProductEditPage = () => {
                 className={errors.serviceTypeId ? "error" : ""}
               >
                 <option value="">서비스 유형을 선택하세요</option>
-                {serviceCategories.map((category) => (
+                {filteredServiceCategories.map((category) => (
                   <option key={category.id} value={category.id}>
                     {category.name}
                   </option>
