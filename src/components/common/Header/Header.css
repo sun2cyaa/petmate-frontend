@@ -9,6 +9,7 @@ header {
   box-shadow: 0 2px 6px rgba(0,0,0,0.08);
   transition: box-shadow 0.3s ease;
 }
+
 header.scrolled {
   box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
@@ -25,6 +26,7 @@ body {
   font-weight: 700;
   transition: color 0.2s ease;
 }
+
 .logo h2 {
   margin: 0;
   font-size: 24px;
@@ -32,6 +34,7 @@ body {
   color: #eb9666;
   transition: color 0.2s ease;
 }
+
 .logo:hover h2 {
   color: #d45f2f;
 }
@@ -47,12 +50,14 @@ body {
   padding: 6px 24px;
   font-size: 13px;
 }
+
 .top-btn {
   margin-left: 16px;
   color: #555;
   text-decoration: none;
   font-weight: 500;
 }
+
 .top-btn.highlight {
   padding: 3px 10px;
   border: 1px solid #eb9666;
@@ -60,6 +65,7 @@ body {
   color: #eb9666;
   font-size: 12px;
 }
+
 .top-btn.highlight:hover {
   background: #eb9666;
   color: #fff;
@@ -73,6 +79,7 @@ body {
   gap: 4px;
   margin-left: 16px;
 }
+
 .auth-btn {
   text-decoration: none;
   font-size: 13px;
@@ -81,10 +88,12 @@ body {
   padding: 4px 10px;
   transition: all 0.2s ease;
 }
+
 .auth-btn.auth-outline {
   color: #eb9666;
   border: 1px solid #eb9666;
 }
+
 .auth-btn.auth-outline:hover {
   background: #eb9666;
   color: #fff;
@@ -100,11 +109,13 @@ body {
   justify-content: space-between;
   padding: 0 28px;
 }
+
 .nav {
   display: flex;
   align-items: center;
   gap: 20px;
 }
+
 .nav a {
   display: flex;
   align-items: center;
@@ -114,6 +125,7 @@ body {
   font-size: 15px;
   transition: color 0.2s;
 }
+
 .nav a:hover { 
   color: #eb9666; 
 }
@@ -132,16 +144,19 @@ body {
   display: flex;
   align-items: center;
 }
+
 .header-address .map-icon {
   margin-right: 6px;
   color: #eb9666;
 }
+
 .header-address a {
   text-decoration: none;
   color: #2c3e50;
   display: flex;
   align-items: center;
 }
+
 .header-address a:hover { text-decoration: underline; }
 
 /* --- 프로필 드롭다운 ---- */
@@ -154,6 +169,7 @@ body {
   padding: 0;
   cursor: pointer;
 }
+
 .avatar {
   width: 34px;
   height: 34px;
@@ -165,16 +181,19 @@ body {
   justify-content: center;
   border: 1px solid #ddd;
 }
+
 .avatar-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
+
 .avatar-fallback {
   font-weight: 600;
   font-size: 14px;
   color: #555;
 }
+
 .user-name {
   font-size: 14px;
   font-weight: 500;
@@ -197,11 +216,13 @@ body {
   transform: translateY(-5px);
   transition: opacity 0.25s ease, transform 0.25s ease;
 }
+
 .user-dropdown.open .user-menu {
   display: block;
   opacity: 1;
   transform: translateY(0);
 }
+
 .user-menu_item {
   padding: 10px 14px;
   display: flex;
@@ -217,34 +238,42 @@ body {
   cursor: pointer;
   transition: background 0.2s ease, color 0.2s ease;
 }
+
 .user-menu_item:hover { background: #f5f5f5; }
 .menu-icon {
   flex-shrink: 0;
   color: #555;
 }
+
 .user-menu_divider {
   height: 1px;
   background: #eee;
   margin: 6px 0;
 }
+
 .user-menu_logout {
   color: #e74c3c;
   font-weight: 500;
 }
+
 .user-menu_logout .menu-icon {
   color: #e74c3c;
 }
+
 .user-menu_logout:hover {
   background: #fdecea;
   color: #c0392b;
 }
+
 .user-menu_logout:hover .menu-icon {
   color: #c0392b;
 }
+
 .header_dropdown {
   position: relative;
   display: inline-block;
 }
+
 .nav-link {
   display: flex;
   align-items: center;
@@ -256,12 +285,15 @@ body {
   padding: 6px 10px;
   transition: color 0.2s ease;
 }
+
 .nav-link:hover {
   color: #eb9666;
 }
+
 .nav-link:hover .nav-icon {
   color: #eb9666;
 }
+
 .header_company_manage_menu,
 .header_product_manage_menu,
 .header_petmate_menu {
@@ -276,11 +308,13 @@ body {
   z-index: 1500;
   padding: 6px 0;
 }
+
 .header_dropdown:hover .header_company_manage_menu,
 .header_dropdown:hover .header_product_manage_menu,
 .header_dropdown:hover .header_petmate_menu {
   display: block;
 }
+
 .header_company_manage_item,
 .header_product_manage_item,
 .header_petmate_item {
@@ -290,11 +324,73 @@ body {
   text-decoration: none;
   transition: background 0.2s;
 }
+
 .header_company_manage_item:hover,
 .header_product_manage_item:hover,
 .header_petmate_item:hover {
   background: #f9f9f9;
   color: #E05353;
+}
+
+/* --- 역할 전환 버튼 (헤더 전용) --- */
+.mode-switch,
+.nav-link.become-petowner,
+.nav-link.become-petmate {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 600;
+  background: #EB9666;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+/* hover 효과 */
+.mode-switch:hover,
+.nav-link.become-petowner:hover,
+.nav-link.become-petmate:hover {
+  color: #fff !important;
+  background: linear-gradient(90deg, #EB9666, #E05353);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.mode-switch:hover .nav-icon,
+.nav-link.become-petowner:hover .nav-icon,
+.nav-link.become-petmate:hover .nav-icon {
+  color: #fff !important;
+}
+
+/* active (눌렀을 때) 효과 */
+.mode-switch:active,
+.nav-link.become-petowner:active,
+.nav-link.become-petmate:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15) inset;
+}
+
+/* 반려인 전환 */
+.nav-link.become-petowner {
+  background: #E05353;
+}
+
+.nav-link.become-petowner:hover {
+  background: linear-gradient(90deg, #E05353, #EB9666);
+}
+
+/* 펫메이트 전환 */
+.nav-link.become-petmate {
+  background: #EB9666;
+}
+
+.nav-link.become-petmate:hover {
+  background: linear-gradient(90deg, #EB9666, #E05353);
 }
 
 /* ---------------- 반응형 ---------------- */
