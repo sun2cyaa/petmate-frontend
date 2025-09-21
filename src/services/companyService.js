@@ -80,3 +80,9 @@ export const getNearbyCompanies = async (latitude, longitude, radius = 5.0, serv
       const response = await apiRequest.get("/api/company/nearby", { params });
       return response.data;
   };
+
+// 공개 업체 정보 조회 (인증 불필요)
+export const getCompanyByIdPublic = async (id) => {
+  const response = await apiRequest.get(`/api/company/public/${id}`);
+  return response.data;
+};

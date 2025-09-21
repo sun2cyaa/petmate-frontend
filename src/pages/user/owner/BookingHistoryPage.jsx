@@ -47,7 +47,7 @@ const BookingHistoryPage = () => {
         switch (filter) {
           case "pending": return "0";
           case "confirmed": return "1";
-          case "completed": return "2";
+          case "rejected": return "2";
           case "cancelled": return "3";
           case "all": return null;
           default: return null;
@@ -97,6 +97,21 @@ const BookingHistoryPage = () => {
           startTime: bookingsData[0].startTime,
           endTime: bookingsData[0].endTime
         });
+
+        // 모든 예약 데이터의 시간 정보 출력
+        bookingsData.forEach((booking, index) => {
+          console.log(`예약 ${index + 1} 시간 데이터:`, {
+            id: booking.id,
+            startDt: booking.startDt,
+            endDt: booking.endDt,
+            startTime: booking.startTime,
+            endTime: booking.endTime,
+            formatTime_startTime: booking.startTime,
+            formatTime_endTime: booking.endTime,
+            formatTime_startDt: booking.startDt,
+            formatTime_endDt: booking.endDt
+          });
+        });
       }
 
       // 디버깅: 예약 데이터의 companyId와 날짜 확인
@@ -139,11 +154,11 @@ const BookingHistoryPage = () => {
     const statusConfig = {
       "0": { text: "예약 대기", class: "status-pending" },
       "1": { text: "예약 확정", class: "status-confirmed" },
-      "2": { text: "서비스 완료", class: "status-completed" },
+      "2": { text: "예약 거절", class: "status-rejected" },
       "3": { text: "예약 취소", class: "status-cancelled" },
       pending: { text: "예약 대기", class: "status-pending" },
       confirmed: { text: "예약 확정", class: "status-confirmed" },
-      completed: { text: "서비스 완료", class: "status-completed" },
+      rejected: { text: "예약 거절", class: "status-rejected" },
       cancelled: { text: "예약 취소", class: "status-cancelled" }
     };
 
@@ -156,12 +171,45 @@ const BookingHistoryPage = () => {
   };
 
   const formatTime = (timeString) => {
-    return dayjs(timeString).format("HH:mm");
+    if (!timeString) return "시간 없음";
+
+    // 이미 HH:mm 형식이면 그대로 반환
+    if (typeof timeString === 'string' && timeString.match(/^\d{2}:\d{2}$/)) {
+      return timeString;
+    }
+
+    // HH:mm:ss 형식이면 초 제거
+    if (typeof timeString === 'string' && timeString.match(/^\d{2}:\d{2}:\d{2}$/)) {
+      return timeString.substring(0, 5);
+    }
+
+    // DateTime 형식이면 시간만 추출
+    if (typeof timeString === 'string' && timeString.includes('T')) {
+      return dayjs(timeString).format("HH:mm");
+    }
+
+    // 날짜시간 형식 처리 (YYYY-MM-DD HH:mm:ss)
+    if (typeof timeString === 'string' && timeString.includes(' ')) {
+      try {
+        return dayjs(timeString).format("HH:mm");
+      } catch (error) {
+        console.error('시간 포맷팅 오류:', timeString, error);
+        return timeString;
+      }
+    }
+
+    // 기타 형식 처리
+    try {
+      return dayjs(timeString).format("HH:mm");
+    } catch (error) {
+      console.error('시간 포맷팅 오류:', timeString, error);
+      return String(timeString);
+    }
   };
 
   // 취소 가능 여부 확인 (예약 시작 시간 이전까지만 취소 가능)
   const canCancelBooking = (booking) => {
-    // 예약 상태가 취소 가능한 상태인지 확인
+    // 예약 상태가 취소 가능한 상태인지 확인 (승인대기, 예약확정만 취소 가능)
     const cancellableStatuses = ["0", "1", "pending", "confirmed"];
     if (!cancellableStatuses.includes(String(booking.status))) {
       return false;
@@ -257,7 +305,7 @@ const BookingHistoryPage = () => {
             { key: "all", label: "전체" },
             { key: "pending", label: "예약 대기" },
             { key: "confirmed", label: "예약 확정" },
-            { key: "completed", label: "완료" },
+            { key: "rejected", label: "예약 거절" },
             { key: "cancelled", label: "취소" }
           ].map(item => (
             <button
@@ -305,7 +353,7 @@ const BookingHistoryPage = () => {
 
                   <div className="detail-row">
                     <FaClock className="detail-icon" />
-                    <span>시간: {formatTime(booking.startTime)} - {formatTime(booking.endTime)}</span>
+                    <span>시간: {formatTime(booking.startTime || booking.startDt)} - {formatTime(booking.endTime || booking.endDt)}</span>
                   </div>
 
                   <div className="detail-row">

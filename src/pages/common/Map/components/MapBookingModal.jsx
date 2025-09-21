@@ -14,6 +14,7 @@ const initialState = {
   selectedService: "C",
   selectedProduct: null,
   selectedPets: [],
+  availablePets: [],
   selectedDate: null,
   selectedTimeSlot: null,
   peopleCount: 1,
@@ -74,6 +75,8 @@ const reservationReducer = (state, action) => {
       return { ...state, availableServices: action.payload };
     case "SET_AVAILABLE_TIME_SLOTS":
       return { ...state, availableTimeSlots: action.payload };
+    case "SET_AVAILABLE_PETS":
+      return { ...state, availablePets: action.payload };
     case "SET_LOADING":
       return {
         ...state,

@@ -109,6 +109,14 @@ const BookingCompleteStep = () => {
             <span className="label">반려동물</span>
             <span className="value">
               {actualBookingData?.petCount || displayData.selectedPets?.length || 1}마리
+              {displayData.availablePets && displayData.selectedPets && displayData.selectedPets.length > 0 && (
+                <div style={{ fontSize: "14px", color: "#666", marginTop: "4px" }}>
+                  {displayData.availablePets
+                    .filter(pet => displayData.selectedPets.includes(pet.id))
+                    .map(pet => pet.name)
+                    .join(", ")}
+                </div>
+              )}
             </span>
           </div>
 

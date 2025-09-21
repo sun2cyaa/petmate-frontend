@@ -2,8 +2,17 @@ import { createDummyProduct, deleteDummyProduct, getDummyCompanies, getDummyProd
 import { getDummyProduct } from '../../pages/product/dummyData.jsx';
 import { apiRequest } from '../api';
 
-// 더미 데이터 사용 여부 (개발 중에는 더미 데이터, 배포 시에는 실제 API 사용)
-const USE_DUMMY_DATA = process.env.NODE_ENV === 'development' && !process.env.REACT_APP_USE_REAL_API;
+// 환경 설정
+const API_BASE = process.env.REACT_APP_SPRING_API_BASE || "http://localhost:8090";
+const USE_REAL_API = process.env.REACT_APP_SPRING_API_BASE && process.env.REACT_APP_SPRING_API_BASE !== "http://localhost:8090";
+const USE_DUMMY_DATA = !USE_REAL_API && process.env.NODE_ENV === 'development';
+
+console.log('상품관리 환경 설정:', {
+  API_BASE,
+  USE_REAL_API,
+  USE_DUMMY_DATA,
+  NODE_ENV: process.env.NODE_ENV
+});
 
 // API 호출처럼 구현
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));

@@ -9,9 +9,35 @@ const PaymentFailPage = () => {
   useEffect(() => {
     // URL 파라미터에서 orderId 가져와서 localStorage에 실패 상태 저장
     const orderId = searchParams.get("orderId");
+    const bookingId = searchParams.get("bookingId");
+
     if (orderId) {
       localStorage.setItem(`payment_${orderId}`, 'fail');
     }
+
+    // 결제 실패 시 예약을 취소 상태로 변경
+    const cancelBookingForPaymentFailed = async () => {
+      if (bookingId) {
+        try {
+          const response = await fetch(`${process.env.REACT_APP_SPRING_API_BASE || "http://localhost:8090"}/api/booking/payment-failed/${bookingId}`, {
+            method: 'DELETE',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          });
+
+          if (response.ok) {
+            console.log(`결제 실패로 인한 예약 취소 완료: bookingId=${bookingId}`);
+          } else {
+            console.error('예약 취소 실패:', response.statusText);
+          }
+        } catch (error) {
+          console.error('예약 취소 요청 중 오류:', error);
+        }
+      }
+    };
+
+    cancelBookingForPaymentFailed();
   }, [searchParams]);
 
   const handleBackToBooking = () => {

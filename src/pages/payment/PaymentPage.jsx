@@ -17,7 +17,7 @@ const PaymentPage = () => {
   const [dataLoading, setDataLoading] = useState(true);
 
   // 백엔드 API 기본 URL
-  const API_BASE_URL = "http://localhost:8090/api/payment";
+  const API_BASE_URL = `${process.env.REACT_APP_SPRING_API_BASE || "http://localhost:8090"}/api/payment`;
 
   useEffect(() => {
     // URL 파라미터에서 id 가져오기
@@ -88,8 +88,8 @@ const PaymentPage = () => {
     merchantId: process.env.REACT_APP_DANAL_MERCHANT_ID || "9810030930", // 환경변수로 변경
     orderId: new Date().getTime().toString(),
     userId: "user@naver.com",
-    successUrl: "http://localhost:8090/api/payment/danal/success",
-    failUrl: "http://localhost:8090/api/payment/danal/fail",
+    successUrl: `${process.env.REACT_APP_SPRING_API_BASE || "http://localhost:8090"}/api/payment/danal/success`,
+    failUrl: `${process.env.REACT_APP_SPRING_API_BASE || "http://localhost:8090"}/api/payment/danal/fail`,
     userEmail: "user@naver.com",
   };
 
@@ -242,11 +242,14 @@ const PaymentPage = () => {
         // 결제창 자체를 열지 못했거나, 사용자가 취소한 경우
         if (error.code === "USER_CANCEL") {
           console.log("사용자에 의한 결제 취소");
-          // 사용자가 취소한 경우 실패 페이지로 이동하지 않고 현재 페이지 유지
+          // 사용자가 취소한 경우 예약도 취소 처리
+          handlePaymentCancellation();
           alert("결제가 취소되었습니다.");
           return null;
         } else if (error.code === "WINDOW_CLOSED") {
           console.log("결제창이 닫힘");
+          // 결제창이 닫힌 경우도 예약 취소 처리
+          handlePaymentCancellation();
           alert("결제창이 닫혔습니다.");
           return null;
         } else {
@@ -255,6 +258,28 @@ const PaymentPage = () => {
           throw error;
         }
       });
+  };
+
+  // 결제 취소 시 예약 취소 처리
+  const handlePaymentCancellation = async () => {
+    if (bookingData?.reservationId) {
+      try {
+        const response = await fetch(`${API_BASE_URL.replace('/payment', '')}/booking/payment-failed/${bookingData.reservationId}`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+
+        if (response.ok) {
+          console.log(`결제 취소로 인한 예약 취소 완료: bookingId=${bookingData.reservationId}`);
+        } else {
+          console.error('예약 취소 실패:', response.statusText);
+        }
+      } catch (error) {
+        console.error('예약 취소 요청 중 오류:', error);
+      }
+    }
   };
 
   const handlePayment = async () => {
@@ -349,13 +374,13 @@ const PaymentPage = () => {
       setTimeout(() => {
         if (isSuccess) {
           // 성공 시 백엔드 콜백 URL 시뮬레이션
-          const successUrl = `http://localhost:3000/payment/success?orderId=${
+          const successUrl = `${process.env.REACT_APP_FRONT_BASE_URL || "http://localhost:3000"}/payment/success?orderId=${
             baseParams.orderId
           }&transactionId=MOCK_TX_${Date.now()}&amount=${baseParams.amount}`;
           window.location.href = successUrl;
         } else {
           // 실패 시 백엔드 콜백 URL 시뮬레이션
-          const failUrl = `http://localhost:3000/payment/fail?orderId=${baseParams.orderId}&errorCode=MOCK_ERROR&errorMessage=Mock%20payment%20failed`;
+          const failUrl = `${process.env.REACT_APP_FRONT_BASE_URL || "http://localhost:3000"}/payment/fail?orderId=${baseParams.orderId}&bookingId=${bookingData?.reservationId}&errorCode=MOCK_ERROR&errorMessage=Mock%20payment%20failed`;
           window.location.href = failUrl;
         }
       }, 2000); // 2초 후 결과 처리

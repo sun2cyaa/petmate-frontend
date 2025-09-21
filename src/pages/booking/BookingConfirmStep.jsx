@@ -161,7 +161,17 @@ const BookingConfirmStep = () => {
           </div>
           <div className="info-item">
             <span className="label">반려동물</span>
-            <span className="value">{state.selectedPets.length}마리</span>
+            <span className="value">
+              {state.selectedPets.length}마리
+              {state.availablePets && state.selectedPets.length > 0 && (
+                <div style={{ fontSize: "14px", color: "#666", marginTop: "4px" }}>
+                  {state.availablePets
+                    .filter(pet => state.selectedPets.includes(pet.id))
+                    .map(pet => pet.name)
+                    .join(", ")}
+                </div>
+              )}
+            </span>
           </div>
         </div>
       </div>

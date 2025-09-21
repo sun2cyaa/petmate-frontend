@@ -4,7 +4,9 @@ import {
   formatDateForAPI,
   getAvailableTimeSlots,
 } from "../../services/booking/timeSlotService";
-import { FaDog, FaCat } from "react-icons/fa";   
+import { getMyPets } from "../../services/pet/petService";
+import { getCompanyByIdPublic } from "../../services/companyService";
+import { FaDog, FaCat } from "react-icons/fa";
 import "./DateSelectStep.css";
 
 // 달력 컴포넌트
@@ -126,15 +128,26 @@ const TimeSlots = ({ timeSlots, selectedTimeSlot, onTimeSlotSelect, loading }) =
 };
 
 // 반려동물 선택
-const PetSelection = ({ pets, selectedPets, onPetToggle }) => {
-  if (!pets || pets.length === 0)
+const PetSelection = ({ pets, selectedPets, onPetToggle, loading }) => {
+  if (loading) {
+    return <div className="empty-text">반려동물 정보를 불러오는 중...</div>;
+  }
+
+  if (!pets || pets.length === 0) {
     return <div className="empty-text">등록된 반려동물이 없습니다.</div>;
+  }
 
   return (
     <div className="pet-list">
       {pets.map((pet) => {
-        
-        const Icon = pet.breed.includes("냥") || pet.name.includes("냥") ? FaCat : FaDog;
+        // 백엔드 응답 형식에 맞게 수정
+        const petBreed = pet.breed || pet.breedName || "알 수 없음";
+        const petAge = pet.age || "알 수 없음";
+
+        // 고양이/강아지 아이콘 선택 (품종명 또는 이름으로 판단)
+        const Icon = (petBreed.includes("고양이") || petBreed.includes("냥") ||
+                      pet.name.includes("냥") || pet.name.includes("고양이")) ? FaCat : FaDog;
+
         return (
           <div
             key={pet.id}
@@ -146,7 +159,7 @@ const PetSelection = ({ pets, selectedPets, onPetToggle }) => {
             </div>
             <div className="pet-info">
               <h5>{pet.name}</h5>
-              <p>{pet.breed} • {pet.age}살</p>
+              <p>{petBreed} • {petAge}살</p>
             </div>
             {selectedPets.includes(pet.id) && <div className="pet-check">✓</div>}
           </div>
@@ -158,10 +171,105 @@ const PetSelection = ({ pets, selectedPets, onPetToggle }) => {
 
 const DateSelectStep = () => {
   const { state, dispatch } = useContext(BookingContext);
-  const [pets] = useState([
-    { id: 1, name: "멍멍이", breed: "골든리트리버", age: 3 },
-    { id: 2, name: "냥냥이", breed: "페르시안", age: 2 },
-  ]);
+  const [pets, setPets] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [companyOperatingHours, setCompanyOperatingHours] = useState(null);
+  const [disabledDates, setDisabledDates] = useState([]);
+
+  // 업체 운영시간 로드 및 휴무일 계산
+  const loadCompanyOperatingHours = async () => {
+    if (!state.selectedProduct?.companyId) return;
+
+    try {
+      const companyInfo = await getCompanyByIdPublic(state.selectedProduct.companyId);
+      console.log("업체 정보:", companyInfo);
+
+      if (companyInfo.operatingHours) {
+        setCompanyOperatingHours(companyInfo.operatingHours);
+        calculateDisabledDates(companyInfo.operatingHours);
+      }
+    } catch (error) {
+      console.error("업체 운영시간 로드 실패:", error);
+    }
+  };
+
+  // 휴무일 계산 (다음 3개월)
+  const calculateDisabledDates = (operatingHoursJson) => {
+    try {
+      const operatingHours = JSON.parse(operatingHoursJson);
+      const disabledDates = [];
+
+      // 현재 날짜부터 3개월 후까지 확인
+      const startDate = new Date();
+      const endDate = new Date();
+      endDate.setMonth(endDate.getMonth() + 3);
+
+      for (let date = new Date(startDate); date <= endDate; date.setDate(date.getDate() + 1)) {
+        const dayOfWeek = date.getDay(); // 0=일요일, 1=월요일, ...
+        const dayKey = getDayKeyFromDayOfWeek(dayOfWeek);
+
+        // schedule 구조에서 해당 요일 확인
+        if (operatingHours.schedule && operatingHours.schedule[dayKey]) {
+          const daySchedule = operatingHours.schedule[dayKey];
+          // 휴무일 체크
+          if (daySchedule.closed === true) {
+            disabledDates.push(new Date(date));
+          }
+        }
+      }
+
+      console.log("계산된 휴무일:", disabledDates);
+      setDisabledDates(disabledDates);
+    } catch (error) {
+      console.error("휴무일 계산 실패:", error);
+      setDisabledDates([]);
+    }
+  };
+
+  // 요일 숫자를 한글 요일명으로 변환
+  const getDayKeyFromDayOfWeek = (dayOfWeek) => {
+    const dayMapping = {
+      0: "일요일",
+      1: "월요일",
+      2: "화요일",
+      3: "수요일",
+      4: "목요일",
+      5: "금요일",
+      6: "토요일"
+    };
+    return dayMapping[dayOfWeek] || "월요일";
+  };
+
+  // 내 반려동물 정보 로드
+  const loadMyPets = async () => {
+    try {
+      setLoading(true);
+      const myPets = await getMyPets();
+      console.log("내 반려동물 목록:", myPets);
+      setPets(myPets);
+      // BookingContext에도 펫 정보 저장
+      dispatch({ type: "SET_AVAILABLE_PETS", payload: myPets });
+    } catch (error) {
+      console.error("반려동물 정보 로드 실패:", error);
+      // 에러 시 빈 배열로 설정
+      setPets([]);
+      dispatch({ type: "SET_AVAILABLE_PETS", payload: [] });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 컴포넌트 마운트 시 펫 데이터 로드
+  useEffect(() => {
+    loadMyPets();
+  }, []);
+
+  // 선택된 상품이 변경될 때 업체 운영시간 로드
+  useEffect(() => {
+    if (state.selectedProduct?.companyId) {
+      loadCompanyOperatingHours();
+    }
+  }, [state.selectedProduct?.companyId]);
 
   const loadTimeSlots = async (date) => {
     if (!state.selectedProduct?.id || !date) return;
@@ -221,7 +329,11 @@ const DateSelectStep = () => {
 
       <div className="section">
         <h4>날짜 선택</h4>
-        <Calendar selectedDate={state.selectedDate} onDateSelect={handleDateSelect} />
+        <Calendar
+          selectedDate={state.selectedDate}
+          onDateSelect={handleDateSelect}
+          disabledDates={disabledDates}
+        />
       </div>
 
       {state.selectedDate && (
@@ -238,7 +350,7 @@ const DateSelectStep = () => {
 
       <div className="section">
         <h4>반려동물 선택</h4>
-        <PetSelection pets={pets} selectedPets={state.selectedPets} onPetToggle={handlePetToggle} />
+        <PetSelection pets={pets} selectedPets={state.selectedPets} onPetToggle={handlePetToggle} loading={loading} />
       </div>
 
       <div className="footer-btns">
