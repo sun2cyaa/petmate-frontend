@@ -50,11 +50,9 @@ export const getMyCompanies = async () => {
   return response.data;
 };
 
-// 개인 신원 인증 (소셜로그인 이름 vs 입력한 이름)
-export const verifyPersonalIdentity = async (personalName) => {
-  const response = await apiRequest.post("/api/company/verify-personal", {
-    personalName: personalName
-  });
+// 개인 업체 등록 여부 확인 (createdBy 기반)
+export const checkPersonalCompanyExists = async () => {
+  const response = await apiRequest.get("/api/company/check-personal-exists");
   return response.data;
 };
 

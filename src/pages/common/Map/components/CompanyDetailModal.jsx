@@ -31,7 +31,33 @@ function CompanyDetailModal({ selectedCompany, onClose, onBookingClick }) {
 
       <div className="modal-content">
         <div className="company-image-section">
-          <div className="company-image-placeholder">
+          {(() => {
+            const thumbnailImage = selectedCompany.images?.find(img =>
+              img.status === 'ACTIVE' && img.is_thumbnail === true
+            );
+            const firstImage = selectedCompany.images?.find(img =>
+              img.status === 'ACTIVE'
+            );
+            const displayImage = thumbnailImage || firstImage;
+
+            return displayImage ? (
+              <img
+                src={displayImage.file_path}
+                alt={displayImage.alt_text || `${selectedCompany.name} 대표 사진`}
+                className="company-main-image"
+                onError={(e) => {
+                  e.target.style.display = 'none';
+                  e.target.nextSibling.style.display = 'flex';
+                }}
+              />
+            ) : null;
+          })()}
+          <div
+            className="company-image-placeholder"
+            style={{
+              display: selectedCompany.images?.some(img => img.status === 'ACTIVE') ? 'none' : 'flex'
+            }}
+          >
             📷 업체 사진
           </div>
         </div>
@@ -221,10 +247,34 @@ function CompanyDetailModal({ selectedCompany, onClose, onBookingClick }) {
               <div className="info-section">
                 <h4>사진</h4>
                 <div className="photo-grid">
-                  <div className="photo-item">📷 업체 외관</div>
-                  <div className="photo-item">📷 내부 시설</div>
-                  <div className="photo-item">📷 서비스 모습</div>
-                  <div className="photo-item">📷 추가 사진</div>
+                  {selectedCompany.images && selectedCompany.images.length > 0 ? (
+                    selectedCompany.images
+                      .filter(img => img.status === 'ACTIVE')
+                      .sort((a, b) => a.display_order - b.display_order)
+                      .map((image, index) => (
+                        <div key={image.id} className="photo-item">
+                          <img
+                            src={image.file_path}
+                            alt={image.alt_text || `${selectedCompany.name} 사진 ${index + 1}`}
+                            className="company-photo"
+                            onError={(e) => {
+                              e.target.style.display = 'none';
+                              e.target.nextSibling.style.display = 'flex';
+                            }}
+                          />
+                          <div className="photo-placeholder" style={{ display: 'none' }}>
+                            📷 {image.description || `사진 ${index + 1}`}
+                          </div>
+                        </div>
+                      ))
+                  ) : (
+                    <>
+                      <div className="photo-item">📷 업체 외관</div>
+                      <div className="photo-item">📷 내부 시설</div>
+                      <div className="photo-item">📷 서비스 모습</div>
+                      <div className="photo-item">📷 추가 사진</div>
+                    </>
+                  )}
                 </div>
               </div>
             </div>

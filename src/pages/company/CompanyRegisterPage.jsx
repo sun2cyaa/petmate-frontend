@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import "./CompanyRegisterPage.css";
-import { registerCompany, updateCompany, getCompanyById, getBusinessInfo, verifyPersonalIdentity } from "../../services/companyService";
+import { registerCompany, updateCompany, getCompanyById, getBusinessInfo, checkPersonalCompanyExists } from "../../services/companyService";
 import MapModal from "../user/owner/MyPage/Address/components/MapModal";
 import { ImageUploadViewer } from "../../util/ImageUtil";
 import { Map, MapPinned } from "lucide-react";
@@ -526,17 +526,17 @@ function CompanyRegisterPage() {
 
         if(window.confirm(`업체 ${action}을 하시겠습니까?`)) {
             try {
-                // 개인 업체 등록 시 이름 검증 먼저 수행
+                // 개인 업체 등록 시 중복 등록 확인
                 if (!isEditMode && companyType === "PERSONAL") {
-                    console.log("개인 신원 인증 시작...");
-                    const verificationResult = await verifyPersonalIdentity(formInputs.representativeName);
+                    console.log("개인 업체 중복 등록 확인 시작...");
+                    const checkResult = await checkPersonalCompanyExists();
 
-                    if (!verificationResult.success) {
-                        alert(`신원 인증 실패: ${verificationResult.message}`);
+                    if (checkResult.exists) {
+                        alert(`개인 업체 중복 등록 불가: ${checkResult.message || '이미 등록된 개인 업체가 있습니다.'}`);
                         return;
                     }
 
-                    console.log("개인 신원 인증 성공:", verificationResult.message);
+                    console.log("개인 업체 중복 확인 완료:", checkResult.message);
                 }
                 // FormData 생성
                 const formData = new FormData();
